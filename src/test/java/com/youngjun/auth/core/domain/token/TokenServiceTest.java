@@ -152,7 +152,7 @@ class TokenServiceTest {
         tokenJpaRepository.save(tokenEntity);
 
         // when
-        TokenPair tokenPair = tokenService.reissue(refreshToken);
+        TokenPair tokenPair = tokenService.reissue(new RefreshToken(refreshToken));
 
         // then
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
@@ -175,10 +175,10 @@ class TokenServiceTest {
         // given
         AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
         AuthEntity savedAuth = authJpaRepository.save(authEntity);
-        String token = buildToken(savedAuth.getId(), 0L);
+        String refreshToken = buildToken(savedAuth.getId(), 0L);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> tokenService.reissue(token))
+        Assertions.assertThatThrownBy(() -> tokenService.reissue(new RefreshToken(refreshToken)))
                 .hasFieldOrPropertyWithValue("authErrorType", AuthErrorType.TOKEN_EXPIRED_ERROR);
     }
 
@@ -189,11 +189,11 @@ class TokenServiceTest {
         String refreshToken = buildToken(-1L, Duration.ofDays(30L).toMillis());
 
         // when & then
-        Assertions.assertThatThrownBy(() -> tokenService.reissue(refreshToken))
+        Assertions.assertThatThrownBy(() -> tokenService.reissue(new RefreshToken(refreshToken)))
                 .hasFieldOrPropertyWithValue("authErrorType", AuthErrorType.TOKEN_NOT_FOUND_ERROR);
     }
 
-    @DisplayName("토큰 재발급 시 서비스 가이용이 제한된 회원이면 실패한다.")
+    @DisplayName("토큰 재발급 시 서비스 가입이 제한된 회원이면 실패한다.")
     @Test
     void reissueWithLockedUser() {
         // given
@@ -205,7 +205,7 @@ class TokenServiceTest {
         tokenJpaRepository.save(tokenEntity);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> tokenService.reissue(refreshToken))
+        Assertions.assertThatThrownBy(() -> tokenService.reissue(new RefreshToken(refreshToken)))
                 .hasFieldOrPropertyWithValue("authErrorType", AuthErrorType.AUTH_LOCKED_ERROR);
     }
 
@@ -221,7 +221,7 @@ class TokenServiceTest {
         TokenEntity savedTokenEntity = tokenJpaRepository.save(tokenEntity);
 
         // when
-        tokenService.reissue(refreshToken);
+        tokenService.reissue(new RefreshToken(refreshToken));
 
         // then
         List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());

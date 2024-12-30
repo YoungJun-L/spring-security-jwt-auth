@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface TokenRepository {
 
-	Token write(TokenPair tokenPair);
+    Token write(TokenPair tokenPair);
 
-	List<Token> read(String refreshToken);
+    List<Token> read(RefreshToken refreshToken);
 
 }

@@ -1,5 +1,6 @@
 package com.youngjun.auth.storage.db.core.token;
 
+import com.youngjun.auth.core.domain.token.RefreshToken;
 import com.youngjun.auth.core.domain.token.Token;
 import com.youngjun.auth.core.domain.token.TokenPair;
 import com.youngjun.auth.core.domain.token.TokenRepository;
@@ -30,8 +31,8 @@ public class TokenCoreRepository implements TokenRepository {
     }
 
     @Override
-    public List<Token> read(String refreshToken) {
-        return tokenJpaRepository.findByRefreshToken(refreshToken).stream().map(TokenEntity::toToken).toList();
+    public List<Token> read(RefreshToken refreshToken) {
+        return tokenJpaRepository.findByRefreshToken(refreshToken.value()).stream().map(TokenEntity::toToken).toList();
     }
 
 }

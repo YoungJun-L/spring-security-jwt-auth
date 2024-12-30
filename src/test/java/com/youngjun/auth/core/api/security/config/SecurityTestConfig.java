@@ -35,119 +35,119 @@ import org.springframework.web.bind.annotation.RestController;
 @TestConfiguration
 public class SecurityTestConfig {
 
-	@Bean
-	AuthService authService() {
-		return Mockito.mock(AuthService.class);
-	}
+    @Bean
+    AuthService authService() {
+        return Mockito.mock(AuthService.class);
+    }
 
-	@Bean
-	TokenService tokenService() {
-		return Mockito.mock(TokenService.class);
-	}
+    @Bean
+    TokenService tokenService() {
+        return Mockito.mock(TokenService.class);
+    }
 
-	@Bean
-	TokenParser tokenParser() {
-		return Mockito.mock(TokenParser.class);
-	}
+    @Bean
+    TokenParser tokenParser() {
+        return Mockito.mock(TokenParser.class);
+    }
 
-	@Bean
-	ObjectMapper objectMapper() {
-		return new ObjectMapper().findAndRegisterModules()
-			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-			.disable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
-	}
+    @Bean
+    ObjectMapper objectMapper() {
+        return new ObjectMapper().findAndRegisterModules()
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .disable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
+    }
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(authorize -> authorize.requestMatchers(NotFilterRequestMatcher.matchers())
-			.anonymous()
-			.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/products/**"))
-			.permitAll()
-			.anyRequest()
-			.authenticated())
-			.addFilterAt(requestBodyUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-			.addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-			.exceptionHandling(
-					exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint()))
-			.authenticationManager(authenticationManager())
-			.headers(AbstractHttpConfigurer::disable)
-			.formLogin(AbstractHttpConfigurer::disable)
-			.requestCache(AbstractHttpConfigurer::disable)
-			.logout(AbstractHttpConfigurer::disable)
-			.cors(AbstractHttpConfigurer::disable)
-			.csrf(AbstractHttpConfigurer::disable)
-			.sessionManagement(
-					sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		return http.build();
-	}
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorize -> authorize.requestMatchers(NotFilterRequestMatcher.matchers())
+                        .anonymous()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/products/**"))
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .addFilterAt(requestBodyUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint()))
+                .authenticationManager(authenticationManager())
+                .headers(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .requestCache(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(
+                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        return http.build();
+    }
 
-	@Bean
-	RequestBodyUsernamePasswordAuthenticationFilter requestBodyUsernamePasswordAuthenticationFilter() {
-		return new RequestBodyUsernamePasswordAuthenticationFilter(authenticationManager(),
-				authenticationSuccessHandler(), authenticationFailureHandler(), objectMapper());
-	}
+    @Bean
+    RequestBodyUsernamePasswordAuthenticationFilter requestBodyUsernamePasswordAuthenticationFilter() {
+        return new RequestBodyUsernamePasswordAuthenticationFilter(authenticationManager(),
+                authenticationSuccessHandler(), authenticationFailureHandler(), objectMapper());
+    }
 
-	@Bean
+    @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter() {
-		return new JwtAuthenticationFilter(bearerTokenResolver(), authenticationManager(),
-				authenticationFailureHandler());
-	}
+        return new JwtAuthenticationFilter(bearerTokenResolver(), authenticationManager(),
+                authenticationFailureHandler());
+    }
 
-	@Bean
-	AuthenticationManager authenticationManager() {
-		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder());
-		daoAuthenticationProvider.setUserDetailsService(userDetailsService());
-		return new ProviderManager(jwtAuthenticationProvider(), daoAuthenticationProvider);
-	}
+    @Bean
+    AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        return new ProviderManager(jwtAuthenticationProvider(), daoAuthenticationProvider);
+    }
 
-	@Bean
-	AuthenticationSuccessHandler authenticationSuccessHandler() {
-		return new IssueJwtAuthenticationSuccessHandler(tokenService(), objectMapper());
-	}
+    @Bean
+    AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new IssueJwtAuthenticationSuccessHandler(tokenService(), objectMapper());
+    }
 
-	@Bean
-	AuthenticationFailureHandler authenticationFailureHandler() {
-		return new AuthenticationEntryPointFailureHandler(authenticationEntryPoint());
-	}
+    @Bean
+    AuthenticationFailureHandler authenticationFailureHandler() {
+        return new AuthenticationEntryPointFailureHandler(authenticationEntryPoint());
+    }
 
-	@Bean
-	AuthenticationEntryPoint authenticationEntryPoint() {
-		return new ApiAuthenticationEntryPoint(objectMapper());
-	}
+    @Bean
+    AuthenticationEntryPoint authenticationEntryPoint() {
+        return new ApiAuthenticationEntryPoint(objectMapper());
+    }
 
-	@Bean
+    @Bean
     AuthDetailsExchangeFilter authDetailsExchangeFilter() {
-		return new AuthDetailsExchangeFilter(objectMapper());
-	}
+        return new AuthDetailsExchangeFilter(objectMapper());
+    }
 
-	@Bean
-	UserDetailsService userDetailsService() {
-		return authService();
-	}
+    @Bean
+    UserDetailsService userDetailsService() {
+        return authService();
+    }
 
-	@Bean
-	BearerTokenResolver bearerTokenResolver() {
-		return new BearerTokenResolver();
-	}
+    @Bean
+    BearerTokenResolver bearerTokenResolver() {
+        return new BearerTokenResolver();
+    }
 
-	@Bean
+    @Bean
     JwtAuthenticationProvider jwtAuthenticationProvider() {
-		return new JwtAuthenticationProvider(tokenParser(), authService());
-	}
+        return new JwtAuthenticationProvider(tokenParser(), authService());
+    }
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new StubPasswordEncoder();
-	}
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new StubPasswordEncoder();
+    }
 
-	@RestController
-	static class TestController {
+    @RestController
+    static class TestController {
 
-		@GetMapping("/test")
-		public ResponseEntity<Void> test() {
-			return ResponseEntity.ok().build();
-		}
+        @GetMapping("/test")
+        public ResponseEntity<Void> test() {
+            return ResponseEntity.ok().build();
+        }
 
-	}
+    }
 
 }

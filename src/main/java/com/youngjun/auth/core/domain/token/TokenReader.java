@@ -18,7 +18,7 @@ public class TokenReader {
         this.tokenParser = tokenParser;
     }
 
-    public Token readVerified(String refreshToken) {
+    public Token readVerified(RefreshToken refreshToken) {
         tokenParser.verify(refreshToken);
         List<Token> tokens = tokenRepository.read(refreshToken);
         if (tokens.isEmpty()) {
