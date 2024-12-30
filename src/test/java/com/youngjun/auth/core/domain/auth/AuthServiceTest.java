@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.auth;
 
-import com.youngjun.auth.core.DomainTest;
 import com.youngjun.auth.core.api.support.error.AuthErrorType;
+import com.youngjun.auth.core.domain.support.DomainTest;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;

@@ -20,6 +20,7 @@ public class TokenCoreRepository implements TokenRepository {
     @Transactional
     public Token write(TokenPair tokenPair) {
         Long authId = tokenPair.authId();
+        // TODO()
         if (tokenJpaRepository.existsByAuthId(authId)) {
             tokenJpaRepository.deleteByAuthId(authId);
         }

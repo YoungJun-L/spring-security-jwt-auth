@@ -1,8 +1,8 @@
 package com.youngjun.auth.core.domain.token;
 
-import com.youngjun.auth.core.DomainTest;
 import com.youngjun.auth.core.api.support.error.AuthErrorType;
 import com.youngjun.auth.core.domain.auth.AuthStatus;
+import com.youngjun.auth.core.domain.support.DomainTest;
 import com.youngjun.auth.core.domain.support.time.TimeHolder;
 import com.youngjun.auth.storage.db.core.auth.AuthEntity;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
@@ -85,7 +85,7 @@ class TokenServiceTest {
 
         // then
         List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
-        Assertions.assertThat(tokenEntities).hasSize(1);
+        assertThat(tokenEntities).hasSize(1);
         assertThat(tokenEntities.get(0).getRefreshToken()).isEqualTo(tokenPair.refreshToken());
     }
 
@@ -102,7 +102,7 @@ class TokenServiceTest {
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.accessToken()).getPayload().getExpiration().getTime();
         Long expected = timeHolder.now() + Duration.ofMinutes(30L).toMillis();
-        Assertions.assertThat(actual).isCloseTo(expected, Offset.offset(1_000L));
+        assertThat(actual).isCloseTo(expected, Offset.offset(1_000L));
     }
 
     @DisplayName("토큰 발급 시 refresh token 은 30일간 유효하다.")
@@ -118,7 +118,7 @@ class TokenServiceTest {
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.refreshToken()).getPayload().getExpiration().getTime();
         Long expected = timeHolder.now() + Duration.ofDays(30L).toMillis();
-        Assertions.assertThat(actual).isCloseTo(expected, Offset.offset(1_000L));
+        assertThat(actual).isCloseTo(expected, Offset.offset(1_000L));
     }
 
     @DisplayName("토큰 발급 시 이전 토큰은 제거된다.")
@@ -136,7 +136,7 @@ class TokenServiceTest {
 
         // then
         List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
-        Assertions.assertThat(tokenEntities).hasSize(1);
+        assertThat(tokenEntities).hasSize(1);
         assertThat(tokenEntities.get(0).getId()).isNotEqualTo(savedTokenEntity.getId());
     }
 
@@ -225,7 +225,7 @@ class TokenServiceTest {
 
         // then
         List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
-        Assertions.assertThat(tokenEntities).hasSize(1);
+        assertThat(tokenEntities).hasSize(1);
         assertThat(tokenEntities.get(0).getId()).isNotEqualTo(savedTokenEntity.getId());
     }
 

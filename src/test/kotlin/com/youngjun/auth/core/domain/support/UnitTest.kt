@@ -1,4 +1,4 @@
-package com.youngjun.auth.core
+package com.youngjun.auth.core.domain.support
 
 import io.kotest.core.annotation.Tags
 
