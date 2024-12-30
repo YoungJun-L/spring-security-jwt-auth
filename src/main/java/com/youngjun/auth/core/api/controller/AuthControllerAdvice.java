@@ -42,7 +42,7 @@ public class AuthControllerAdvice {
             HttpMediaTypeNotSupportedException.class, HttpMediaTypeNotAcceptableException.class,
             HandlerMethodValidationException.class,})
     public ResponseEntity<AuthResponse<?>> handleBadRequest(Exception ex) {
-        log.info("Bad Request: {}", ex.getMessage());
+        log.info("Bad Request: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthResponse.error(AuthErrorType.BAD_REQUEST_ERROR));
     }
 
