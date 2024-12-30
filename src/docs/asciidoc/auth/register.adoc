@@ -1,0 +1,19 @@
+=== POST /auth/register
+
+회원가입
+
+==== Curl Request
+
+include::{snippets}/register/curl-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/register/request-fields.adoc[]
+
+==== Http Response
+
+include::{snippets}/register/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/register/response-fields.adoc[]

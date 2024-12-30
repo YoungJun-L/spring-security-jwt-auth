@@ -1,0 +1,31 @@
+= Auth API Docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+== Introduce
+
+This is the Auth API documentation.
+
+[[login]]
+== Login API
+
+include::auth/login.adoc[]
+
+[[register]]
+== Register API
+
+include::auth/register.adoc[]
+
+[[authenticate]]
+== Authenticate API
+
+include::auth/authenticate.adoc[]
+
+[[reissue]]
+== Reissue API
+
+include::auth/token.adoc[]

@@ -1,0 +1,75 @@
+spring.application.name: market
+spring.profiles.active: local
+
+spring:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate.default_batch_fetch_size: 1000
+
+---
+spring.config.activate.on-profile: local
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:mem:market;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
+
+  security:
+    jwt:
+      secret-key: secret-key012345678secret-key0123456789secret-key0123456789secret-key01234567899
+      exp:
+        access: 1800000
+        refresh: 2592000000
+
+---
+spring.config.activate.on-profile: dev
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show_log: true
+        format_sql: true
+    show-sql: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/market
+    username: root
+    password: 1234
+    hikari:
+      data-source-properties:
+        socketTimeout: 3000
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
+
+  security:
+    jwt:
+      secret-key: secret-key012345678secret-key0123456789secret-key0123456789secret-key01234567899
+      exp:
+        access: 1800000
+        refresh: 2592000000

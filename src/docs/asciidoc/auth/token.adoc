@@ -1,0 +1,19 @@
+=== POST /auth/token
+
+토큰 재발급
+
+==== Curl Request
+
+include::{snippets}/token/curl-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/token/request-fields.adoc[]
+
+==== Http Response
+
+include::{snippets}/token/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/token/response-fields.adoc[]

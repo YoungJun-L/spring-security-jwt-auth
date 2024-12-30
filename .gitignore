@@ -1,0 +1,17 @@
+.gradle
+.kotlin
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+.env*
+
+### IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+### Mac OS ###
+.DS_Store
