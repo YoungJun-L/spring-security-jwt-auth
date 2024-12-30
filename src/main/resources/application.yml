@@ -1,4 +1,5 @@
-spring.application.name: market
+spring.application.name: auth
+
 spring.profiles.active: local
 
 spring:
