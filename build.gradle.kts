@@ -56,27 +56,30 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 }
 
-tasks.register<Test>("authTest") {
-    group = "verification"
-    useJUnitPlatform {
-        includeTags("auth")
-    }
+tasks.test {
+    systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
+    systemProperty("kotest.tags.exclude", "acceptance")
+    useJUnitPlatform()
 }
 
-tasks.register<Test>("coreTest") {
+tasks.register<Test>("acceptanceTest") {
     group = "verification"
-    useJUnitPlatform {
-        includeTags("core")
-    }
+    systemProperty("kotest.tags.include", "acceptance")
+    useJUnitPlatform()
 }
 
-tasks.register<Test>("restDocsTest") {
+tasks.register<Test>("domainTest") {
     group = "verification"
-    useJUnitPlatform {
-        includeTags("restdocs")
-    }
+    systemProperty("kotest.tags.include", "domain")
+    useJUnitPlatform()
+}
+
+tasks.register<Test>("unitTest") {
+    group = "verification"
+    systemProperty("kotest.tags.include", "unit")
+    useJUnitPlatform()
 }
 
 tasks.getByName("asciidoctor") {
-    dependsOn("restDocsTest")
+    dependsOn("acceptanceTest")
 }

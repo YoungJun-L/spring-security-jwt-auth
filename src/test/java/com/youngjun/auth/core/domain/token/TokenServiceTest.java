@@ -1,9 +1,6 @@
 package com.youngjun.auth.core.domain.token;
 
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import com.youngjun.auth.ContextTest;
+import com.youngjun.auth.core.DomainTest;
 import com.youngjun.auth.core.api.support.error.AuthErrorType;
 import com.youngjun.auth.core.domain.auth.AuthStatus;
 import com.youngjun.auth.core.domain.support.time.TimeHolder;
@@ -11,6 +8,9 @@ import com.youngjun.auth.storage.db.core.auth.AuthEntity;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
 import com.youngjun.auth.storage.db.core.token.TokenEntity;
 import com.youngjun.auth.storage.db.core.token.TokenJpaRepository;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.AfterEach;
@@ -26,7 +26,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-class TokenServiceTest extends ContextTest {
+@DomainTest
+class TokenServiceTest {
 
     private final TokenService tokenService;
 
