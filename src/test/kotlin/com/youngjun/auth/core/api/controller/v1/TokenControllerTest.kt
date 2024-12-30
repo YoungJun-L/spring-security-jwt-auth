@@ -1,6 +1,8 @@
 package com.youngjun.auth.core.api.controller.v1
 
 import com.youngjun.auth.api.controller.v1.request.ReissueTokenRequest
+import com.youngjun.auth.api.support.error.AuthException
+import com.youngjun.auth.api.support.error.ErrorType
 import com.youngjun.auth.core.api.support.AcceptanceTest
 import com.youngjun.auth.core.api.support.context
 import com.youngjun.auth.core.api.support.description
@@ -12,6 +14,7 @@ import com.youngjun.auth.core.domain.token.TokenParser
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.kotest.matchers.shouldBe
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -33,10 +36,10 @@ class TokenControllerTest(
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("재발급", listOf("/acceptance/auth.json", "/acceptance/token.json")) {
+            context("재발급", listOf("/acceptance/token.json", "/acceptance/auth.json")) {
                 test("성공") {
-                    val refreshToken = "refreshToken"
-                    every { tokenParser.verify(RefreshToken(refreshToken)) } just Runs
+                    val value = "refreshToken1"
+                    every { tokenParser.verify(RefreshToken(value)) } just Runs
 
                     given()
                         .log()
@@ -56,29 +59,40 @@ class TokenControllerTest(
                                 "data.refreshTokenExpiresIn" type NUMBER description "refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)",
                                 "error" type NULL ignored true,
                             ),
-                        ).body(ReissueTokenRequest(refreshToken))
+                        ).body(ReissueTokenRequest(value))
                         .post("/auth/token")
                         .then()
                         .log()
                         .all()
                 }
-            }
 
-            context("유효하지 않은 refresh token 으로 재발급") {
-                arrayOf("", " ").forEach { invalidRefreshToken ->
-                    test("\"$invalidRefreshToken\"") {
-                        given()
-                            .log()
-                            .all()
-                            .contentType(ContentType.JSON)
-                            .body(ReissueTokenRequest(invalidRefreshToken))
-                            .post("/auth/token")
-                            .then()
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
-                            .log()
-                            .all()
-                    }
+                test("이용 제한 유저인 경우") {
+                    val value = "refreshToken2"
+                    every { tokenParser.verify(RefreshToken(value)) } just Runs
+
+                    val results = reissue(value)
+                    results.statusCode() shouldBe HttpStatus.FORBIDDEN.value()
+                }
+
+                test("잘못된 값인 경우") {
+                    val value = "INVALID"
+                    every { tokenParser.verify(RefreshToken(value)) } throws AuthException(ErrorType.TOKEN_INVALID_ERROR)
+
+                    val results = reissue(value)
+                    results.statusCode() shouldBe HttpStatus.UNAUTHORIZED.value()
                 }
             }
         },
     )
+
+private fun reissue(refreshToken: String) =
+    given()
+        .log()
+        .all()
+        .contentType(ContentType.JSON)
+        .body(ReissueTokenRequest(refreshToken))
+        .post("/auth/token")
+        .then()
+        .log()
+        .all()
+        .extract()

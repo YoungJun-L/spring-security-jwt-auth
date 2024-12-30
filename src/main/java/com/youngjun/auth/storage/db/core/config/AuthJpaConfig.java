@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//TODO
 @Configuration
 @EnableTransactionManagement
 @EntityScan(basePackages = "com.youngjun.auth.storage.db.core")

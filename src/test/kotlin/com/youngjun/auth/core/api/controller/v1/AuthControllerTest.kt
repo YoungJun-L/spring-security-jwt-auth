@@ -76,9 +76,9 @@ class AuthControllerTest :
                             .body(RegisterAuthRequest(invalidUsername, validPassword))
                             .post("/auth/register")
                             .then()
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
                             .log()
                             .all()
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
                     }
                 }
             }
@@ -104,9 +104,9 @@ class AuthControllerTest :
                             .body(RegisterAuthRequest(validUsername, invalidPassword))
                             .post("/auth/register")
                             .then()
-                            .statusCode(HttpStatus.BAD_REQUEST.value())
                             .log()
                             .all()
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
                     }
                 }
             }
