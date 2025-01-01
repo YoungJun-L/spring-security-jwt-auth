@@ -37,7 +37,7 @@ class AuthDetailsExchangeFilter(
     private class AuthRequest(
         private val request: HttpServletRequest,
         private val token: String,
-        private val cookies: Array<Cookie> = request.cookies + Cookie("user", token),
+        private val cookies: Array<Cookie> = (request.cookies ?: emptyArray<Cookie>()) + Cookie("user", token),
     ) : HttpServletRequestWrapper(request)
 
     private data class AuthDetails(

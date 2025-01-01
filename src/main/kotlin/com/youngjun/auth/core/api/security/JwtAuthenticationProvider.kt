@@ -12,9 +12,8 @@ class JwtAuthenticationProvider(
     private val authService: AuthService,
 ) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
-        val token = authentication.principal as String
         try {
-            val username = tokenParser.parseSubject(token)
+            val username = tokenParser.parseSubject(authentication.principal as String)
             return createSuccessAuthentication(username)
         } catch (ex: Exception) {
             throw BadTokenException(ex.message, ex.cause)
