@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.token;
 
-import com.youngjun.auth.api.support.error.AuthException;
-import com.youngjun.auth.api.support.error.ErrorType;
+import com.youngjun.auth.core.api.support.error.AuthException;
+import com.youngjun.auth.core.api.support.error.ErrorType;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

@@ -1,12 +1,12 @@
 package com.youngjun.auth.core.api.controller.v1
 
-import com.youngjun.auth.api.controller.v1.request.ReissueTokenRequest
-import com.youngjun.auth.api.support.error.AuthException
-import com.youngjun.auth.api.support.error.ErrorType
+import com.youngjun.auth.core.api.controller.v1.request.ReissueTokenRequest
 import com.youngjun.auth.core.api.support.AcceptanceTest
 import com.youngjun.auth.core.api.support.context
 import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.document
+import com.youngjun.auth.core.api.support.error.AuthException
+import com.youngjun.auth.core.api.support.error.ErrorType
 import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.type
 import com.youngjun.auth.core.domain.token.RefreshToken

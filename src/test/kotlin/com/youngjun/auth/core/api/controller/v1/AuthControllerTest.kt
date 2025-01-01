@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.api.controller.v1
 
-import com.youngjun.auth.api.controller.v1.request.RegisterAuthRequest
+import com.youngjun.auth.core.api.controller.v1.request.RegisterAuthRequest
 import com.youngjun.auth.core.api.support.AcceptanceTest
 import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.document

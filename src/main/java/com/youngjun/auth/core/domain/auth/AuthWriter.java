@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.auth;
 
-import com.youngjun.auth.api.support.error.AuthException;
-import com.youngjun.auth.api.support.error.ErrorType;
+import com.youngjun.auth.core.api.support.error.AuthException;
+import com.youngjun.auth.core.api.support.error.ErrorType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

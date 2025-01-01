@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.token;
 
-import com.youngjun.auth.api.support.error.AuthException;
-import com.youngjun.auth.api.support.error.ErrorType;
+import com.youngjun.auth.core.api.support.error.AuthException;
+import com.youngjun.auth.core.api.support.error.ErrorType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

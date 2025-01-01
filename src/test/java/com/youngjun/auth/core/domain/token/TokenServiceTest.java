@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.domain.token;
 
-import com.youngjun.auth.api.support.error.ErrorType;
+import com.youngjun.auth.core.api.support.error.ErrorType;
 import com.youngjun.auth.core.domain.auth.AuthStatus;
 import com.youngjun.auth.core.domain.support.DomainTest;
 import com.youngjun.auth.core.domain.support.time.TimeHolder;

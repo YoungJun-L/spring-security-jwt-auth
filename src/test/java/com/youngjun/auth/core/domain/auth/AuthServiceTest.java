@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.domain.auth;
 
-import com.youngjun.auth.api.support.error.ErrorType;
+import com.youngjun.auth.core.api.support.error.ErrorType;
 import com.youngjun.auth.core.domain.support.DomainTest;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
 import org.assertj.core.api.Assertions;
@@ -52,7 +52,7 @@ class AuthServiceTest {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(actual.getUsername()).isEqualTo(newAuth.username());
             softly.assertThat(passwordEncoder.matches(newAuth.password(), actual.getPassword())).isTrue();
-            softly.assertThat(actual.status()).isEqualTo(AuthStatus.ENABLED);
+            softly.assertThat(actual.getStatus()).isEqualTo(AuthStatus.ENABLED);
         });
     }
 
