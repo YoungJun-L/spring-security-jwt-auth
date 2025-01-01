@@ -34,7 +34,7 @@ class TokenPairGenerator(
     ): String = buildToken(emptyMap(), subject, issuedAt, refreshExp)
 
     private fun buildToken(
-        extraClaims: Map<String, Any?>,
+        extraClaims: Map<String, Any>,
         subject: String,
         issuedAt: Long,
         expiration: Long,

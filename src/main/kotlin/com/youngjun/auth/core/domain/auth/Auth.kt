@@ -16,7 +16,7 @@ data class Auth(
 
     override fun getPassword(): String = password
 
-    override fun getAuthorities(): Collection<GrantedAuthority?> = AuthorityUtils.NO_AUTHORITIES
+    override fun getAuthorities(): Collection<GrantedAuthority> = AuthorityUtils.NO_AUTHORITIES
 
     override fun isAccountNonLocked(): Boolean = status != AuthStatus.LOCKED
 

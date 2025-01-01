@@ -13,8 +13,8 @@ import org.springframework.restdocs.restassured.RestAssuredRestDocumentation
 import org.springframework.restdocs.snippet.Snippet
 
 fun RequestSpecification.document(
-    identifier: String?,
-    vararg snippets: Snippet?,
+    identifier: String,
+    vararg snippets: Snippet,
 ): RequestSpecification =
     filter(
         RestAssuredRestDocumentation.document(identifier, requestPreprocessor(), responsePreprocessor(), *snippets),
