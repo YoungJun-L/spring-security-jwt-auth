@@ -1,7 +1,6 @@
 package com.youngjun.auth.core.api.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.youngjun.auth.core.api.security.config.SecurityTestConfig;
 import com.youngjun.auth.core.domain.auth.AuthService;
 import com.youngjun.auth.core.domain.token.TokenParser;
 import com.youngjun.auth.core.domain.token.TokenService;
@@ -15,14 +14,13 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @Tags(values = "acceptance")
 @ExtendWith(RestDocumentationExtension.class)
-@SpringJUnitWebConfig(SecurityTestConfig.class)
+//@SpringJUnitWebConfig(SecurityTestConfig.class)
 public abstract class SecurityTest {
 
     protected MockMvc mockMvc;

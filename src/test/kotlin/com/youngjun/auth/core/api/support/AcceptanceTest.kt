@@ -2,8 +2,6 @@ package com.youngjun.auth.core.api.support
 
 import com.youngjun.auth.AuthApplication
 import io.kotest.core.annotation.Tags
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -17,7 +15,6 @@ import org.springframework.test.context.TestExecutionListeners
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS,
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@EnableAutoConfiguration(exclude = [SecurityAutoConfiguration::class])
 @AutoConfigureRestDocs
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,

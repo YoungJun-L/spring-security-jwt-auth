@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.token;
 
-import com.youngjun.auth.core.api.support.error.AuthErrorType;
-import com.youngjun.auth.core.api.support.error.AuthException;
+import com.youngjun.auth.api.support.error.AuthException;
+import com.youngjun.auth.api.support.error.ErrorType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class TokenReader {
         tokenParser.verify(refreshToken);
         List<Token> tokens = tokenRepository.read(refreshToken);
         if (tokens.isEmpty()) {
-            throw new AuthException(AuthErrorType.TOKEN_NOT_FOUND_ERROR);
+            throw new AuthException(ErrorType.TOKEN_NOT_FOUND_ERROR, null);
         }
         return tokens.get(0);
     }

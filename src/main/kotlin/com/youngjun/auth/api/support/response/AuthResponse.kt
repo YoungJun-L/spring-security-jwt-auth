@@ -13,11 +13,9 @@ data class AuthResponse<T> private constructor(
 
         fun <S> success(data: S): AuthResponse<S> = AuthResponse(ResultType.SUCCESS, data, null)
 
-        fun <S> error(errorType: ErrorType): AuthResponse<S> = AuthResponse(ResultType.ERROR, null, ErrorMessage(errorType))
-
-        fun <S> error(
+        fun error(
             error: ErrorType,
             errorData: Any? = null,
-        ): AuthResponse<S> = AuthResponse(ResultType.ERROR, null, ErrorMessage(error, errorData))
+        ): AuthResponse<Any> = AuthResponse(ResultType.ERROR, null, ErrorMessage(error, errorData))
     }
 }

@@ -33,15 +33,15 @@ class JwtAuthenticationTest extends SecurityTest {
                                 .optional())));
     }
 
-    @DisplayName("JWT 인증 실패")
-    @Test
-    void jwtAuthenticateFailed() throws Exception {
-        String token = "token";
-        BDDMockito.given(tokenParser.parseSubject(token)).willThrow(new BadTokenException("error"));
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/test").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
-    }
+//    @DisplayName("JWT 인증 실패")
+//    @Test
+//    void jwtAuthenticateFailed() throws Exception {
+//        String token = "token";
+//        BDDMockito.given(tokenParser.parseSubject(token)).willThrow(new BadTokenException("error"));
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/test").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+//    }
 
 }

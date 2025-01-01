@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm")
     kotlin("kapt")
@@ -11,6 +14,13 @@ plugins {
 }
 
 java.sourceCompatibility = JavaVersion.valueOf("VERSION_${property("javaVersion")}")
+tasks.withType<KotlinCompile> {
+    compilerOptions {
+        freeCompilerArgs.add("-Xjsr305=strict")
+        freeCompilerArgs.add("-Xconsistent-data-class-copy-visibility")
+        jvmTarget.set(JvmTarget.fromTarget("${project.property("javaVersion")}"))
+    }
+}
 
 tasks.getByName("bootJar") {
     enabled = true

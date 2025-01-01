@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.domain.auth;
 
-import com.youngjun.auth.core.api.support.error.AuthErrorType;
+import com.youngjun.auth.api.support.error.ErrorType;
 import com.youngjun.auth.core.domain.support.DomainTest;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
 import org.assertj.core.api.Assertions;
@@ -65,7 +65,7 @@ class AuthServiceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> authService.register(newAuth))
-                .hasFieldOrPropertyWithValue("authErrorType", AuthErrorType.AUTH_DUPLICATE_ERROR);
+                .hasFieldOrPropertyWithValue("errorType", ErrorType.AUTH_DUPLICATE_ERROR);
     }
 
     @DisplayName("회원가입 시 비밀번호는 인코딩된다.")

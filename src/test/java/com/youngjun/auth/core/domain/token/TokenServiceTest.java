@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.domain.token;
 
-import com.youngjun.auth.core.api.support.error.AuthErrorType;
+import com.youngjun.auth.api.support.error.ErrorType;
 import com.youngjun.auth.core.domain.auth.AuthStatus;
 import com.youngjun.auth.core.domain.support.DomainTest;
 import com.youngjun.auth.core.domain.support.time.TimeHolder;
@@ -179,7 +179,7 @@ class TokenServiceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> tokenService.reissue(new RefreshToken(refreshToken)))
-                .hasFieldOrPropertyWithValue("authErrorType", AuthErrorType.TOKEN_EXPIRED_ERROR);
+                .hasFieldOrPropertyWithValue("authErrorType", ErrorType.TOKEN_EXPIRED_ERROR);
     }
 
     @DisplayName("토큰 재발급 시 가입하지 않은 회원이면 실패한다.")
@@ -190,7 +190,7 @@ class TokenServiceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> tokenService.reissue(new RefreshToken(refreshToken)))
-                .hasFieldOrPropertyWithValue("authErrorType", AuthErrorType.TOKEN_NOT_FOUND_ERROR);
+                .hasFieldOrPropertyWithValue("authErrorType", ErrorType.TOKEN_NOT_FOUND_ERROR);
     }
 
     @DisplayName("토큰 재발급 시 서비스 가입이 제한된 회원이면 실패한다.")
@@ -206,7 +206,7 @@ class TokenServiceTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> tokenService.reissue(new RefreshToken(refreshToken)))
-                .hasFieldOrPropertyWithValue("authErrorType", AuthErrorType.AUTH_LOCKED_ERROR);
+                .hasFieldOrPropertyWithValue("authErrorType", ErrorType.AUTH_LOCKED_ERROR);
     }
 
     @DisplayName("토큰 재발급 시 이전 토큰은 제거된다.")
