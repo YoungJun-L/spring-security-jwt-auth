@@ -84,12 +84,6 @@ tasks.register<Test>("domainTest") {
     useJUnitPlatform()
 }
 
-tasks.register<Test>("unitTest") {
-    group = "verification"
-    systemProperty("kotest.tags.include", "unit")
-    useJUnitPlatform()
-}
-
 tasks.getByName("asciidoctor") {
     dependsOn("acceptanceTest")
 }
