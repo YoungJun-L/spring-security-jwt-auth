@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.auth;
 
+import com.youngjun.auth.core.api.support.ApplicationTest;
 import com.youngjun.auth.core.api.support.error.ErrorType;
-import com.youngjun.auth.core.domain.support.DomainTest;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@DomainTest
+@ApplicationTest
 class AuthServiceTest {
 
     private static final String VALID_USERNAME = "username123";
