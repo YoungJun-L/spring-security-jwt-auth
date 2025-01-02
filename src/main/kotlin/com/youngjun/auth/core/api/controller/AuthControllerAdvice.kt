@@ -22,7 +22,7 @@ import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @RestControllerAdvice
-class AuthControllerAdviceKt {
+class AuthControllerAdvice {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(AuthException::class)
