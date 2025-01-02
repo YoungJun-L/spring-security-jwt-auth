@@ -1,11 +1,12 @@
 package com.youngjun.auth.core.domain.token
 
 import com.youngjun.auth.core.domain.auth.Auth
-import com.youngjun.auth.core.domain.support.time.TimeHolder
+import com.youngjun.auth.core.domain.support.TimeHolder
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.time.Instant.now
 import java.util.Date
 
 @Component
@@ -13,7 +14,7 @@ class TokenPairGenerator(
     @Value("\${spring.security.jwt.secret-key}") private val secretKey: String,
     @Value("\${spring.security.jwt.exp.access}") private val accessExp: Long,
     @Value("\${spring.security.jwt.exp.refresh}") private val refreshExp: Long,
-    private val timeHolder: TimeHolder,
+    private val timeHolder: TimeHolder = TimeHolder { now().toEpochMilli() },
 ) {
     fun issue(auth: Auth): TokenPair {
         val now = timeHolder.now()
