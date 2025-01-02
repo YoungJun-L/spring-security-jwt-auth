@@ -69,8 +69,8 @@ class TokenServiceTest {
         TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
 
         // then
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.refreshToken()));
+        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.getAccessToken()));
+        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.getRefreshToken()));
     }
 
     @DisplayName("토큰 발급 시 refresh token 이 저장된다.")
@@ -86,7 +86,7 @@ class TokenServiceTest {
         // then
         List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
         assertThat(tokenEntities).hasSize(1);
-        assertThat(tokenEntities.get(0).getRefreshToken()).isEqualTo(tokenPair.refreshToken());
+        assertThat(tokenEntities.get(0).getRefreshToken()).isEqualTo(tokenPair.getRefreshToken());
     }
 
     @DisplayName("토큰 발급 시 access token 은 30분간 유효하다.")
@@ -100,7 +100,7 @@ class TokenServiceTest {
         TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
 
         // then
-        Long actual = jwtParser.parseSignedClaims(tokenPair.accessToken()).getPayload().getExpiration().getTime();
+        Long actual = jwtParser.parseSignedClaims(tokenPair.getAccessToken()).getPayload().getExpiration().getTime();
         Long expected = timeHolder.now() + Duration.ofMinutes(30L).toMillis();
         assertThat(actual).isCloseTo(expected, Offset.offset(1_000L));
     }
@@ -116,7 +116,7 @@ class TokenServiceTest {
         TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
 
         // then
-        Long actual = jwtParser.parseSignedClaims(tokenPair.refreshToken()).getPayload().getExpiration().getTime();
+        Long actual = jwtParser.parseSignedClaims(tokenPair.getRefreshToken()).getPayload().getExpiration().getTime();
         Long expected = timeHolder.now() + Duration.ofDays(30L).toMillis();
         assertThat(actual).isCloseTo(expected, Offset.offset(1_000L));
     }
@@ -155,8 +155,8 @@ class TokenServiceTest {
         TokenPair tokenPair = tokenService.reissue(new RefreshToken(refreshToken));
 
         // then
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.refreshToken()));
+        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.getAccessToken()));
+        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.getRefreshToken()));
     }
 
     private String buildToken(Long id, Long expiration) {

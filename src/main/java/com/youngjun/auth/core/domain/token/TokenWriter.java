@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.domain.token;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,8 +12,10 @@ public class TokenWriter {
         this.tokenRepository = tokenRepository;
     }
 
-    public Token write(TokenPair tokenPair) {
-        return tokenRepository.write(tokenPair);
+    @Transactional
+    public void replaceTo(TokenPair tokenPair) {
+        tokenRepository.delete(tokenPair.getAuthId());
+        tokenRepository.write(tokenPair);
     }
 
 }

@@ -6,12 +6,9 @@ import java.util.List;
 
 public interface TokenJpaRepository extends JpaRepository<TokenEntity, Long> {
 
-	boolean existsByAuthId(Long authId);
+    List<TokenEntity> findByAuthId(Long authId);
 
-	List<TokenEntity> findByAuthId(Long authId);
+    List<TokenEntity> findByRefreshToken(String refreshToken);
 
-	void deleteByAuthId(Long authId);
-
-	List<TokenEntity> findByRefreshToken(String refreshToken);
-
+    void deleteByAuthId(Long authId);
 }

@@ -5,7 +5,6 @@ import com.youngjun.auth.core.domain.token.Token;
 import com.youngjun.auth.core.domain.token.TokenPair;
 import com.youngjun.auth.core.domain.token.TokenRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,14 +17,14 @@ public class TokenCoreRepository implements TokenRepository {
         this.tokenJpaRepository = tokenJpaRepository;
     }
 
-    @Transactional
+    @Override
+    public void delete(Long authId) {
+        tokenJpaRepository.deleteByAuthId(authId);
+    }
+
+    @Override
     public Token write(TokenPair tokenPair) {
-        Long authId = tokenPair.authId();
-        // TODO()
-        if (tokenJpaRepository.existsByAuthId(authId)) {
-            tokenJpaRepository.deleteByAuthId(authId);
-        }
-        TokenEntity tokenEntity = new TokenEntity(authId, tokenPair.refreshToken());
+        TokenEntity tokenEntity = new TokenEntity(tokenPair.getAuthId(), tokenPair.getRefreshToken());
         tokenJpaRepository.save(tokenEntity);
         return tokenEntity.toToken();
     }

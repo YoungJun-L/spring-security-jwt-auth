@@ -24,7 +24,7 @@ public class TokenService {
 
     public TokenPair issue(Auth auth) {
         TokenPair tokenPair = tokenPairGenerator.issue(auth);
-        tokenWriter.write(tokenPair);
+        tokenWriter.replaceTo(tokenPair);
         return tokenPair;
     }
 
@@ -32,7 +32,7 @@ public class TokenService {
         Token token = tokenReader.readVerified(refreshToken);
         Auth auth = authReader.readEnabled(token.authId());
         TokenPair tokenPair = tokenPairGenerator.issue(auth);
-        tokenWriter.write(tokenPair);
+        tokenWriter.replaceTo(tokenPair);
         return tokenPair;
     }
 
