@@ -1,9 +1,14 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.domain.auth.AuthBuilder
 import com.youngjun.auth.core.domain.auth.AuthReader
 import com.youngjun.auth.core.domain.support.DomainTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 
 @DomainTest
@@ -18,14 +23,17 @@ class TokenServiceKtTest :
             val authReader = mockk<AuthReader>()
             val tokenService = TokenService(tokenPairGenerator, tokenWriter, tokenReader, authReader)
 
-//            context("토큰 발급") {
-//                test("성공") {
-//                    val auth = Auth(1L, "username", "password", AuthStatus.ENABLED)
-//                    every { }
-//
-//                    val actual = tokenService.issue(auth)
-//                }
-//            }
+            context("토큰 발급") {
+                test("성공") {
+                    val auth = AuthBuilder().build()
+                    val tokenPair = TokenPairBuilder().build()
+                    every { tokenPairGenerator.issue(auth) } returns tokenPair
+                    every { tokenWriter.replaceTo(tokenPair) } just Runs
+
+                    val actual = tokenService.issue(auth)
+                    actual shouldBe tokenPair
+                }
+            }
 
 //            @DisplayName("토큰 발급 성공")
 //            @Test
