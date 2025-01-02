@@ -1,8 +1,13 @@
-package com.youngjun.auth.core.domain.token
+package com.youngjun.auth.core.api.application
 
+import com.youngjun.auth.core.api.support.ApplicationTest
 import com.youngjun.auth.core.domain.auth.AuthBuilder
 import com.youngjun.auth.core.domain.auth.AuthReader
-import com.youngjun.auth.core.domain.support.DomainTest
+import com.youngjun.auth.core.domain.token.TokenPairBuilder
+import com.youngjun.auth.core.domain.token.TokenPairGenerator
+import com.youngjun.auth.core.domain.token.TokenReader
+import com.youngjun.auth.core.domain.token.TokenService
+import com.youngjun.auth.core.domain.token.TokenWriter
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -11,7 +16,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 
-@DomainTest
+@ApplicationTest
 class TokenServiceKtTest :
     FunSpec(
         {
@@ -35,41 +40,11 @@ class TokenServiceKtTest :
                 }
             }
 
-//            @DisplayName("토큰 발급 성공")
-//            @Test
-//            fun issue() {
-//                // given
-//                val authEntity = AuthEntity("username", "password", AuthStatus.ENABLED)
-//                val savedAuth = authJpaRepository.save(authEntity)
-//
-//                // when
-//                val tokenPair = tokenService.issue(savedAuth.toAuth())
-//
-//                // then
-//                Assertions.assertDoesNotThrow(ThrowingSupplier<Jwt<Any, Any>> { jwtParser.parse(tokenPair.accessToken) })
-//                Assertions.assertDoesNotThrow(ThrowingSupplier<Jwt<Any, Any>> { jwtParser.parse(tokenPair.refreshToken) })
-//            }
-//
-//            @DisplayName("토큰 발급 시 refresh token 이 저장된다.")
-//            @Test
-//            fun issueShouldSaveRefreshToken() {
-//                // given
-//                val authEntity = AuthEntity("username", "password", AuthStatus.ENABLED)
-//                val savedAuth = authJpaRepository.save(authEntity)
-//
-//                // when
-//                val tokenPair = tokenService.issue(savedAuth.toAuth())
-//
-//                // then
-//                val tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.id)
-//                org.assertj.core.api.Assertions
-//                    .assertThat(tokenEntities)
-//                    .hasSize(1)
-//                org.assertj.core.api.Assertions
-//                    .assertThat(tokenEntities[0].refreshToken)
-//                    .isEqualTo(tokenPair.refreshToken)
-//            }
-//
+            context("토큰 재발급") {
+                test("성공") {
+                }
+            }
+
 //            @DisplayName("토큰 발급 시 access token 은 30분간 유효하다.")
 //            @Test
 //            fun issueAccessTokenValidFor30Minutes() {

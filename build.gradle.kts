@@ -68,7 +68,6 @@ dependencies {
 
 tasks.test {
     systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
-    systemProperty("kotest.tags.exclude", "acceptance")
     useJUnitPlatform()
 }
 
@@ -78,9 +77,21 @@ tasks.register<Test>("acceptanceTest") {
     useJUnitPlatform()
 }
 
+tasks.register<Test>("applicationTest") {
+    group = "verification"
+    systemProperty("kotest.tags.include", "application")
+    useJUnitPlatform()
+}
+
 tasks.register<Test>("domainTest") {
     group = "verification"
     systemProperty("kotest.tags.include", "domain")
+    useJUnitPlatform()
+}
+
+tasks.register<Test>("unitTest") {
+    group = "verification"
+    systemProperty("kotest.tags.exclude", "domain,application,acceptance")
     useJUnitPlatform()
 }
 

@@ -9,7 +9,7 @@ import org.springframework.test.context.TestConstructor
 import org.springframework.test.context.TestExecutionListeners
 
 @Tags("acceptance")
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 @TestExecutionListeners(
     value = [AcceptanceTestExecutionListener::class],
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS,
@@ -19,7 +19,7 @@ import org.springframework.test.context.TestExecutionListeners
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = [AuthApplication::class],
-    properties = ["spring.profiles.active=test"],
+    properties = ["spring.profiles.active=local"],
 )
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

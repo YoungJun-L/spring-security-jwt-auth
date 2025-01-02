@@ -1,6 +1,5 @@
 package com.youngjun.auth.core.api.security
 
-import com.youngjun.auth.core.domain.support.DomainTest
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -10,7 +9,6 @@ import io.mockk.mockk
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 
-@DomainTest
 class BearerTokenResolverTest :
     FunSpec(
         {

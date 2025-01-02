@@ -1,8 +1,8 @@
 package com.youngjun.auth.core.domain.token;
 
+import com.youngjun.auth.core.api.support.ApplicationTest;
 import com.youngjun.auth.core.api.support.error.ErrorType;
 import com.youngjun.auth.core.domain.auth.AuthStatus;
-import com.youngjun.auth.core.domain.support.DomainTest;
 import com.youngjun.auth.core.domain.support.time.TimeHolder;
 import com.youngjun.auth.storage.db.core.auth.AuthEntity;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
@@ -26,7 +26,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@DomainTest
+@ApplicationTest
 class TokenServiceTest {
 
     private final TokenService tokenService;
