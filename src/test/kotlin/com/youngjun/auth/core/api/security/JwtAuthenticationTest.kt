@@ -1,6 +1,7 @@
 package com.youngjun.auth.core.api.security
 
 import com.youngjun.auth.core.api.support.AcceptanceTest
+import com.youngjun.auth.core.api.support.VALID_USERNAME
 import com.youngjun.auth.core.api.support.context
 import com.youngjun.auth.core.api.support.document
 import com.youngjun.auth.core.api.support.response.AuthResponse
@@ -30,8 +31,7 @@ class JwtAuthenticationTest(
             context("JWT 인증", listOf("/acceptance/auth.json")) {
                 test("성공") {
                     val accessToken = "a.b.c"
-                    val username = "username123"
-                    every { tokenParser.parseSubject(accessToken) } returns username
+                    every { tokenParser.parseSubject(accessToken) } returns VALID_USERNAME
 
                     given()
                         .log()

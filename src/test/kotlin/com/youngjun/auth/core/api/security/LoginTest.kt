@@ -2,6 +2,8 @@ package com.youngjun.auth.core.api.security
 
 import com.youngjun.auth.core.api.controller.v1.request.LoginRequest
 import com.youngjun.auth.core.api.support.AcceptanceTest
+import com.youngjun.auth.core.api.support.VALID_PASSWORD
+import com.youngjun.auth.core.api.support.VALID_USERNAME
 import com.youngjun.auth.core.api.support.context
 import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.document
@@ -30,14 +32,11 @@ class LoginTest :
 
             context("로그인", listOf("/acceptance/auth.json")) {
                 test("성공") {
-                    val username = "username123"
-                    val password = "password123!"
-
                     given()
                         .log()
                         .all()
                         .contentType(ContentType.JSON)
-                        .body(LoginRequest(username, password))
+                        .body(LoginRequest(VALID_USERNAME, VALID_PASSWORD))
                         .document(
                             "login",
                             requestFields(
@@ -62,7 +61,7 @@ class LoginTest :
                 }
 
                 test("미가입 유저인 경우") {
-                    val username = "username789"
+                    val username = "username000"
 
                     val results = login(username)
                     results.statusCode() shouldBe HttpStatus.UNAUTHORIZED.value()
@@ -79,8 +78,8 @@ class LoginTest :
     )
 
 private fun login(
-    username: String = "username123",
-    password: String = "password123!",
+    username: String = VALID_USERNAME,
+    password: String = VALID_PASSWORD,
 ) = given()
     .log()
     .all()
