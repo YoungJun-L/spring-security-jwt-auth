@@ -3,6 +3,7 @@ package com.youngjun.auth.core.domain.auth;
 import com.youngjun.auth.core.api.support.ApplicationTest;
 import com.youngjun.auth.core.api.support.error.ErrorType;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
+import com.youngjun.auth.storage.db.core.auth.AuthRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
@@ -48,10 +49,10 @@ class AuthServiceTest {
         authService.register(newAuth);
 
         // then
-        Auth actual = authRepository.read(VALID_USERNAME).orElseThrow();
+        Auth actual = authRepository.read(VALID_USERNAME);
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(actual.getUsername()).isEqualTo(newAuth.username());
-            softly.assertThat(passwordEncoder.matches(newAuth.password(), actual.getPassword())).isTrue();
+            softly.assertThat(actual.getUsername()).isEqualTo(newAuth.getUsername());
+            softly.assertThat(passwordEncoder.matches(newAuth.getPassword(), actual.getPassword())).isTrue();
             softly.assertThat(actual.getStatus()).isEqualTo(AuthStatus.ENABLED);
         });
     }
@@ -78,7 +79,7 @@ class AuthServiceTest {
         authService.register(newAuth);
 
         // then
-        Auth actual = authRepository.read(VALID_USERNAME).orElseThrow();
+        Auth actual = authRepository.read(VALID_USERNAME);
         Assertions.assertThat(passwordEncoder.matches(VALID_PASSWORD, actual.getPassword())).isTrue();
     }
 

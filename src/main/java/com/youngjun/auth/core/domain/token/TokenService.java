@@ -30,7 +30,7 @@ public class TokenService {
 
     public TokenPair reissue(RefreshToken refreshToken) {
         Token token = tokenReader.readVerified(refreshToken);
-        Auth auth = authReader.readEnabled(token.authId());
+        Auth auth = authReader.readEnabled(token.getAuthId());
         TokenPair tokenPair = tokenPairGenerator.issue(auth);
         tokenWriter.replaceTo(tokenPair);
         return tokenPair;

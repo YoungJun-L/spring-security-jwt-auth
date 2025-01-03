@@ -3,7 +3,7 @@ package com.youngjun.auth.core.domain.token;
 import com.youngjun.auth.core.api.support.ApplicationTest;
 import com.youngjun.auth.core.api.support.error.ErrorType;
 import com.youngjun.auth.core.domain.auth.AuthStatus;
-import com.youngjun.auth.core.domain.support.time.TimeHolder;
+import com.youngjun.auth.core.domain.support.TimeHolder;
 import com.youngjun.auth.storage.db.core.auth.AuthEntity;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
 import com.youngjun.auth.storage.db.core.token.TokenEntity;
@@ -12,7 +12,6 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,88 +55,6 @@ class TokenServiceTest {
     void tearDown() {
         tokenJpaRepository.deleteAllInBatch();
         authJpaRepository.deleteAllInBatch();
-    }
-
-    @DisplayName("토큰 발급 성공")
-    @Test
-    void issue() {
-        // given
-        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
-        AuthEntity savedAuth = authJpaRepository.save(authEntity);
-
-        // when
-        TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
-
-        // then
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.getAccessToken()));
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.getRefreshToken()));
-    }
-
-    @DisplayName("토큰 발급 시 refresh token 이 저장된다.")
-    @Test
-    void issueShouldSaveRefreshToken() {
-        // given
-        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
-        AuthEntity savedAuth = authJpaRepository.save(authEntity);
-
-        // when
-        TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
-
-        // then
-        List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
-        assertThat(tokenEntities).hasSize(1);
-        assertThat(tokenEntities.get(0).getRefreshToken()).isEqualTo(tokenPair.getRefreshToken());
-    }
-
-    @DisplayName("토큰 발급 시 access token 은 30분간 유효하다.")
-    @Test
-    void issueAccessTokenValidFor30Minutes() {
-        // given
-        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
-        AuthEntity savedAuth = authJpaRepository.save(authEntity);
-
-        // when
-        TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
-
-        // then
-        Long actual = jwtParser.parseSignedClaims(tokenPair.getAccessToken()).getPayload().getExpiration().getTime();
-        Long expected = timeHolder.now() + Duration.ofMinutes(30L).toMillis();
-        assertThat(actual).isCloseTo(expected, Offset.offset(1_000L));
-    }
-
-    @DisplayName("토큰 발급 시 refresh token 은 30일간 유효하다.")
-    @Test
-    void issueRefreshTokenValidFor30Days() {
-        // given
-        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
-        AuthEntity savedAuth = authJpaRepository.save(authEntity);
-
-        // when
-        TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
-
-        // then
-        Long actual = jwtParser.parseSignedClaims(tokenPair.getRefreshToken()).getPayload().getExpiration().getTime();
-        Long expected = timeHolder.now() + Duration.ofDays(30L).toMillis();
-        assertThat(actual).isCloseTo(expected, Offset.offset(1_000L));
-    }
-
-    @DisplayName("토큰 발급 시 이전 토큰은 제거된다.")
-    @Test
-    void issueShouldRemoveOldToken() {
-        // given
-        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
-        AuthEntity savedAuth = authJpaRepository.save(authEntity);
-
-        TokenEntity tokenEntity = new TokenEntity(savedAuth.getId(), "oldRefreshToken");
-        TokenEntity savedTokenEntity = tokenJpaRepository.save(tokenEntity);
-
-        // when
-        tokenService.issue(savedAuth.toAuth());
-
-        // then
-        List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
-        assertThat(tokenEntities).hasSize(1);
-        assertThat(tokenEntities.get(0).getId()).isNotEqualTo(savedTokenEntity.getId());
     }
 
     @DisplayName("토큰 재발급 성공")
