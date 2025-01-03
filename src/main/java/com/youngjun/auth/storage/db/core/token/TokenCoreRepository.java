@@ -31,7 +31,7 @@ public class TokenCoreRepository implements TokenRepository {
 
     @Override
     public List<Token> read(RefreshToken refreshToken) {
-        return tokenJpaRepository.findByRefreshToken(refreshToken.value()).stream().map(TokenEntity::toToken).toList();
+        return tokenJpaRepository.findByRefreshToken(refreshToken.getValue()).stream().map(TokenEntity::toToken).toList();
     }
 
 }

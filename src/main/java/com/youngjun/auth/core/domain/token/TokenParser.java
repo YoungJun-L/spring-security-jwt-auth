@@ -30,7 +30,7 @@ public class TokenParser {
 
     public void verify(RefreshToken token) {
         try {
-            jwtParser.parseSignedClaims(token.value());
+            jwtParser.parseSignedClaims(token.getValue());
         } catch (ExpiredJwtException ex) {
             throw new AuthException(ErrorType.TOKEN_EXPIRED_ERROR, null);
         } catch (Exception ex) {
