@@ -73,24 +73,28 @@ tasks.test {
 
 tasks.register<Test>("acceptanceTest") {
     group = "verification"
+    description = "Runs acceptance tests."
     systemProperty("kotest.tags.include", "acceptance")
     useJUnitPlatform()
 }
 
 tasks.register<Test>("applicationTest") {
     group = "verification"
+    description = "Runs application-level integration tests."
     systemProperty("kotest.tags.include", "application")
     useJUnitPlatform()
 }
 
 tasks.register<Test>("domainTest") {
     group = "verification"
+    description = "Runs domain-layer tests."
     systemProperty("kotest.tags.include", "domain")
     useJUnitPlatform()
 }
 
 tasks.register<Test>("unitTest") {
     group = "verification"
+    description = "Runs unit tests."
     systemProperty("kotest.tags.exclude", "domain,application,acceptance")
     useJUnitPlatform()
 }
