@@ -57,7 +57,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.restdocs:spring-restdocs-restassured")
-    testImplementation("io.rest-assured:rest-assured")
+    testImplementation("io.rest-assured:spring-mock-mvc")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
@@ -68,37 +68,52 @@ dependencies {
 
 tasks.test {
     systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
-    useJUnitPlatform()
 }
 
-tasks.register<Test>("acceptanceTest") {
+tasks.register<Test>("securityTest") {
     group = "verification"
-    description = "Runs acceptance tests."
-    systemProperty("kotest.tags.include", "acceptance")
-    useJUnitPlatform()
+    description = "Runs tests for security components."
+    useJUnitPlatform {
+        includeTags("security")
+    }
+}
+
+tasks.register<Test>("restDocsTest") {
+    group = "verification"
+    description = "Runs presentation-layer tests."
+    useJUnitPlatform {
+        includeTags("restDocs")
+    }
 }
 
 tasks.register<Test>("applicationTest") {
     group = "verification"
     description = "Runs application-level integration tests."
-    systemProperty("kotest.tags.include", "application")
-    useJUnitPlatform()
+    useJUnitPlatform {
+        systemProperty("kotest.tags.include", "application")
+        excludeTags("security", "restDocs")
+    }
 }
 
 tasks.register<Test>("domainTest") {
     group = "verification"
     description = "Runs domain-layer tests."
-    systemProperty("kotest.tags.include", "domain")
-    useJUnitPlatform()
+    useJUnitPlatform {
+        systemProperty("kotest.tags.include", "domain")
+        excludeTags("security", "restDocs")
+    }
 }
 
 tasks.register<Test>("unitTest") {
     group = "verification"
     description = "Runs unit tests."
-    systemProperty("kotest.tags.exclude", "domain,application,acceptance")
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags("security", "restDocs")
+        systemProperty("kotest.tags.exclude", "application,domain")
+    }
 }
 
 tasks.getByName("asciidoctor") {
-    dependsOn("acceptanceTest")
+    dependsOn("securityTest")
+    dependsOn("restDocsTest")
 }

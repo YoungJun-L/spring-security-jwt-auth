@@ -7,7 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
-class AuthWriter(private val authRepository: AuthRepository, private val passwordEncoder: PasswordEncoder) {
+class AuthWriter(
+    private val authRepository: AuthRepository,
+    private val passwordEncoder: PasswordEncoder,
+) {
     fun write(newAuth: NewAuth): Auth {
         if (authRepository.existsByUsername(newAuth.username)) {
             throw AuthException(ErrorType.AUTH_DUPLICATE_ERROR, null)
