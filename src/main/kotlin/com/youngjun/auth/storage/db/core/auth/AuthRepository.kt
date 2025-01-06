@@ -10,7 +10,7 @@ class AuthRepository(
     private val authJpaRepository: AuthJpaRepository,
 ) {
     fun write(newAuth: NewAuth): Auth {
-        val savedAuth = authJpaRepository.save(AuthEntity(newAuth.username, newAuth.password, newAuth.status))
+        val savedAuth = authJpaRepository.save(AuthEntity(newAuth.username, newAuth.password))
         return savedAuth.toAuth()
     }
 

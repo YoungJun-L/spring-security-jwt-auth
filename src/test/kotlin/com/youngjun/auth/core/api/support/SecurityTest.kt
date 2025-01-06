@@ -1,8 +1,8 @@
 package com.youngjun.auth.core.api.support
 
 import com.ninjasquad.springmockk.MockkBean
+import com.youngjun.auth.core.api.application.AuthService
 import com.youngjun.auth.core.api.application.TokenService
-import com.youngjun.auth.core.domain.auth.AuthService
 import com.youngjun.auth.core.domain.token.TokenParser
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach

@@ -9,9 +9,9 @@ data class AuthResponse<T> private constructor(
     val error: ErrorMessage? = null,
 ) {
     companion object {
-        fun success(): AuthResponse<Any> = AuthResponse(ResultType.SUCCESS, null, null)
+        fun success(): AuthResponse<Any> = AuthResponse(ResultType.SUCCESS)
 
-        fun <S> success(data: S): AuthResponse<S> = AuthResponse(ResultType.SUCCESS, data, null)
+        fun <S> success(data: S): AuthResponse<S> = AuthResponse(ResultType.SUCCESS, data)
 
         fun error(
             error: ErrorType,

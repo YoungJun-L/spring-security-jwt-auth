@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.api.security
 
-import com.youngjun.auth.core.domain.auth.AuthService
+import com.youngjun.auth.core.api.application.AuthService
 import com.youngjun.auth.core.domain.token.TokenParser
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.Authentication

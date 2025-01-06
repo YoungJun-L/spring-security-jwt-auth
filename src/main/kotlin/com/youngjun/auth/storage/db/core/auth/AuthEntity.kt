@@ -14,7 +14,7 @@ class AuthEntity(
     val username: String,
     val password: String,
     @Enumerated(EnumType.STRING)
-    val status: AuthStatus,
+    val status: AuthStatus = AuthStatus.ENABLED,
 ) : BaseEntity() {
     fun toAuth(): Auth = Auth(id, username, password, status)
 }

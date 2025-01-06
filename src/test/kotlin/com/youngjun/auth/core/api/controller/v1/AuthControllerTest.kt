@@ -1,12 +1,12 @@
 package com.youngjun.auth.core.api.controller.v1
 
+import com.youngjun.auth.core.api.application.AuthService
 import com.youngjun.auth.core.api.controller.v1.request.RegisterAuthRequest
 import com.youngjun.auth.core.api.support.RestDocsTest
 import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.type
 import com.youngjun.auth.core.domain.auth.AuthBuilder
-import com.youngjun.auth.core.domain.auth.AuthService
 import com.youngjun.auth.core.domain.auth.NewAuthBuilder
 import io.mockk.every
 import io.mockk.mockk
