@@ -20,10 +20,7 @@ class RegisterAuthRequestTest :
                         val validPassword = "password123!"
 
                         shouldThrow<IllegalArgumentException> {
-                            RegisterAuthRequest(
-                                invalidUsername,
-                                validPassword,
-                            ).toNewAuth()
+                            RegisterAuthRequest(invalidUsername, validPassword).toNewAuth()
                         }
                     }
                 }
@@ -44,10 +41,7 @@ class RegisterAuthRequestTest :
                         val validUsername = "username123"
 
                         shouldThrow<IllegalArgumentException> {
-                            RegisterAuthRequest(
-                                validUsername,
-                                invalidPassword,
-                            ).toNewAuth()
+                            RegisterAuthRequest(validUsername, invalidPassword).toNewAuth()
                         }
                     }
                 }

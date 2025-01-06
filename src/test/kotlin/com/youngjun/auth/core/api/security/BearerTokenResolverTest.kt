@@ -8,6 +8,7 @@ import io.mockk.every
 import io.mockk.mockk
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders.AUTHORIZATION
+import org.springframework.security.authentication.BadCredentialsException
 
 class BearerTokenResolverTest :
     FunSpec(
@@ -41,7 +42,7 @@ class BearerTokenResolverTest :
                         val value = "Bearer $it"
                         every { request.getHeader(AUTHORIZATION) } returns value
 
-                        shouldThrow<Exception> { bearerTokenResolver.resolve(request) }
+                        shouldThrow<BadCredentialsException> { bearerTokenResolver.resolve(request) }
                     }
                 }
             }
