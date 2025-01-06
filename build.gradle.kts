@@ -54,6 +54,7 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:${property("springMockkVersion")}")
     testImplementation("io.kotest:kotest-runner-junit5:${property("kotestVersion")}")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:${property("kotestExtensionsSpringVersion")}")
+    testImplementation("io.kotest:kotest-extensions-now:${property("kotestVersion")}")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.restdocs:spring-restdocs-restassured")

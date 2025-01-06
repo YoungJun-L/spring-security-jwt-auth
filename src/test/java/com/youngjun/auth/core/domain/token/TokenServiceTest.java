@@ -3,7 +3,6 @@ package com.youngjun.auth.core.domain.token;
 import com.youngjun.auth.core.api.support.ApplicationTest;
 import com.youngjun.auth.core.api.support.error.ErrorType;
 import com.youngjun.auth.core.domain.auth.AuthStatus;
-import com.youngjun.auth.core.domain.support.TimeHolder;
 import com.youngjun.auth.storage.db.core.auth.AuthEntity;
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository;
 import com.youngjun.auth.storage.db.core.token.TokenEntity;
@@ -18,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,19 +35,16 @@ class TokenServiceTest {
 
     private final AuthJpaRepository authJpaRepository;
 
-    private final TimeHolder timeHolder;
-
     private final String secretKey;
 
     private final JwtParser jwtParser;
 
     TokenServiceTest(TokenService tokenService, TokenJpaRepository tokenJpaRepository,
-                     AuthJpaRepository authJpaRepository, TimeHolder timeHolder,
+                     AuthJpaRepository authJpaRepository,
                      @Value("${spring.security.jwt.secret-key}") String secretKey) {
         this.tokenService = tokenService;
         this.tokenJpaRepository = tokenJpaRepository;
         this.authJpaRepository = authJpaRepository;
-        this.timeHolder = timeHolder;
         this.secretKey = secretKey;
         this.jwtParser = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes())).build();
     }
@@ -77,11 +75,12 @@ class TokenServiceTest {
     }
 
     private String buildToken(Long id, Long expiration) {
+        long now = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
         return Jwts.builder()
                 .claims(Collections.emptyMap())
                 .subject(String.valueOf(id))
-                .issuedAt(new Date(timeHolder.now()))
-                .expiration(new Date(timeHolder.now() + expiration))
+                .issuedAt(new Date(now))
+                .expiration(new Date(now + expiration))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }

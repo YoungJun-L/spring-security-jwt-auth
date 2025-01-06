@@ -2,7 +2,6 @@ package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.api.support.ApplicationTest
 import com.youngjun.auth.core.domain.auth.AuthBuilder
-import com.youngjun.auth.core.domain.support.TimeHolder
 import com.youngjun.auth.core.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.core.domain.token.TokenParser
 import com.youngjun.auth.core.domain.token.TokenService
@@ -13,12 +12,15 @@ import com.youngjun.auth.storage.db.core.token.TokenJpaRepository
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
@@ -28,13 +30,10 @@ class TokenServiceKtTest(
     private val tokenJpaRepository: TokenJpaRepository,
     private val authJpaRepository: AuthJpaRepository,
     private val tokenParser: TokenParser,
-    private val timeHolder: TimeHolder,
 ) : FunSpec(
         {
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
-
-            val now = timeHolder.now()
 
             context("토큰 발급") {
                 test("성공") {
@@ -46,19 +45,25 @@ class TokenServiceKtTest(
                 }
 
                 test("access token 은 30분간 유효하다.") {
-                    val auth = AuthBuilder().build()
+                    val now = LocalDateTime.now()
+                    withConstantNow(now) {
+                        val auth = AuthBuilder().build()
 
-                    val actual = tokenService.issue(auth)
+                        val actual = tokenService.issue(auth)
 
-                    actual.accessTokenExpiresIn shouldBe now + 30.minutes.inWholeMilliseconds
+                        actual.accessTokenExpiresIn shouldBe now.toEpochSecond(ZoneOffset.UTC) + 30.minutes.inWholeMilliseconds
+                    }
                 }
 
                 test("refresh token 은 30일간 유효하다.") {
-                    val auth = AuthBuilder().build()
+                    val now = LocalDateTime.now()
+                    withConstantNow(now) {
+                        val auth = AuthBuilder().build()
 
-                    val actual = tokenService.issue(auth)
+                        val actual = tokenService.issue(auth)
 
-                    actual.refreshTokenExpiresIn shouldBe now + 30.days.inWholeMilliseconds
+                        actual.refreshTokenExpiresIn shouldBe now.toEpochSecond(ZoneOffset.UTC) + 30.days.inWholeMilliseconds
+                    }
                 }
 
                 test("이전 refresh token은 제거된다") {
