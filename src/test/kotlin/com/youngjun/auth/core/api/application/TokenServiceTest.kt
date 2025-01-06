@@ -4,7 +4,6 @@ import com.youngjun.auth.core.api.support.ApplicationTest
 import com.youngjun.auth.core.domain.auth.AuthBuilder
 import com.youngjun.auth.core.domain.auth.AuthStatus
 import com.youngjun.auth.core.domain.token.RefreshTokenBuilder
-import com.youngjun.auth.core.domain.token.TokenService
 import com.youngjun.auth.core.storage.db.core.auth.AuthEntityBuilder
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository
 import com.youngjun.auth.storage.db.core.token.TokenEntity

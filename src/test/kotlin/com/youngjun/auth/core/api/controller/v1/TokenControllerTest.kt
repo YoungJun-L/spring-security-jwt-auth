@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.api.controller.v1
 
+import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.request.ReissueTokenRequest
 import com.youngjun.auth.core.api.support.RestDocsTest
 import com.youngjun.auth.core.api.support.description
@@ -7,7 +8,6 @@ import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.type
 import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.TokenPairBuilder
-import com.youngjun.auth.core.domain.token.TokenService
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType

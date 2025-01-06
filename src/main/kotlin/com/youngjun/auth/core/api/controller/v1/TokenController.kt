@@ -1,9 +1,9 @@
 package com.youngjun.auth.core.api.controller.v1
 
+import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.request.ReissueTokenRequest
 import com.youngjun.auth.core.api.controller.v1.response.ReissueTokenResponse
 import com.youngjun.auth.core.api.support.response.AuthResponse
-import com.youngjun.auth.core.domain.token.TokenService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController

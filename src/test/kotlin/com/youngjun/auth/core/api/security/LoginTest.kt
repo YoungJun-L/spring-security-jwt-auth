@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.api.security
 
+import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.request.LoginRequest
 import com.youngjun.auth.core.api.support.SecurityTest
 import com.youngjun.auth.core.api.support.VALID_PASSWORD
@@ -10,7 +11,6 @@ import com.youngjun.auth.core.api.support.type
 import com.youngjun.auth.core.domain.auth.AuthBuilder
 import com.youngjun.auth.core.domain.auth.AuthService
 import com.youngjun.auth.core.domain.token.TokenPairBuilder
-import com.youngjun.auth.core.domain.token.TokenService
 import io.mockk.every
 import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given
