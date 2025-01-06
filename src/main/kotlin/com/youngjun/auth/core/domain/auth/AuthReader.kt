@@ -14,7 +14,7 @@ class AuthReader(
         authRepository.read(username) ?: throw UsernameNotFoundException(ErrorType.AUTH_NOT_FOUND_ERROR.message)
 
     fun readEnabled(id: Long): Auth {
-        val auth: Auth = authRepository.read(id) ?: throw AuthException(ErrorType.UNAUTHORIZED_ERROR)
+        val auth = authRepository.read(id) ?: throw AuthException(ErrorType.UNAUTHORIZED_ERROR)
         auth.verify()
         return auth
     }

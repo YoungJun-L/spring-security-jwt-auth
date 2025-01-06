@@ -32,8 +32,8 @@ spring:
     jwt:
       secret-key: 012345678abcdefghijklmnopqrstuvwxyz
       exp:
-        access: 1800000
-        refresh: 2592000000
+        access: 1800
+        refresh: 2592000
 
 ---
 spring.config.activate.on-profile: local
@@ -61,8 +61,8 @@ spring:
     jwt:
       secret-key: 012345678abcdefghijklmnopqrstuvwxyz
       exp:
-        access: 1800000
-        refresh: 2592000000
+        access: 1800
+        refresh: 2592000
 
 ---
 spring.config.activate.on-profile: dev
@@ -97,5 +97,5 @@ spring:
     jwt:
       secret-key: 012345678abcdefghijklmnopqrstuvwxyz
       exp:
-        access: 1800000
-        refresh: 2592000000
+        access: 1800
+        refresh: 2592000

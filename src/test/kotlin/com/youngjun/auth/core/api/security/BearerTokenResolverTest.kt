@@ -26,7 +26,7 @@ class BearerTokenResolverTest :
                     actual shouldBe "a.b.c"
                 }
 
-                test("Bearer 로 시작하지 않는 경우") {
+                test("Bearer 로 시작하지 않는 경우 실패한다.") {
                     val value = "a.b.c"
                     every { request.getHeader(AUTHORIZATION) } returns value
 
@@ -35,7 +35,7 @@ class BearerTokenResolverTest :
                 }
             }
 
-            context("유효하지 않은 토큰으로 추출") {
+            context("유효하지 않은 토큰일 경우 추출에 실패한다.") {
                 arrayOf(" . . ", "a.b", " ").forEach {
                     test("\"$it\"") {
                         val value = "Bearer $it"

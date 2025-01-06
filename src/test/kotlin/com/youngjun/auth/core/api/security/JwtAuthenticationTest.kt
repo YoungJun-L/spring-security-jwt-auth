@@ -23,7 +23,7 @@ class JwtAuthenticationTest(
         val value = "a.b.c"
         val username = "username123"
         every { tokenParser.parseSubject(value) } returns username
-        every { authService.loadUserByUsername(username) } returns AuthBuilder().build()
+        every { authService.loadUserByUsername(username) } returns AuthBuilder(username = username).build()
 
         given()
             .log()

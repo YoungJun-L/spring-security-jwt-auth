@@ -31,7 +31,7 @@ class LoginTest(
     fun `로그인 성공`() {
         val auth = AuthBuilder(username = VALID_USERNAME).build()
         every { authService.loadUserByUsername(VALID_USERNAME) } returns auth
-        every { tokenService.issue(auth) } returns TokenPairBuilder().build()
+        every { tokenService.issue(auth) } returns TokenPairBuilder(authId = auth.id).build()
 
         given()
             .log()

@@ -69,6 +69,7 @@ dependencies {
 
 tasks.test {
     systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
+    useJUnitPlatform()
 }
 
 tasks.register<Test>("securityTest") {

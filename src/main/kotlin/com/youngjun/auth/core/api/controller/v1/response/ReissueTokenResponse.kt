@@ -12,9 +12,9 @@ data class ReissueTokenResponse(
         fun from(tokenPair: TokenPair): ReissueTokenResponse =
             ReissueTokenResponse(
                 tokenPair.accessToken,
-                tokenPair.accessTokenExpiresIn,
+                tokenPair.accessTokenExpiration,
                 tokenPair.refreshToken,
-                tokenPair.refreshTokenExpiresIn,
+                tokenPair.refreshTokenExpiration,
             )
     }
 }

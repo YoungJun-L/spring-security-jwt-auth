@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
-class SecurityConfig(
+class SecurityConfiguration(
     private val authenticationSuccessHandler: AuthenticationSuccessHandler,
     private val authenticationEntryPoint: AuthenticationEntryPoint,
     private val jwtAuthenticationProvider: JwtAuthenticationProvider,

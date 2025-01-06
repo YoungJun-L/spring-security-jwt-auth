@@ -13,8 +13,8 @@ data class TokenPairBuilder(
         TokenPair(
             authId = authId,
             accessToken = accessToken,
-            accessTokenExpiresIn = accessTokenExpiresIn,
+            accessTokenExpiration = accessTokenExpiresIn,
             refreshToken = refreshToken,
-            refreshTokenExpiresIn = refreshTokenExpiresIn,
+            refreshTokenExpiration = refreshTokenExpiresIn,
         )
 }

@@ -12,9 +12,9 @@ data class TokenResponse(
         fun from(tokenPair: TokenPair): TokenResponse =
             TokenResponse(
                 tokenPair.accessToken,
-                tokenPair.accessTokenExpiresIn,
+                tokenPair.accessTokenExpiration,
                 tokenPair.refreshToken,
-                tokenPair.refreshTokenExpiresIn,
+                tokenPair.refreshTokenExpiration,
             )
     }
 }

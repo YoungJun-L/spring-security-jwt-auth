@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 import java.time.ZoneOffset
 import java.util.Date
@@ -12,39 +13,30 @@ import java.util.Date
 @Component
 class TokenPairGenerator(
     @Value("\${spring.security.jwt.secret-key}") private val secretKey: String,
-    @Value("\${spring.security.jwt.exp.access}") private val accessExp: Long,
-    @Value("\${spring.security.jwt.exp.refresh}") private val refreshExp: Long,
+    @Value("\${spring.security.jwt.exp.access}") private val accessExpiresIn: Long,
+    @Value("\${spring.security.jwt.exp.refresh}") private val refreshExpiresIn: Long,
 ) {
     fun issue(auth: Auth): TokenPair {
-        val now = now().toEpochSecond(ZoneOffset.UTC)
-        val subject = auth.username
-        val accessToken = generateAccessToken(subject, now)
-        val refreshToken = generateRefreshToken(subject, now)
-        return TokenPair(auth.id, accessToken, now + accessExp, refreshToken, now + refreshExp)
+        val now = now()
+        val (accessToken, accessTokenExpiration) = buildJwt(auth.username, now, accessExpiresIn)
+        val (refreshToken, refreshTokenExpiration) = buildJwt(auth.username, now, refreshExpiresIn)
+        return TokenPair(auth.id, accessToken, accessTokenExpiration, refreshToken, refreshTokenExpiration)
     }
 
-    private fun generateAccessToken(
+    private fun buildJwt(
         subject: String,
-        issuedAt: Long,
-    ): String = buildToken(emptyMap(), subject, issuedAt, accessExp)
-
-    private fun generateRefreshToken(
-        subject: String,
-        issuedAt: Long,
-    ): String = buildToken(emptyMap(), subject, issuedAt, refreshExp)
-
-    private fun buildToken(
-        extraClaims: Map<String, Any>,
-        subject: String,
-        issuedAt: Long,
-        expiration: Long,
-    ): String =
-        Jwts
+        issuedAt: LocalDateTime,
+        expiresInSeconds: Long,
+        extraClaims: Map<String, Any> = emptyMap(),
+    ): Pair<String, Long> {
+        val expiration = issuedAt.toEpochSecond(ZoneOffset.UTC) + expiresInSeconds
+        return Jwts
             .builder()
-            .claims(extraClaims)
             .subject(subject)
-            .issuedAt(Date(issuedAt))
-            .expiration(Date(issuedAt + expiration))
+            .issuedAt(Date(issuedAt.toInstant(ZoneOffset.UTC).toEpochMilli()))
+            .expiration(Date(expiration * 1_000))
+            .claims(extraClaims)
             .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray()))
-            .compact()
+            .compact() to expiration
+    }
 }
