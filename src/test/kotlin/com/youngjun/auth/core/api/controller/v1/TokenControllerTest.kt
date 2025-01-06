@@ -5,6 +5,7 @@ import com.youngjun.auth.core.api.controller.v1.request.ReissueTokenRequest
 import com.youngjun.auth.core.api.support.RestDocsTest
 import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.ignored
+import com.youngjun.auth.core.api.support.optional
 import com.youngjun.auth.core.api.support.type
 import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.TokenPairBuilder
@@ -57,8 +58,8 @@ class TokenControllerTest : RestDocsTest() {
                         "data" type OBJECT description "data",
                         "data.accessToken" type STRING description "accessToken",
                         "data.accessTokenExpiresIn" type NUMBER description "accessToken 만료 시간, UNIX 타임스탬프(Timestamp)",
-                        "data.refreshToken" type STRING description "refreshToken",
-                        "data.refreshTokenExpiresIn" type NUMBER description "refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)",
+                        "data.refreshToken" type STRING description "refreshToken" optional true,
+                        "data.refreshTokenExpiresIn" type NUMBER description "refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)" optional true,
                         "error" type NULL ignored true,
                     ),
                 ),
