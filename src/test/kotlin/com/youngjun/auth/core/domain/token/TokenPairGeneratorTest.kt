@@ -11,7 +11,7 @@ import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Value
 import java.time.LocalDateTime.now
-import java.time.ZoneOffset
+import java.time.ZoneId
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
@@ -42,7 +42,8 @@ class TokenPairGeneratorTest(
 
                         val actual = tokenPairGenerator.issue(auth)
 
-                        actual.accessTokenExpiration shouldBe now.toEpochSecond(ZoneOffset.UTC) + 30.minutes.inWholeSeconds
+                        actual.accessTokenExpiration shouldBe
+                            now.atZone(ZoneId.systemDefault()).toEpochSecond() + 30.minutes.inWholeSeconds
                     }
                 }
 
@@ -53,7 +54,8 @@ class TokenPairGeneratorTest(
 
                         val actual = tokenPairGenerator.issue(auth)
 
-                        actual.refreshTokenExpiration shouldBe now.toEpochSecond(ZoneOffset.UTC) + 30.days.inWholeSeconds
+                        actual.refreshTokenExpiration shouldBe
+                            now.atZone(ZoneId.systemDefault()).toEpochSecond() + 30.days.inWholeSeconds
                     }
                 }
             }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.util.Date
 
 @Component
@@ -29,11 +29,11 @@ class TokenPairGenerator(
         expiresInSeconds: Long,
         extraClaims: Map<String, Any> = emptyMap(),
     ): Pair<String, Long> {
-        val expiration = issuedAt.toEpochSecond(ZoneOffset.UTC) + expiresInSeconds
+        val expiration = issuedAt.atZone(ZoneId.systemDefault()).toEpochSecond() + expiresInSeconds
         return Jwts
             .builder()
             .subject(subject)
-            .issuedAt(Date(issuedAt.toInstant(ZoneOffset.UTC).toEpochMilli()))
+            .issuedAt(Date(issuedAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))
             .expiration(Date(expiration * 1_000))
             .claims(extraClaims)
             .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray()))
