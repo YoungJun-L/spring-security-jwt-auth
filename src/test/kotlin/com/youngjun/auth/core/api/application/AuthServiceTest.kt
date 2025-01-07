@@ -1,6 +1,7 @@
 package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.api.support.ApplicationTest
+import com.youngjun.auth.core.api.support.VALID_PASSWORD
 import com.youngjun.auth.core.domain.auth.NewAuthBuilder
 import com.youngjun.auth.core.storage.db.core.auth.AuthEntityBuilder
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository
@@ -27,7 +28,6 @@ class AuthServiceTest(
                     val actual = authService.loadUserByUsername(authEntity.username)
 
                     actual.id shouldBe authEntity.id
-                    println(actual)
                 }
             }
 
@@ -41,7 +41,7 @@ class AuthServiceTest(
                 }
 
                 test("비밀번호는 인코딩된다.") {
-                    val newAuth = NewAuthBuilder().build()
+                    val newAuth = NewAuthBuilder(password = VALID_PASSWORD).build()
 
                     val actual = authService.register(newAuth)
 
