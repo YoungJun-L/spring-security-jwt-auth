@@ -2,6 +2,11 @@ package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.youngjun.auth.core.api.support.error.ErrorType
+import com.youngjun.auth.core.api.support.error.ErrorType.AUTH_BAD_CREDENTIALS_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.AUTH_DISABLED_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.AUTH_LOCKED_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_INVALID_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.UNAUTHORIZED_ERROR
 import com.youngjun.auth.core.api.support.response.AuthResponse
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -36,23 +41,23 @@ class ApiAuthenticationEntryPoint(
     private fun resolve(ex: AuthenticationException) =
         when (ex) {
             is BadTokenException -> {
-                ErrorType.TOKEN_INVALID_ERROR
+                TOKEN_INVALID_ERROR
             }
 
             is BadCredentialsException -> {
-                ErrorType.AUTH_BAD_CREDENTIALS_ERROR
+                AUTH_BAD_CREDENTIALS_ERROR
             }
 
             is LockedException -> {
-                ErrorType.AUTH_LOCKED_ERROR
+                AUTH_LOCKED_ERROR
             }
 
             is DisabledException -> {
-                ErrorType.AUTH_DISABLED_ERROR
+                AUTH_DISABLED_ERROR
             }
 
             else -> {
-                ErrorType.UNAUTHORIZED_ERROR
+                UNAUTHORIZED_ERROR
             }
         }
 

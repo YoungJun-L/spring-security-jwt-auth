@@ -1,7 +1,8 @@
 package com.youngjun.auth.core.domain.auth
 
 import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType
+import com.youngjun.auth.core.api.support.error.ErrorType.AUTH_DISABLED_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.AUTH_LOCKED_ERROR
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails
@@ -24,10 +25,10 @@ data class Auth(
 
     fun verify() {
         if (!isAccountNonLocked) {
-            throw AuthException(ErrorType.AUTH_LOCKED_ERROR)
+            throw AuthException(AUTH_LOCKED_ERROR)
         }
         if (!isEnabled) {
-            throw AuthException(ErrorType.AUTH_DISABLED_ERROR)
+            throw AuthException(AUTH_DISABLED_ERROR)
         }
     }
 

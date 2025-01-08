@@ -1,7 +1,8 @@
 package com.youngjun.auth.core.domain.token
 
 import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType
+import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_EXPIRED_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_INVALID_ERROR
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts
@@ -19,9 +20,9 @@ class TokenParser(
         try {
             return jwtParser.parseSignedClaims(token).payload.subject
         } catch (ex: ExpiredJwtException) {
-            throw AuthException(ErrorType.TOKEN_EXPIRED_ERROR)
+            throw AuthException(TOKEN_EXPIRED_ERROR)
         } catch (ex: Exception) {
-            throw AuthException(ErrorType.TOKEN_INVALID_ERROR)
+            throw AuthException(TOKEN_INVALID_ERROR)
         }
     }
 
@@ -29,9 +30,9 @@ class TokenParser(
         try {
             jwtParser.parseSignedClaims(token.value)
         } catch (ex: ExpiredJwtException) {
-            throw AuthException(ErrorType.TOKEN_EXPIRED_ERROR)
+            throw AuthException(TOKEN_EXPIRED_ERROR)
         } catch (ex: Exception) {
-            throw AuthException(ErrorType.TOKEN_INVALID_ERROR)
+            throw AuthException(TOKEN_INVALID_ERROR)
         }
     }
 }

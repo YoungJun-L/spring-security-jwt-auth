@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.auth
 
 import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType
+import com.youngjun.auth.core.api.support.error.ErrorType.AUTH_DUPLICATE_ERROR
 import com.youngjun.auth.core.domain.support.DomainTest
 import com.youngjun.auth.core.storage.db.core.auth.AuthEntityBuilder
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository
@@ -35,7 +35,7 @@ class AuthWriterTest(
 
                     val newAuth = NewAuthBuilder(username = username).build()
                     shouldThrow<AuthException> { authWriter.write(newAuth) }
-                        .errorType shouldBe ErrorType.AUTH_DUPLICATE_ERROR
+                        .errorType shouldBe AUTH_DUPLICATE_ERROR
                 }
             }
         },

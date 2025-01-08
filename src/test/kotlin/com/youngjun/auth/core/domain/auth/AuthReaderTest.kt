@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.auth
 
 import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType
+import com.youngjun.auth.core.api.support.error.ErrorType.UNAUTHORIZED_ERROR
 import com.youngjun.auth.core.domain.support.DomainTest
 import com.youngjun.auth.core.storage.db.core.auth.AuthEntityBuilder
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository
@@ -46,7 +46,7 @@ class AuthReaderTest(
 
                 test("회원이 존재하지 않는 경우 실패한다.") {
                     shouldThrow<AuthException> { authReader.readEnabled(1L) }
-                        .errorType shouldBe ErrorType.UNAUTHORIZED_ERROR
+                        .errorType shouldBe UNAUTHORIZED_ERROR
                 }
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
