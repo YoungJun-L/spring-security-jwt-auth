@@ -1,15 +1,15 @@
 package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.api.support.ApplicationTest
+import com.youngjun.auth.core.api.support.error.AuthException
 import com.youngjun.auth.core.domain.auth.AuthBuilder
 import com.youngjun.auth.core.domain.auth.AuthStatus
 import com.youngjun.auth.core.domain.token.RefreshTokenBuilder
+import com.youngjun.auth.core.domain.token.buildJwt
 import com.youngjun.auth.core.storage.db.core.auth.AuthEntityBuilder
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository
 import com.youngjun.auth.storage.db.core.token.TokenEntity
 import com.youngjun.auth.storage.db.core.token.TokenJpaRepository
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.security.Keys
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -18,11 +18,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.springframework.beans.factory.annotation.Value
-import java.time.LocalDateTime
 import java.time.LocalDateTime.now
-import java.time.ZoneOffset
-import java.util.Date
-import kotlin.time.Duration.Companion.days
 
 @ApplicationTest
 class TokenServiceTest(
@@ -86,26 +82,27 @@ class TokenServiceTest(
                     val refreshToken = buildJwt(secretKey = secretKey, subject = authEntity.username)
                     tokenJpaRepository.save(TokenEntity(authEntity.id, refreshToken))
 
-                    shouldThrow<Exception> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                    shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                }
+
+                test("토큰이 유효하지 않으면 실패한다.") {
+                    val refreshToken = "invalid"
+                    shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                }
+
+                test("토큰이 만료되었으면 실패한다.") {
+                    val authEntity = authJpaRepository.save(AuthEntityBuilder().build())
+                    val refreshToken =
+                        buildJwt(
+                            secretKey = secretKey,
+                            subject = authEntity.username,
+                            issuedAt = now(),
+                            expiresInSeconds = 0,
+                        )
+                    tokenJpaRepository.save(TokenEntity(authEntity.id, refreshToken))
+
+                    shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
                 }
             }
         },
     )
-
-private fun buildJwt(
-    subject: String = "username123",
-    issuedAt: LocalDateTime = now(),
-    expiresInSeconds: Long = 30.days.inWholeSeconds,
-    secretKey: String = "",
-    extraClaims: Map<String, Any> = emptyMap(),
-): String {
-    val expiration = issuedAt.toEpochSecond(ZoneOffset.UTC) + expiresInSeconds
-    return Jwts
-        .builder()
-        .subject(subject)
-        .issuedAt(Date(issuedAt.toInstant(ZoneOffset.UTC).toEpochMilli()))
-        .expiration(Date(expiration * 1_000))
-        .claims(extraClaims)
-        .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray()))
-        .compact()
-}

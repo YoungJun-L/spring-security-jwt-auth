@@ -36,7 +36,7 @@ class BearerTokenResolverTest :
                 }
             }
 
-            context("유효하지 않은 토큰일 경우 추출에 실패한다.") {
+            context("토큰의 형식이 다를 경우 추출에 실패한다.") {
                 arrayOf(" . . ", "a.b", " ").forEach {
                     test("\"$it\"") {
                         val value = "Bearer $it"
