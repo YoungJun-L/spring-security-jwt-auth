@@ -24,7 +24,7 @@ class TokenParserTest(
             context("subject 파싱") {
                 test("성공") {
                     val subject = "username123"
-                    val token = buildJwt(secretKey = secretKey, subject = subject)
+                    val token = JwtBuilder(secretKey = secretKey, subject = subject).build()
 
                     val actual = tokenParser.parseSubject(token)
 
@@ -32,14 +32,14 @@ class TokenParserTest(
                 }
 
                 test("만료된 경우 실패한다.") {
-                    val token = buildJwt(secretKey = secretKey, expiresInSeconds = 0)
+                    val token = JwtBuilder(secretKey = secretKey, expiresInSeconds = 0).build()
 
                     shouldThrow<AuthException> { tokenParser.parseSubject(token) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
 
                 test("유효하지 않는 경우 실패한다.") {
-                    val token = buildJwt(secretKey = "a".repeat(100), expiresInSeconds = 0)
+                    val token = JwtBuilder(secretKey = "a".repeat(100), expiresInSeconds = 0).build()
 
                     shouldThrow<AuthException> { tokenParser.parseSubject(token) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
@@ -48,20 +48,20 @@ class TokenParserTest(
 
             context("토큰 검증") {
                 test("성공") {
-                    val token = buildJwt(secretKey = secretKey)
+                    val token = JwtBuilder(secretKey = secretKey).build()
 
                     shouldNotThrow<AuthException> { tokenParser.verify(RefreshTokenBuilder(token).build()) }
                 }
 
                 test("만료된 경우") {
-                    val token = buildJwt(secretKey = secretKey, expiresInSeconds = 0)
+                    val token = JwtBuilder(secretKey = secretKey, expiresInSeconds = 0).build()
 
                     shouldThrow<AuthException> { tokenParser.verify(RefreshTokenBuilder(token).build()) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
 
                 test("유효하지 않는 경우") {
-                    val token = buildJwt(secretKey = "a".repeat(100), expiresInSeconds = 0)
+                    val token = JwtBuilder(secretKey = "a".repeat(100), expiresInSeconds = 0).build()
 
                     shouldThrow<AuthException> { tokenParser.verify(RefreshTokenBuilder(token).build()) }
                         .errorType shouldBe TOKEN_INVALID_ERROR

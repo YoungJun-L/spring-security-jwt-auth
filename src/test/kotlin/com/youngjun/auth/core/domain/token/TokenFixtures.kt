@@ -8,22 +8,24 @@ import java.time.ZoneId
 import java.util.Date
 import kotlin.time.Duration.Companion.days
 
-fun buildJwt(
-    secretKey: String,
-    subject: String = "username123",
-    issuedAt: LocalDateTime = now(),
-    expiresInSeconds: Long = 30.days.inWholeSeconds,
-    extraClaims: Map<String, Any> = emptyMap(),
-): String {
-    val expiration = issuedAt.atZone(ZoneId.systemDefault()).toEpochSecond() + expiresInSeconds
-    return Jwts
-        .builder()
-        .subject(subject)
-        .issuedAt(Date(issuedAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))
-        .expiration(Date(expiration * 1_000))
-        .claims(extraClaims)
-        .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray()))
-        .compact()
+data class JwtBuilder(
+    val secretKey: String,
+    val subject: String = "username123",
+    val issuedAt: LocalDateTime = now(),
+    val expiresInSeconds: Long = 30.days.inWholeSeconds,
+    val extraClaims: Map<String, Any> = emptyMap(),
+) {
+    fun build(): String {
+        val expiration = issuedAt.atZone(ZoneId.systemDefault()).toEpochSecond() + expiresInSeconds
+        return Jwts
+            .builder()
+            .subject(subject)
+            .issuedAt(Date(issuedAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))
+            .expiration(Date(expiration * 1_000))
+            .claims(extraClaims)
+            .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray()))
+            .compact()
+    }
 }
 
 data class TokenPairBuilder(

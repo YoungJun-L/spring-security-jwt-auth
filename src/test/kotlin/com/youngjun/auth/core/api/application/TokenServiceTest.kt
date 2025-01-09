@@ -4,8 +4,8 @@ import com.youngjun.auth.core.api.support.ApplicationTest
 import com.youngjun.auth.core.api.support.error.AuthException
 import com.youngjun.auth.core.domain.auth.AuthBuilder
 import com.youngjun.auth.core.domain.auth.AuthStatus
+import com.youngjun.auth.core.domain.token.JwtBuilder
 import com.youngjun.auth.core.domain.token.RefreshTokenBuilder
-import com.youngjun.auth.core.domain.token.buildJwt
 import com.youngjun.auth.core.storage.db.core.auth.AuthEntityBuilder
 import com.youngjun.auth.storage.db.core.auth.AuthJpaRepository
 import com.youngjun.auth.storage.db.core.token.TokenEntity
@@ -43,7 +43,7 @@ class TokenServiceTest(
                 test("이전 refresh token 은 제거된다.") {
                     val authId = 1L
                     val auth = AuthBuilder(id = authId).build()
-                    val previousToken = buildJwt(secretKey = secretKey)
+                    val previousToken = JwtBuilder(secretKey = secretKey).build()
                     tokenJpaRepository.save(TokenEntity(authId, previousToken))
 
                     tokenService.issue(auth)
@@ -57,7 +57,7 @@ class TokenServiceTest(
             context("토큰 재발급") {
                 test("성공") {
                     val authEntity = authJpaRepository.save(AuthEntityBuilder().build())
-                    val refreshToken = buildJwt(secretKey = secretKey)
+                    val refreshToken = JwtBuilder(secretKey = secretKey).build()
                     tokenJpaRepository.save(TokenEntity(authEntity.id, refreshToken))
 
                     val actual = tokenService.reissue(RefreshTokenBuilder(refreshToken).build())
@@ -79,7 +79,7 @@ class TokenServiceTest(
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
                     val authEntity = authJpaRepository.save(AuthEntityBuilder(status = AuthStatus.DISABLED).build())
-                    val refreshToken = buildJwt(secretKey = secretKey, subject = authEntity.username)
+                    val refreshToken = JwtBuilder(secretKey = secretKey, subject = authEntity.username).build()
                     tokenJpaRepository.save(TokenEntity(authEntity.id, refreshToken))
 
                     shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
@@ -93,12 +93,12 @@ class TokenServiceTest(
                 test("토큰이 만료되었으면 실패한다.") {
                     val authEntity = authJpaRepository.save(AuthEntityBuilder().build())
                     val refreshToken =
-                        buildJwt(
+                        JwtBuilder(
                             secretKey = secretKey,
                             subject = authEntity.username,
                             issuedAt = now(),
                             expiresInSeconds = 0,
-                        )
+                        ).build()
                     tokenJpaRepository.save(TokenEntity(authEntity.id, refreshToken))
 
                     shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
