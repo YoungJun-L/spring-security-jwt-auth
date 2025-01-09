@@ -8,10 +8,8 @@ import org.springframework.stereotype.Component
 @Component
 class TokenReader(
     private val tokenRepository: TokenRepository,
-    private val tokenParser: TokenParser,
 ) {
-    fun readVerified(refreshToken: RefreshToken): Token {
-        tokenParser.verify(refreshToken)
+    fun read(refreshToken: RefreshToken): Token {
         val tokens = tokenRepository.read(refreshToken)
         if (tokens.isEmpty()) {
             throw AuthException(TOKEN_NOT_FOUND_ERROR)

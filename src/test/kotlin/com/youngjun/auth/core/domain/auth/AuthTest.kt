@@ -29,12 +29,5 @@ class AuthTest :
                         .errorType shouldBe AUTH_DISABLED_ERROR
                 }
             }
-
-            context("유저 정보 조회") {
-                test("성공") {
-                    val auth = AuthBuilder().build()
-                    auth.details()["username"] shouldBe auth.username
-                }
-            }
         },
     )

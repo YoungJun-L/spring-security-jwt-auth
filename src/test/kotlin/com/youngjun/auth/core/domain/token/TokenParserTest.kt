@@ -9,6 +9,8 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.CredentialsExpiredException
 
 @DomainTest
 class TokenParserTest :
@@ -32,15 +34,13 @@ class TokenParserTest :
                 test("만료된 경우 실패한다.") {
                     val token = JwtBuilder(secretKey = secretKey, expiresInSeconds = 0).build()
 
-                    shouldThrow<AuthException> { tokenParser.parseSubject(token) }
-                        .errorType shouldBe TOKEN_EXPIRED_ERROR
+                    shouldThrow<CredentialsExpiredException> { tokenParser.parseSubject(token) }
                 }
 
                 test("유효하지 않는 경우 실패한다.") {
                     val token = JwtBuilder(secretKey = "Invalid $secretKey", expiresInSeconds = 0).build()
 
-                    shouldThrow<AuthException> { tokenParser.parseSubject(token) }
-                        .errorType shouldBe TOKEN_INVALID_ERROR
+                    shouldThrow<BadCredentialsException> { tokenParser.parseSubject(token) }
                 }
             }
 

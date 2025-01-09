@@ -1,6 +1,9 @@
 package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.youngjun.auth.core.api.application.TokenService
+import com.youngjun.auth.core.domain.auth.AuthReader
+import com.youngjun.auth.core.domain.token.TokenParser
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -10,26 +13,21 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.intercept.AuthorizationFilter
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @EnableWebSecurity
 @Configuration
 class SecurityConfiguration(
-    private val authenticationSuccessHandler: AuthenticationSuccessHandler,
-    private val authenticationEntryPoint: AuthenticationEntryPoint,
-    private val jwtAuthenticationProvider: JwtAuthenticationProvider,
-    private val userDetailsService: UserDetailsService,
-    private val passwordEncoder: PasswordEncoder,
-    private val bearerTokenResolver: BearerTokenResolver,
-    private val authDetailsExchangeFilter: AuthDetailsExchangeFilter,
+    private val tokenService: TokenService,
+    private val tokenParser: TokenParser,
+    private val authReader: AuthReader,
     private val objectMapper: ObjectMapper,
 ) {
     @Bean
@@ -42,11 +40,22 @@ class SecurityConfiguration(
                     .anyRequest()
                     .authenticated()
             }.addFilterAt(
-                authenticationProcessingFilter(),
+                RequestBodyUsernamePasswordAuthenticationFilter(
+                    authenticationManager(),
+                    objectMapper,
+                    IssueJwtAuthenticationSuccessHandler(tokenService, objectMapper),
+                    authenticationFailureHandler(),
+                ),
                 UsernamePasswordAuthenticationFilter::class.java,
-            ).addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
-            .addFilterAfter(authDetailsExchangeFilter, AuthorizationFilter::class.java)
-            .exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint) }
+            ).addFilterAfter(
+                JwtAuthenticationFilter(
+                    BearerTokenResolver(),
+                    authenticationManager(),
+                    authenticationFailureHandler(),
+                ),
+                UsernamePasswordAuthenticationFilter::class.java,
+            ).addFilterAfter(AuthDetailsExchangeFilter(objectMapper), AuthorizationFilter::class.java)
+            .exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint()) }
             .authenticationManager(authenticationManager())
             .headers { it.disable() }
             .formLogin { it.disable() }
@@ -58,29 +67,21 @@ class SecurityConfiguration(
             .build()
 
     @Bean
-    fun authenticationProcessingFilter(): AbstractAuthenticationProcessingFilter =
-        RequestBodyUsernamePasswordAuthenticationFilter(
-            authenticationManager(),
-            objectMapper,
-            authenticationSuccessHandler,
-            authenticationFailureHandler(),
-        )
-
-    @Bean
-    fun jwtAuthenticationFilter(): JwtAuthenticationFilter =
-        JwtAuthenticationFilter(
-            bearerTokenResolver,
-            authenticationManager(),
-            authenticationFailureHandler(),
-        )
+    fun userDetailsService(): UserDetailsService = UserDetailsService { authReader.read(it) }
 
     @Bean
     fun authenticationManager(): AuthenticationManager {
-        val daoAuthenticationProvider = DaoAuthenticationProvider(passwordEncoder)
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService)
-        return ProviderManager(jwtAuthenticationProvider, daoAuthenticationProvider)
+        val daoAuthenticationProvider = DaoAuthenticationProvider(passwordEncoder())
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService())
+        return ProviderManager(JwtAuthenticationProvider(tokenParser, userDetailsService()), daoAuthenticationProvider)
     }
 
     @Bean
-    fun authenticationFailureHandler(): AuthenticationFailureHandler = AuthenticationEntryPointFailureHandler(authenticationEntryPoint)
+    fun authenticationFailureHandler(): AuthenticationFailureHandler = AuthenticationEntryPointFailureHandler(authenticationEntryPoint())
+
+    @Bean
+    fun authenticationEntryPoint(): AuthenticationEntryPoint = ApiAuthenticationEntryPoint(objectMapper)
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 }

@@ -3,6 +3,7 @@ package com.youngjun.auth.core.api.support
 import com.ninjasquad.springmockk.MockkBean
 import com.youngjun.auth.core.api.application.AuthService
 import com.youngjun.auth.core.api.application.TokenService
+import com.youngjun.auth.core.domain.auth.AuthReader
 import com.youngjun.auth.core.domain.token.TokenParser
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
@@ -32,13 +33,16 @@ import org.springframework.web.context.WebApplicationContext
 @WebMvcTest
 abstract class SecurityTest {
     @MockkBean
-    private lateinit var authService: AuthService
-
-    @MockkBean
     private lateinit var tokenService: TokenService
 
     @MockkBean
     private lateinit var tokenParser: TokenParser
+
+    @MockkBean
+    private lateinit var authReader: AuthReader
+
+    @MockkBean
+    private lateinit var authService: AuthService
 
     @BeforeEach
     fun setUp(

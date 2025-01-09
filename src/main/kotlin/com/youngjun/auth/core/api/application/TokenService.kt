@@ -5,6 +5,7 @@ import com.youngjun.auth.core.domain.auth.AuthReader
 import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.TokenPair
 import com.youngjun.auth.core.domain.token.TokenPairGenerator
+import com.youngjun.auth.core.domain.token.TokenParser
 import com.youngjun.auth.core.domain.token.TokenReader
 import com.youngjun.auth.core.domain.token.TokenWriter
 import org.springframework.stereotype.Service
@@ -14,6 +15,7 @@ class TokenService(
     private val tokenPairGenerator: TokenPairGenerator,
     private val tokenWriter: TokenWriter,
     private val tokenReader: TokenReader,
+    private val tokenParser: TokenParser,
     private val authReader: AuthReader,
 ) {
     fun issue(auth: Auth): TokenPair {
@@ -23,7 +25,8 @@ class TokenService(
     }
 
     fun reissue(refreshToken: RefreshToken): TokenPair {
-        val token = tokenReader.readVerified(refreshToken)
+        tokenParser.verify(refreshToken)
+        val token = tokenReader.read(refreshToken)
         val auth = authReader.readEnabled(token.authId)
         val tokenPair = tokenPairGenerator.issue(auth)
         tokenWriter.replaceTo(tokenPair)

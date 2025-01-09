@@ -3,9 +3,7 @@ package com.youngjun.auth.core.api.security
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.stereotype.Component
 
-@Component
 class BearerTokenResolver {
     fun resolve(request: HttpServletRequest): String? {
         val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
