@@ -2,8 +2,8 @@ package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.youngjun.auth.core.api.application.TokenService
-import com.youngjun.auth.core.domain.auth.AuthReader
 import com.youngjun.auth.core.domain.token.TokenParser
+import com.youngjun.auth.core.domain.user.UserReader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfiguration(
     private val tokenService: TokenService,
     private val tokenParser: TokenParser,
-    private val authReader: AuthReader,
+    private val userReader: UserReader,
     private val objectMapper: ObjectMapper,
 ) {
     @Bean
@@ -54,8 +54,10 @@ class SecurityConfiguration(
                     authenticationFailureHandler(),
                 ),
                 UsernamePasswordAuthenticationFilter::class.java,
-            ).addFilterAfter(AuthDetailsExchangeFilter(objectMapper), AuthorizationFilter::class.java)
-            .exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint()) }
+            ).addFilterAfter(
+                UserDetailsExchangeFilter(objectMapper),
+                AuthorizationFilter::class.java,
+            ).exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint()) }
             .authenticationManager(authenticationManager())
             .headers { it.disable() }
             .formLogin { it.disable() }
@@ -67,7 +69,7 @@ class SecurityConfiguration(
             .build()
 
     @Bean
-    fun userDetailsService(): UserDetailsService = UserDetailsService { authReader.read(it) }
+    fun userDetailsService(): UserDetailsService = UserDetailsService { userReader.read(it) }
 
     @Bean
     fun authenticationManager(): AuthenticationManager {

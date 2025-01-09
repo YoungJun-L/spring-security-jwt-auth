@@ -7,6 +7,6 @@ data class LoginResponse(
     val tokens: TokenResponse,
 ) {
     companion object {
-        fun from(tokenPair: TokenPair): LoginResponse = LoginResponse(tokenPair.authId, TokenResponse.from(tokenPair))
+        fun from(tokenPair: TokenPair): LoginResponse = LoginResponse(tokenPair.userId, TokenResponse.from(tokenPair))
     }
 }

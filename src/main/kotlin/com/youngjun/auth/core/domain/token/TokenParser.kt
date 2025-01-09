@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class TokenParser(
-    @Value("\${spring.security.jwt.secret-key}") secretKey: String,
+    @Value("\${spring.security.jwt.secret-key}") private val secretKey: String,
 ) {
     private val jwtParser: JwtParser = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.toByteArray())).build()
 

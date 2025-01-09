@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository
 class TokenRepository(
     private val tokenJpaRepository: TokenJpaRepository,
 ) {
-    fun delete(authId: Long) {
-        tokenJpaRepository.deleteByAuthId(authId)
+    fun delete(userId: Long) {
+        tokenJpaRepository.deleteByUserId(userId)
     }
 
     fun write(tokenPair: TokenPair): Token {
-        val tokenEntity = TokenEntity(tokenPair.authId, tokenPair.refreshToken)
+        val tokenEntity = TokenEntity(tokenPair.userId, tokenPair.refreshToken)
         tokenJpaRepository.save(tokenEntity)
         return tokenEntity.toToken()
     }

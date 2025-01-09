@@ -3,7 +3,7 @@ package com.youngjun.auth.core.api.controller.v1.request
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 
-class RegisterAuthRequestTest :
+class RegisterUserRequestTest :
     FunSpec(
         {
             context("아이디 검증") {
@@ -20,7 +20,7 @@ class RegisterAuthRequestTest :
                         val validPassword = "password123!"
 
                         shouldThrow<IllegalArgumentException> {
-                            RegisterAuthRequest(invalidUsername, validPassword).toNewAuth()
+                            RegisterUserRequest(invalidUsername, validPassword).toNewUser()
                         }
                     }
                 }
@@ -41,7 +41,7 @@ class RegisterAuthRequestTest :
                         val validUsername = "username123"
 
                         shouldThrow<IllegalArgumentException> {
-                            RegisterAuthRequest(validUsername, invalidPassword).toNewAuth()
+                            RegisterUserRequest(validUsername, invalidPassword).toNewUser()
                         }
                     }
                 }

@@ -43,10 +43,9 @@ class RequestBodyUsernamePasswordAuthenticationFilter(
             } catch (ex: Exception) {
                 throw BadCredentialsException(ex.message, ex)
             }
-        val authRequest =
-            UsernamePasswordAuthenticationToken
-                .unauthenticated(loginRequest.username, loginRequest.password)
-        return authenticationManager.authenticate(authRequest)
+        return authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username, loginRequest.password),
+        )
     }
 
     companion object {

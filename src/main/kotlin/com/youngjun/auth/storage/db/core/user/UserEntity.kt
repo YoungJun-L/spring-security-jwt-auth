@@ -1,20 +1,20 @@
-package com.youngjun.auth.storage.db.core.auth
+package com.youngjun.auth.storage.db.core.user
 
-import com.youngjun.auth.core.domain.auth.Auth
-import com.youngjun.auth.core.domain.auth.AuthStatus
+import com.youngjun.auth.core.domain.user.User
+import com.youngjun.auth.core.domain.user.UserStatus
 import com.youngjun.auth.storage.db.core.support.BaseEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 
-@Table(name = "auth")
+@Table(name = "users")
 @Entity
-class AuthEntity(
+class UserEntity(
     val username: String,
     val password: String,
     @Enumerated(EnumType.STRING)
-    val status: AuthStatus = AuthStatus.ENABLED,
+    val status: UserStatus = UserStatus.ENABLED,
 ) : BaseEntity() {
-    fun toAuth(): Auth = Auth(id, username, password, status)
+    fun toUser(): User = User(id, username, password, status)
 }

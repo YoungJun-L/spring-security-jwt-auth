@@ -10,7 +10,7 @@ class TokenWriter(
 ) {
     @Transactional
     fun replaceTo(tokenPair: TokenPair) {
-        tokenRepository.delete(tokenPair.authId)
+        tokenRepository.delete(tokenPair.userId)
         tokenRepository.write(tokenPair)
     }
 }

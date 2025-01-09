@@ -1,13 +1,13 @@
-package com.youngjun.auth.core.domain.auth
+package com.youngjun.auth.core.domain.user
 
-data class AuthBuilder(
+data class UserBuilder(
     var id: Long = 1,
     var username: String = "username123",
     var password: String = "\$2a\$10\$msjhx7NVjB0qoN/k7G2VVuuQNB7PSF/d.WfWYOQJwfyvcDfZIKBte",
-    var status: AuthStatus = AuthStatus.ENABLED,
+    var status: UserStatus = UserStatus.ENABLED,
 ) {
-    fun build(): Auth =
-        Auth(
+    fun build(): User =
+        User(
             id = id,
             username = username,
             password = password,
@@ -15,12 +15,12 @@ data class AuthBuilder(
         )
 }
 
-data class NewAuthBuilder(
+data class NewUserBuilder(
     val username: String = "username123",
     val password: String = "password123!",
 ) {
-    fun build(): NewAuth =
-        NewAuth(
+    fun build(): NewUser =
+        NewUser(
             username = username,
             password = password,
         )

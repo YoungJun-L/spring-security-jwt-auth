@@ -1,13 +1,13 @@
 package com.youngjun.auth.core.api.controller.v1
 
-import com.youngjun.auth.core.api.application.AuthService
-import com.youngjun.auth.core.api.controller.v1.request.RegisterAuthRequest
+import com.youngjun.auth.core.api.application.UserService
+import com.youngjun.auth.core.api.controller.v1.request.RegisterUserRequest
 import com.youngjun.auth.core.api.support.RestDocsTest
 import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.type
-import com.youngjun.auth.core.domain.auth.AuthBuilder
-import com.youngjun.auth.core.domain.auth.NewAuthBuilder
+import com.youngjun.auth.core.domain.user.NewUserBuilder
+import com.youngjun.auth.core.domain.user.UserBuilder
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType
@@ -22,14 +22,14 @@ import org.springframework.restdocs.payload.JsonFieldType.STRING
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 
-class AuthControllerTest : RestDocsTest() {
-    private lateinit var authService: AuthService
+class UserControllerTest : RestDocsTest() {
+    private lateinit var userService: UserService
 
     @BeforeEach
     fun setUp() {
-        authService = mockk()
-        val authController = AuthController(authService)
-        setMockMvc(authController)
+        userService = mockk()
+        val userController = UserController(userService)
+        setMockMvc(userController)
     }
 
     @Test
@@ -37,20 +37,20 @@ class AuthControllerTest : RestDocsTest() {
         val validUsername = "username123"
         val validPassword = "password123!"
         every {
-            authService.register(
-                NewAuthBuilder(
+            userService.register(
+                NewUserBuilder(
                     validUsername,
                     validPassword,
                 ).build(),
             )
-        } returns AuthBuilder().build()
+        } returns UserBuilder().build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
             .body(
-                RegisterAuthRequest(validUsername, validPassword),
+                RegisterUserRequest(validUsername, validPassword),
             ).post("/auth/register")
             .then()
             .log()

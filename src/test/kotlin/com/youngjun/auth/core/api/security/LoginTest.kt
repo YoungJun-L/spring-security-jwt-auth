@@ -6,12 +6,12 @@ import com.youngjun.auth.core.api.support.SecurityTest
 import com.youngjun.auth.core.api.support.VALID_PASSWORD
 import com.youngjun.auth.core.api.support.VALID_USERNAME
 import com.youngjun.auth.core.api.support.description
-import com.youngjun.auth.core.api.support.error.ErrorType.AUTH_NOT_FOUND_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.USER_NOT_FOUND_ERROR
 import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.type
-import com.youngjun.auth.core.domain.auth.AuthBuilder
-import com.youngjun.auth.core.domain.auth.AuthStatus
 import com.youngjun.auth.core.domain.token.TokenPairBuilder
+import com.youngjun.auth.core.domain.user.UserBuilder
+import com.youngjun.auth.core.domain.user.UserStatus
 import io.mockk.every
 import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given
@@ -33,9 +33,9 @@ class LoginTest(
 ) : SecurityTest() {
     @Test
     fun `로그인 성공`() {
-        val auth = AuthBuilder(username = VALID_USERNAME).build()
-        every { userDetailsService.loadUserByUsername(VALID_USERNAME) } returns auth
-        every { tokenService.issue(auth) } returns TokenPairBuilder(authId = auth.id).build()
+        val user = UserBuilder(username = VALID_USERNAME).build()
+        every { userDetailsService.loadUserByUsername(VALID_USERNAME) } returns user
+        every { tokenService.issue(user) } returns TokenPairBuilder(userId = user.id).build()
 
         given()
             .log()
@@ -72,7 +72,7 @@ class LoginTest(
     fun `존재하지 않는 회원이면 실패한다`() {
         val username = "username123"
         val password = "password123!"
-        every { userDetailsService.loadUserByUsername(username) } throws UsernameNotFoundException(AUTH_NOT_FOUND_ERROR.message)
+        every { userDetailsService.loadUserByUsername(username) } throws UsernameNotFoundException(USER_NOT_FOUND_ERROR.message)
 
         given()
             .log()
@@ -88,9 +88,9 @@ class LoginTest(
 
     @Test
     fun `비밀번호가 다르면 실패한다`() {
-        val auth = AuthBuilder(username = VALID_USERNAME).build()
+        val user = UserBuilder(username = VALID_USERNAME).build()
         val password = "invalidPassword123!"
-        every { userDetailsService.loadUserByUsername(VALID_USERNAME) } returns auth
+        every { userDetailsService.loadUserByUsername(VALID_USERNAME) } returns user
 
         given()
             .log()
@@ -106,8 +106,8 @@ class LoginTest(
 
     @Test
     fun `서비스 이용이 제한된 유저이면 실패한다`() {
-        val auth = AuthBuilder(username = VALID_USERNAME, status = AuthStatus.DISABLED).build()
-        every { userDetailsService.loadUserByUsername(VALID_USERNAME) } returns auth
+        val user = UserBuilder(username = VALID_USERNAME, status = UserStatus.DISABLED).build()
+        every { userDetailsService.loadUserByUsername(VALID_USERNAME) } returns user
 
         given()
             .log()

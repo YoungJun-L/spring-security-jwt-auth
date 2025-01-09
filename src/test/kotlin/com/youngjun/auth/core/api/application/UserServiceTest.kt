@@ -2,7 +2,7 @@ package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.api.support.ApplicationTest
 import com.youngjun.auth.core.api.support.VALID_PASSWORD
-import com.youngjun.auth.core.domain.auth.NewAuthBuilder
+import com.youngjun.auth.core.domain.user.NewUserBuilder
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
@@ -10,8 +10,8 @@ import io.kotest.matchers.shouldBe
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @ApplicationTest
-class AuthServiceTest(
-    private val authService: AuthService,
+class UserServiceTest(
+    private val userService: UserService,
     private val passwordEncoder: PasswordEncoder,
 ) : FunSpec(
         {
@@ -20,19 +20,19 @@ class AuthServiceTest(
 
             context("회원 가입") {
                 test("성공") {
-                    val newAuth = NewAuthBuilder().build()
+                    val newUser = NewUserBuilder().build()
 
-                    val actual = authService.register(newAuth)
+                    val actual = userService.register(newUser)
 
-                    actual.username shouldBe newAuth.username
+                    actual.username shouldBe newUser.username
                 }
 
                 test("비밀번호는 인코딩된다.") {
-                    val newAuth = NewAuthBuilder(password = VALID_PASSWORD).build()
+                    val newUser = NewUserBuilder(password = VALID_PASSWORD).build()
 
-                    val actual = authService.register(newAuth)
+                    val actual = userService.register(newUser)
 
-                    passwordEncoder.matches(newAuth.password, actual.password) shouldBe true
+                    passwordEncoder.matches(newUser.password, actual.password) shouldBe true
                 }
             }
         },

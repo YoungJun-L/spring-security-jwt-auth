@@ -29,7 +29,7 @@ data class JwtBuilder(
 }
 
 data class TokenPairBuilder(
-    var authId: Long = 1,
+    var userId: Long = 1,
     var accessToken: String =
         "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczNTk3MTQ5MH0.DRnoLwFpmwER9VoCmbyR-tIUIJSrRjOufzAsR3G3miA",
     var accessTokenExpiresIn: Long = 17359714909720,
@@ -39,7 +39,7 @@ data class TokenPairBuilder(
 ) {
     fun build(): TokenPair =
         TokenPair(
-            authId = authId,
+            userId = userId,
             accessToken = accessToken,
             accessTokenExpiration = accessTokenExpiresIn,
             refreshToken = refreshToken,

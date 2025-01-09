@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 
-class AuthDetailsExchangeFilter(
+class UserDetailsExchangeFilter(
     private val objectMapper: ObjectMapper,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
@@ -23,29 +23,27 @@ class AuthDetailsExchangeFilter(
         val authentication =
             SecurityContextHolder.getContext().authentication
                 ?: throw AuthenticationServiceException("Authentication object should not be null.")
-        val authDetails = AuthDetails.from(authentication)
-        val token = objectMapper.writeValueAsString(authDetails)
-        val authRequest = AuthRequest(request, token)
+        val userRequest = UserRequest(request, objectMapper.writeValueAsString(UserAuthDetails.from(authentication)))
         SecurityContextHolder.clearContext()
-        filterChain.doFilter(authRequest, response)
+        filterChain.doFilter(userRequest, response)
     }
 
     override fun shouldNotFilter(request: HttpServletRequest) = NotFilterRequestMatcher.matchers().any { it.matches(request) }
 
-    private class AuthRequest(
+    private class UserRequest(
         private val request: HttpServletRequest,
         private val token: String,
         private val cookies: Array<Cookie> = (request.cookies ?: emptyArray<Cookie>()) + Cookie("user", token),
     ) : HttpServletRequestWrapper(request)
 
-    private data class AuthDetails(
-        val id: Any,
-        val details: Any,
+    private data class UserAuthDetails(
+        private val id: Any,
+        private val details: Any,
     ) {
         companion object {
-            fun from(authentication: Authentication): AuthDetails =
-                AuthDetails(
-                    if (authentication is AnonymousAuthenticationToken) -1L else authentication.principal,
+            fun from(authentication: Authentication): UserAuthDetails =
+                UserAuthDetails(
+                    if (authentication is AnonymousAuthenticationToken) "" else authentication.principal,
                     authentication.details,
                 )
         }

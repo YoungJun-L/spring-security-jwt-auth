@@ -1,13 +1,13 @@
 package com.youngjun.auth.core.api.application
 
-import com.youngjun.auth.core.domain.auth.Auth
-import com.youngjun.auth.core.domain.auth.AuthReader
 import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.TokenPair
 import com.youngjun.auth.core.domain.token.TokenPairGenerator
 import com.youngjun.auth.core.domain.token.TokenParser
 import com.youngjun.auth.core.domain.token.TokenReader
 import com.youngjun.auth.core.domain.token.TokenWriter
+import com.youngjun.auth.core.domain.user.User
+import com.youngjun.auth.core.domain.user.UserReader
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,10 +16,10 @@ class TokenService(
     private val tokenWriter: TokenWriter,
     private val tokenReader: TokenReader,
     private val tokenParser: TokenParser,
-    private val authReader: AuthReader,
+    private val userReader: UserReader,
 ) {
-    fun issue(auth: Auth): TokenPair {
-        val tokenPair = tokenPairGenerator.issue(auth)
+    fun issue(user: User): TokenPair {
+        val tokenPair = tokenPairGenerator.issue(user)
         tokenWriter.replaceTo(tokenPair)
         return tokenPair
     }
@@ -27,8 +27,8 @@ class TokenService(
     fun reissue(refreshToken: RefreshToken): TokenPair {
         tokenParser.verify(refreshToken)
         val token = tokenReader.read(refreshToken)
-        val auth = authReader.readEnabled(token.authId)
-        val tokenPair = tokenPairGenerator.issue(auth)
+        val user = userReader.readEnabled(token.userId)
+        val tokenPair = tokenPairGenerator.issue(user)
         tokenWriter.replaceTo(tokenPair)
         return tokenPair
     }

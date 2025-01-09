@@ -16,11 +16,16 @@ data class JwtAuthenticationToken private constructor(
 
     override fun getCredentials() = null
 
-    override fun getPrincipal(): Any = username
+    override fun getPrincipal(): String = username
 
-    // TODO: Auth: UserDetails -> Token: Authentication(val details)
     companion object {
         fun authenticated(userDetails: UserDetails): JwtAuthenticationToken =
-            JwtAuthenticationToken(userDetails.username, emptyMap(), userDetails.authorities)
+            JwtAuthenticationToken(
+                userDetails.username,
+                mapOf(
+                    "username" to userDetails.username,
+                ),
+                userDetails.authorities,
+            )
     }
 }

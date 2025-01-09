@@ -13,19 +13,19 @@ This is the Auth API documentation.
 [[login]]
 == Login API
 
-include::auth/login.adoc[]
+include::user/login.adoc[]
 
 [[register]]
 == Register API
 
-include::auth/register.adoc[]
+include::user/register.adoc[]
 
 [[authenticate]]
 == Authenticate API
 
-include::auth/authenticate.adoc[]
+include::user/authenticate.adoc[]
 
 [[reissue]]
 == Reissue API
 
-include::auth/token.adoc[]
+include::user/token.adoc[]

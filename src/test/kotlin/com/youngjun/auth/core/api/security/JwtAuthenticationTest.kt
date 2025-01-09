@@ -2,10 +2,10 @@ package com.youngjun.auth.core.api.security
 
 import com.youngjun.auth.core.api.support.SecurityTest
 import com.youngjun.auth.core.api.support.VALID_USERNAME
-import com.youngjun.auth.core.api.support.error.ErrorType.AUTH_NOT_FOUND_ERROR
-import com.youngjun.auth.core.domain.auth.AuthBuilder
-import com.youngjun.auth.core.domain.auth.AuthStatus
+import com.youngjun.auth.core.api.support.error.ErrorType.USER_NOT_FOUND_ERROR
 import com.youngjun.auth.core.domain.token.TokenParser
+import com.youngjun.auth.core.domain.user.UserBuilder
+import com.youngjun.auth.core.domain.user.UserStatus
 import io.mockk.every
 import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given
@@ -28,7 +28,7 @@ class JwtAuthenticationTest(
         val value = "a.b.c"
         val username = "username123"
         every { tokenParser.parseSubject(value) } returns username
-        every { userDetailsService.loadUserByUsername(username) } returns AuthBuilder(username = username).build()
+        every { userDetailsService.loadUserByUsername(username) } returns UserBuilder(username = username).build()
 
         given()
             .log()
@@ -72,7 +72,7 @@ class JwtAuthenticationTest(
         val value = "a.b.c"
         val username = "username123"
         every { tokenParser.parseSubject(value) } returns username
-        every { userDetailsService.loadUserByUsername(username) } throws UsernameNotFoundException(AUTH_NOT_FOUND_ERROR.message)
+        every { userDetailsService.loadUserByUsername(username) } throws UsernameNotFoundException(USER_NOT_FOUND_ERROR.message)
 
         given()
             .log()
@@ -89,9 +89,9 @@ class JwtAuthenticationTest(
     @Test
     fun `서비스 이용이 제한된 유저이면 실패한다`() {
         val value = "a.b.c"
-        val auth = AuthBuilder(username = VALID_USERNAME, status = AuthStatus.DISABLED).build()
+        val user = UserBuilder(username = VALID_USERNAME, status = UserStatus.DISABLED).build()
         every { tokenParser.parseSubject(value) } returns VALID_USERNAME
-        every { userDetailsService.loadUserByUsername(VALID_USERNAME) } returns auth
+        every { userDetailsService.loadUserByUsername(VALID_USERNAME) } returns user
 
         given()
             .log()
