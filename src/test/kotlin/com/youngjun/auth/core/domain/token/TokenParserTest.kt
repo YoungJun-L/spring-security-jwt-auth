@@ -8,18 +8,16 @@ import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
-import org.springframework.beans.factory.annotation.Value
 
 @DomainTest
-class TokenParserTest(
-    private val tokenParser: TokenParser,
-    @Value("\${spring.security.jwt.secret-key}") private val secretKey: String,
-) : FunSpec(
+class TokenParserTest :
+    FunSpec(
         {
-            extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
+
+            val secretKey = "012345678abcdefghijklmnopqrstuvwxyz"
+            val tokenParser = TokenParser(secretKey)
 
             context("subject 파싱") {
                 test("성공") {
@@ -39,7 +37,7 @@ class TokenParserTest(
                 }
 
                 test("유효하지 않는 경우 실패한다.") {
-                    val token = JwtBuilder(secretKey = "a".repeat(100), expiresInSeconds = 0).build()
+                    val token = JwtBuilder(secretKey = "Invalid $secretKey", expiresInSeconds = 0).build()
 
                     shouldThrow<AuthException> { tokenParser.parseSubject(token) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
@@ -53,15 +51,15 @@ class TokenParserTest(
                     shouldNotThrow<AuthException> { tokenParser.verify(RefreshTokenBuilder(token).build()) }
                 }
 
-                test("만료된 경우") {
+                test("만료된 경우 실패한다.") {
                     val token = JwtBuilder(secretKey = secretKey, expiresInSeconds = 0).build()
 
                     shouldThrow<AuthException> { tokenParser.verify(RefreshTokenBuilder(token).build()) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
 
-                test("유효하지 않는 경우") {
-                    val token = JwtBuilder(secretKey = "a".repeat(100), expiresInSeconds = 0).build()
+                test("유효하지 않는 경우 실패한다.") {
+                    val token = JwtBuilder(secretKey = "Invalid $secretKey", expiresInSeconds = 0).build()
 
                     shouldThrow<AuthException> { tokenParser.verify(RefreshTokenBuilder(token).build()) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
