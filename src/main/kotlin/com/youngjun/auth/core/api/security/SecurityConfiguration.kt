@@ -75,7 +75,7 @@ class SecurityConfiguration(
     fun authenticationManager(): AuthenticationManager {
         val daoAuthenticationProvider = DaoAuthenticationProvider(passwordEncoder())
         daoAuthenticationProvider.setUserDetailsService(userDetailsService())
-        return ProviderManager(JwtAuthenticationProvider(tokenParser, userDetailsService()), daoAuthenticationProvider)
+        return ProviderManager(JwtAuthenticationProvider(tokenParser, userReader), daoAuthenticationProvider)
     }
 
     @Bean

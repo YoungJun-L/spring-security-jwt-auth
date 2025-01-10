@@ -23,7 +23,7 @@ class UserDetailsExchangeFilter(
         val authentication =
             SecurityContextHolder.getContext().authentication
                 ?: throw AuthenticationServiceException("Authentication object should not be null.")
-        val userRequest = UserRequest(request, objectMapper.writeValueAsString(UserAuthDetails.from(authentication)))
+        val userRequest = UserRequest(request, objectMapper.writeValueAsString(AuthUserDetails.from(authentication)))
         SecurityContextHolder.clearContext()
         filterChain.doFilter(userRequest, response)
     }
@@ -34,15 +34,17 @@ class UserDetailsExchangeFilter(
         private val request: HttpServletRequest,
         private val token: String,
         private val cookies: Array<Cookie> = (request.cookies ?: emptyArray<Cookie>()) + Cookie("user", token),
-    ) : HttpServletRequestWrapper(request)
+    ) : HttpServletRequestWrapper(request) {
+        override fun getCookies(): Array<Cookie> = cookies
+    }
 
-    private data class UserAuthDetails(
-        private val id: Any,
-        private val details: Any,
+    private data class AuthUserDetails(
+        val username: Any,
+        val details: Any,
     ) {
         companion object {
-            fun from(authentication: Authentication): UserAuthDetails =
-                UserAuthDetails(
+            fun from(authentication: Authentication): AuthUserDetails =
+                AuthUserDetails(
                     if (authentication is AnonymousAuthenticationToken) "" else authentication.principal,
                     authentication.details,
                 )

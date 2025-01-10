@@ -12,6 +12,7 @@ data class User(
     private val username: String,
     private val password: String,
     private val status: UserStatus,
+    val details: Map<String, Any> = emptyMap(),
 ) : UserDetails {
     override fun getUsername(): String = username
 
