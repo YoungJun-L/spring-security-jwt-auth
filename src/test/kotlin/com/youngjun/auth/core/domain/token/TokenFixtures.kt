@@ -9,7 +9,7 @@ import java.util.Date
 import kotlin.time.Duration.Companion.days
 
 data class JwtBuilder(
-    val secretKey: String,
+    val secretKey: String = "012345678abcdefghijklmnopqrstuvwxyz",
     val subject: String = "username123",
     val issuedAt: LocalDateTime = now(),
     val expiresInSeconds: Long = 30.days.inWholeSeconds,
