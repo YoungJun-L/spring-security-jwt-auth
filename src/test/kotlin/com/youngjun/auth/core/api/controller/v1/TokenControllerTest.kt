@@ -7,7 +7,6 @@ import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.optional
 import com.youngjun.auth.core.api.support.type
-import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.TokenPairBuilder
 import io.mockk.every
 import io.mockk.mockk
@@ -35,14 +34,13 @@ class TokenControllerTest : RestDocsTest() {
 
     @Test
     fun `재발급 성공`() {
-        val value = "refreshToken"
-        every { tokenService.reissue(RefreshToken(value)) } returns TokenPairBuilder().build()
+        every { tokenService.reissue(any()) } returns TokenPairBuilder().build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(ReissueTokenRequest(value))
+            .body(ReissueTokenRequest("refreshToken"))
             .post("/auth/token")
             .then()
             .log()

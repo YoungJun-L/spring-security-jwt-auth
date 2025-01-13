@@ -2,8 +2,8 @@ package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.youngjun.auth.core.api.application.TokenService
+import com.youngjun.auth.core.api.application.UserService
 import com.youngjun.auth.core.domain.token.TokenParser
-import com.youngjun.auth.core.domain.user.UserReader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -12,8 +12,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
@@ -27,7 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfiguration(
     private val tokenService: TokenService,
     private val tokenParser: TokenParser,
-    private val userReader: UserReader,
+    private val userService: UserService,
+    private val passwordEncoder: PasswordEncoder,
     private val objectMapper: ObjectMapper,
 ) {
     @Bean
@@ -69,13 +68,10 @@ class SecurityConfiguration(
             .build()
 
     @Bean
-    fun userDetailsService(): UserDetailsService = UserDetailsService { userReader.read(it) }
-
-    @Bean
     fun authenticationManager(): AuthenticationManager {
-        val daoAuthenticationProvider = DaoAuthenticationProvider(passwordEncoder())
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService())
-        return ProviderManager(JwtAuthenticationProvider(tokenParser, userReader), daoAuthenticationProvider)
+        val daoAuthenticationProvider = DaoAuthenticationProvider(passwordEncoder)
+        daoAuthenticationProvider.setUserDetailsService(userService)
+        return ProviderManager(JwtAuthenticationProvider(tokenParser, userService), daoAuthenticationProvider)
     }
 
     @Bean
@@ -83,7 +79,4 @@ class SecurityConfiguration(
 
     @Bean
     fun authenticationEntryPoint(): AuthenticationEntryPoint = ApiAuthenticationEntryPoint(objectMapper)
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 }

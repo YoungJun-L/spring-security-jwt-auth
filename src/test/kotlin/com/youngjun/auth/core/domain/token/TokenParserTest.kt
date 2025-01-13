@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.api.security.InvalidTokenException
 import com.youngjun.auth.core.api.support.error.AuthException
 import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_EXPIRED_ERROR
 import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_INVALID_ERROR
@@ -9,7 +10,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.CredentialsExpiredException
 
 @DomainTest
@@ -40,7 +40,7 @@ class TokenParserTest :
                 test("유효하지 않는 경우 실패한다.") {
                     val token = JwtBuilder(secretKey = "Invalid $secretKey", expiresInSeconds = 0).build()
 
-                    shouldThrow<BadCredentialsException> { tokenParser.parseSubject(token) }
+                    shouldThrow<InvalidTokenException> { tokenParser.parseSubject(token) }
                 }
             }
 

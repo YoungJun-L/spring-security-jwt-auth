@@ -6,7 +6,6 @@ import com.youngjun.auth.core.api.support.RestDocsTest
 import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.type
-import com.youngjun.auth.core.domain.user.NewUserBuilder
 import com.youngjun.auth.core.domain.user.UserBuilder
 import io.mockk.every
 import io.mockk.mockk
@@ -34,23 +33,14 @@ class UserControllerTest : RestDocsTest() {
 
     @Test
     fun `회원가입 성공`() {
-        val validUsername = "username123"
-        val validPassword = "password123!"
-        every {
-            userService.register(
-                NewUserBuilder(
-                    validUsername,
-                    validPassword,
-                ).build(),
-            )
-        } returns UserBuilder().build()
+        every { userService.register(any()) } returns UserBuilder().build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
             .body(
-                RegisterUserRequest(validUsername, validPassword),
+                RegisterUserRequest("username123", "password123!"),
             ).post("/auth/register")
             .then()
             .log()

@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.api.security.InvalidTokenException
 import com.youngjun.auth.core.api.support.error.AuthException
 import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_EXPIRED_ERROR
 import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_INVALID_ERROR
@@ -8,7 +9,6 @@ import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.stereotype.Component
 
@@ -24,7 +24,7 @@ class TokenParser(
         } catch (ex: ExpiredJwtException) {
             throw CredentialsExpiredException("Token is expired", ex)
         } catch (ex: Exception) {
-            throw BadCredentialsException("Invalid token", ex)
+            throw InvalidTokenException("Invalid token", ex)
         }
     }
 

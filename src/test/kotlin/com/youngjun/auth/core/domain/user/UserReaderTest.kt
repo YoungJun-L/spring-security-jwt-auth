@@ -24,7 +24,7 @@ class UserReaderTest :
             context("회원 조회") {
                 test("성공") {
                     val user = UserBuilder().build()
-                    every { userRepository.read(user.username) } returns user
+                    every { userRepository.read(any<String>()) } returns user
 
                     val actual = userReader.read(user.username)
 
@@ -32,17 +32,16 @@ class UserReaderTest :
                 }
 
                 test("회원이 존재하지 않는 경우 실패한다.") {
-                    val username = "username123"
-                    every { userRepository.read(username) } returns null
+                    every { userRepository.read(any<String>()) } returns null
 
-                    shouldThrow<UsernameNotFoundException> { userReader.read(username) }
+                    shouldThrow<UsernameNotFoundException> { userReader.read("username123") }
                 }
             }
 
             context("이용 가능한 회원 조회") {
                 test("성공") {
                     val user = UserBuilder(status = UserStatus.ENABLED).build()
-                    every { userRepository.read(user.id) } returns user
+                    every { userRepository.read(any<Long>()) } returns user
 
                     val actual = userReader.readEnabled(user.id)
 
@@ -50,16 +49,14 @@ class UserReaderTest :
                 }
 
                 test("회원이 존재하지 않는 경우 실패한다.") {
-                    val id = 1L
-                    every { userRepository.read(id) } returns null
+                    every { userRepository.read(any<Long>()) } returns null
 
-                    shouldThrow<AuthException> { userReader.readEnabled(id) }
-                        .errorType shouldBe UNAUTHORIZED_ERROR
+                    shouldThrow<AuthException> { userReader.readEnabled(1L) }.errorType shouldBe UNAUTHORIZED_ERROR
                 }
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
                     val user = UserBuilder(status = UserStatus.DISABLED).build()
-                    every { userRepository.read(user.id) } returns user
+                    every { userRepository.read(any<Long>()) } returns user
 
                     shouldThrow<AuthException> { userReader.readEnabled(user.id) }
                 }

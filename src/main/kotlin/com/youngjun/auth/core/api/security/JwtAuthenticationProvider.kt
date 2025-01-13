@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.api.security
 
+import com.youngjun.auth.core.api.application.UserService
 import com.youngjun.auth.core.domain.token.TokenParser
-import com.youngjun.auth.core.domain.user.UserReader
 import org.springframework.security.authentication.AccountExpiredException
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.DisabledException
@@ -11,11 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails
 
 class JwtAuthenticationProvider(
     private val tokenParser: TokenParser,
-    private val userReader: UserReader,
+    private val userService: UserService,
 ) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
         val username = tokenParser.parseSubject(authentication.credentials as String)
-        val user = userReader.read(username)
+        val user = userService.loadUserByUsername(username)
         check(user)
         return JwtAuthenticationToken.authenticated(user)
     }

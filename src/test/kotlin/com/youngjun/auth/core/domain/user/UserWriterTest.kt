@@ -23,9 +23,8 @@ class UserWriterTest :
             context("저장") {
                 test("성공") {
                     val newUser = NewUserBuilder().build()
-                    val user = UserBuilder(username = newUser.username).build()
-                    every { userRepository.existsByUsername(newUser.username) } returns false
-                    every { userRepository.write(newUser) } returns user
+                    every { userRepository.existsByUsername(any()) } returns false
+                    every { userRepository.write(any()) } returns UserBuilder(username = newUser.username).build()
 
                     val actual = userWriter.write(newUser)
 
@@ -33,10 +32,9 @@ class UserWriterTest :
                 }
 
                 test("동일한 이름으로 저장하면 실패한다.") {
-                    val username = "username123"
-                    every { userRepository.existsByUsername(username) } returns true
+                    every { userRepository.existsByUsername(any()) } returns true
 
-                    shouldThrow<AuthException> { userWriter.write(NewUserBuilder(username = username).build()) }
+                    shouldThrow<AuthException> { userWriter.write(NewUserBuilder(username = "username123").build()) }
                         .errorType shouldBe USER_DUPLICATE_ERROR
                 }
             }

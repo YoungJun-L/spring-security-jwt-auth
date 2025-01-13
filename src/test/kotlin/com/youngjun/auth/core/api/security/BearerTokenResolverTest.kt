@@ -4,32 +4,27 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.every
-import io.mockk.mockk
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders.AUTHORIZATION
-import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.mock.web.MockHttpServletRequest
 
 class BearerTokenResolverTest :
     FunSpec(
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val request = mockk<HttpServletRequest>()
+            val request = MockHttpServletRequest()
             val bearerTokenResolver = BearerTokenResolver()
 
             context("토큰 추출") {
                 test("성공") {
-                    val value = "Bearer a.b.c"
-                    every { request.getHeader(AUTHORIZATION) } returns value
+                    request.addHeader(AUTHORIZATION, "Bearer a.b.c")
 
                     val actual = bearerTokenResolver.resolve(request)
                     actual shouldBe "a.b.c"
                 }
 
                 test("Bearer 로 시작하지 않는 경우 빈 값을 반환한다.") {
-                    val value = "a.b.c"
-                    every { request.getHeader(AUTHORIZATION) } returns value
+                    request.addHeader(AUTHORIZATION, "No-Bearer a.b.c")
 
                     val actual = bearerTokenResolver.resolve(request)
                     actual shouldBe ""
@@ -39,10 +34,9 @@ class BearerTokenResolverTest :
             context("토큰의 형식이 다를 경우 추출에 실패한다.") {
                 arrayOf(" . . ", "a.b", " ").forEach {
                     test("\"$it\"") {
-                        val value = "Bearer $it"
-                        every { request.getHeader(AUTHORIZATION) } returns value
+                        request.addHeader(AUTHORIZATION, "Bearer $it")
 
-                        shouldThrow<BadCredentialsException> { bearerTokenResolver.resolve(request) }
+                        shouldThrow<InvalidTokenException> { bearerTokenResolver.resolve(request) }
                     }
                 }
             }

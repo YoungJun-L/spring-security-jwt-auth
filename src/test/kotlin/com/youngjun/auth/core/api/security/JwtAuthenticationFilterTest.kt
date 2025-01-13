@@ -45,7 +45,7 @@ class JwtAuthenticationFilterTest :
                 }
 
                 test("resolve 값이 없는 경우") {
-                    every { bearerTokenResolver.resolve(request) } returns ""
+                    every { bearerTokenResolver.resolve(any()) } returns ""
 
                     jwtAuthenticationFilter.doFilter(request, response, filterChain)
 

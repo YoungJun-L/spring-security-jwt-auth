@@ -2,7 +2,6 @@ package com.youngjun.auth.core.api.security
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
-import org.springframework.security.authentication.BadCredentialsException
 
 class BearerTokenResolver {
     fun resolve(request: HttpServletRequest): String {
@@ -10,7 +9,9 @@ class BearerTokenResolver {
         if (!authorization.startsWith(AUTHENTICATION_SCHEME_BEARER)) {
             return ""
         }
-        val result = authorizationRegex.matchEntire(authorization) ?: throw BadCredentialsException("잘못된 접근입니다.")
+        val result =
+            authorizationRegex.matchEntire(authorization)
+                ?: throw InvalidTokenException("Invalid input format")
         return result.groups[GROUP_NAME]!!.value
     }
 

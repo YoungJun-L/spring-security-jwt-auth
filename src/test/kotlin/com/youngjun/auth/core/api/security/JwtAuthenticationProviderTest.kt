@@ -1,9 +1,9 @@
 package com.youngjun.auth.core.api.security
 
+import com.youngjun.auth.core.api.application.UserService
 import com.youngjun.auth.core.domain.token.JwtBuilder
 import com.youngjun.auth.core.domain.token.TokenParser
 import com.youngjun.auth.core.domain.user.UserBuilder
-import com.youngjun.auth.core.domain.user.UserReader
 import com.youngjun.auth.core.domain.user.UserStatus
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -19,15 +19,15 @@ class JwtAuthenticationProviderTest :
             isolationMode = IsolationMode.InstancePerLeaf
 
             val tokenParser = mockk<TokenParser>()
-            val userReader = mockk<UserReader>()
-            val jwtAuthenticationProvider = JwtAuthenticationProvider(tokenParser, userReader)
+            val userService = mockk<UserService>()
+            val jwtAuthenticationProvider = JwtAuthenticationProvider(tokenParser, userService)
 
             context("JWT 인증") {
                 test("성공") {
                     val username = "username123"
                     val authentication = BearerTokenAuthenticationToken(JwtBuilder(subject = username).build())
                     every { tokenParser.parseSubject(any()) } returns username
-                    every { userReader.read(any()) } returns UserBuilder(username = username).build()
+                    every { userService.loadUserByUsername(any()) } returns UserBuilder(username = username).build()
 
                     val actual = jwtAuthenticationProvider.authenticate(authentication)
 
@@ -38,7 +38,7 @@ class JwtAuthenticationProviderTest :
                     val username = "username123"
                     val authentication = BearerTokenAuthenticationToken(JwtBuilder(subject = username).build())
                     every { tokenParser.parseSubject(any()) } returns username
-                    every { userReader.read(any()) } returns
+                    every { userService.loadUserByUsername(any()) } returns
                         UserBuilder(
                             username = username,
                             status = UserStatus.DISABLED,
