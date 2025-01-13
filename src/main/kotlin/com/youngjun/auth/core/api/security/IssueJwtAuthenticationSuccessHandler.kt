@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import java.nio.charset.StandardCharsets
 
@@ -22,8 +21,7 @@ class IssueJwtAuthenticationSuccessHandler(
         response: HttpServletResponse,
         authentication: Authentication,
     ) {
-        val user = SecurityContextHolder.getContext().authentication.principal as User
-        val tokenPair = tokenService.issue(user)
+        val tokenPair = tokenService.issue(authentication.principal as User)
         val authResponse = AuthResponse.success(LoginResponse.from(tokenPair))
         write(response, authResponse)
     }
