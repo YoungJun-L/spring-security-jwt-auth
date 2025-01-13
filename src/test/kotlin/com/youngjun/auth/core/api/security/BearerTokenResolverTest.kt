@@ -27,12 +27,12 @@ class BearerTokenResolverTest :
                     actual shouldBe "a.b.c"
                 }
 
-                test("Bearer 로 시작하지 않는 경우 null 을 반환한다.") {
+                test("Bearer 로 시작하지 않는 경우 빈 값을 반환한다.") {
                     val value = "a.b.c"
                     every { request.getHeader(AUTHORIZATION) } returns value
 
                     val actual = bearerTokenResolver.resolve(request)
-                    actual shouldBe null
+                    actual shouldBe ""
                 }
             }
 

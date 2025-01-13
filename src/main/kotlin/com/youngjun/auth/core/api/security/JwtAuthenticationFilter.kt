@@ -22,7 +22,7 @@ class JwtAuthenticationFilter(
     ) {
         try {
             val token = bearerTokenResolver.resolve(request)
-            if (token == null) {
+            if (token.isEmpty()) {
                 filterChain.doFilter(request, response)
                 return
             }
