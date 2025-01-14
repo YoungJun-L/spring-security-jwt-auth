@@ -1,4 +1,9 @@
-rootProject.name = "auth"
+rootProject.name = "spring-security-jwt-auth"
+
+include(
+    "auth",
+    "core",
+)
 
 pluginManagement {
     val kotlinVersion: String by settings

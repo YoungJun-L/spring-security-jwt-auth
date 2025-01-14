@@ -1,0 +1,6 @@
+spring.application.name: auth-test
+
+spring:
+  config:
+    import:
+      - auth.yml

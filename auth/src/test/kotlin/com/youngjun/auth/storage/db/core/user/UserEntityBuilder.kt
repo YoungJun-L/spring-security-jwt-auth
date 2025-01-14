@@ -1,7 +1,6 @@
-package com.youngjun.auth.core.storage.db.core.user
+package com.youngjun.auth.storage.db.core.user
 
 import com.youngjun.auth.core.domain.user.UserStatus
-import com.youngjun.auth.storage.db.core.user.UserEntity
 
 data class UserEntityBuilder(
     val username: String = "username123",

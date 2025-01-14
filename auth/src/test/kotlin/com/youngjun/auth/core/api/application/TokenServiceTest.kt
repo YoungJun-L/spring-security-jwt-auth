@@ -6,9 +6,9 @@ import com.youngjun.auth.core.domain.token.JwtBuilder
 import com.youngjun.auth.core.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.core.domain.user.UserBuilder
 import com.youngjun.auth.core.domain.user.UserStatus
-import com.youngjun.auth.core.storage.db.core.user.UserEntityBuilder
 import com.youngjun.auth.storage.db.core.token.TokenEntity
 import com.youngjun.auth.storage.db.core.token.TokenJpaRepository
+import com.youngjun.auth.storage.db.core.user.UserEntityBuilder
 import com.youngjun.auth.storage.db.core.user.UserJpaRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode

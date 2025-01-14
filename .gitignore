@@ -12,6 +12,7 @@ build/
 *.iml
 *.ipr
 out/
+.run/
 
 ### Mac OS ###
 .DS_Store
