@@ -1,7 +1,7 @@
-package com.youngjun.auth.storage.db.core.user
+package com.youngjun.auth.storage.db.core.account
 
-import com.youngjun.auth.core.domain.user.User
-import com.youngjun.auth.core.domain.user.UserStatus
+import com.youngjun.auth.core.domain.account.Account
+import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.storage.db.core.support.BaseEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -10,11 +10,11 @@ import jakarta.persistence.Table
 
 @Table(name = "users")
 @Entity
-class UserEntity(
+class AccountEntity(
     val username: String,
     val password: String,
     @Enumerated(EnumType.STRING)
-    val status: UserStatus = UserStatus.ENABLED,
+    val status: AccountStatus = AccountStatus.ENABLED,
 ) : BaseEntity() {
-    fun toUser(): User = User(id, username, password, status)
+    fun toAccount(): Account = Account(id, username, password, status)
 }

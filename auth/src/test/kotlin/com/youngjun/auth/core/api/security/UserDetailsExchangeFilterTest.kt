@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.youngjun.auth.core.domain.user.UserBuilder
+import com.youngjun.auth.core.domain.account.AccountBuilder
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -28,7 +28,7 @@ class UserDetailsExchangeFilterTest :
                 test("성공") {
                     val username = "username123"
                     SecurityContextHolder.getContext().authentication =
-                        JwtAuthenticationToken.authenticated(UserBuilder(username = username).build())
+                        JwtAuthenticationToken.authenticated(AccountBuilder(username = username).build())
 
                     userDetailsExchangeFilter.doFilter(request, response, filterChain)
 
@@ -38,7 +38,7 @@ class UserDetailsExchangeFilterTest :
 
                 test("성공하면 인증 정보는 비워진다.") {
                     SecurityContextHolder.getContext().authentication =
-                        JwtAuthenticationToken.authenticated(UserBuilder().build())
+                        JwtAuthenticationToken.authenticated(AccountBuilder().build())
 
                     userDetailsExchangeFilter.doFilter(request, response, filterChain)
 

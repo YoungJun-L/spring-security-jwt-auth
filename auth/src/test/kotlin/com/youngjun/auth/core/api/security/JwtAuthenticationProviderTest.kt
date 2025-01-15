@@ -1,10 +1,10 @@
 package com.youngjun.auth.core.api.security
 
-import com.youngjun.auth.core.api.application.UserService
+import com.youngjun.auth.core.api.application.AccountService
+import com.youngjun.auth.core.domain.account.AccountBuilder
+import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.token.JwtBuilder
 import com.youngjun.auth.core.domain.token.TokenParser
-import com.youngjun.auth.core.domain.user.UserBuilder
-import com.youngjun.auth.core.domain.user.UserStatus
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -19,15 +19,15 @@ class JwtAuthenticationProviderTest :
             isolationMode = IsolationMode.InstancePerLeaf
 
             val tokenParser = mockk<TokenParser>()
-            val userService = mockk<UserService>()
-            val jwtAuthenticationProvider = JwtAuthenticationProvider(tokenParser, userService)
+            val accountService = mockk<AccountService>()
+            val jwtAuthenticationProvider = JwtAuthenticationProvider(tokenParser, accountService)
 
             context("JWT 인증") {
                 test("성공") {
                     val username = "username123"
                     val authentication = BearerTokenAuthenticationToken(JwtBuilder(subject = username).build())
                     every { tokenParser.parseSubject(any()) } returns username
-                    every { userService.loadUserByUsername(any()) } returns UserBuilder(username = username).build()
+                    every { accountService.loadUserByUsername(any()) } returns AccountBuilder(username = username).build()
 
                     val actual = jwtAuthenticationProvider.authenticate(authentication)
 
@@ -38,10 +38,10 @@ class JwtAuthenticationProviderTest :
                     val username = "username123"
                     val authentication = BearerTokenAuthenticationToken(JwtBuilder(subject = username).build())
                     every { tokenParser.parseSubject(any()) } returns username
-                    every { userService.loadUserByUsername(any()) } returns
-                        UserBuilder(
+                    every { accountService.loadUserByUsername(any()) } returns
+                        AccountBuilder(
                             username = username,
-                            status = UserStatus.DISABLED,
+                            status = AccountStatus.DISABLED,
                         ).build()
 
                     shouldThrow<AccountStatusException> { jwtAuthenticationProvider.authenticate(authentication) }

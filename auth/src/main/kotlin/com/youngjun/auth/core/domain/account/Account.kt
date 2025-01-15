@@ -1,17 +1,17 @@
-package com.youngjun.auth.core.domain.user
+package com.youngjun.auth.core.domain.account
 
 import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType.USER_DISABLED_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.USER_LOCKED_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails
 
-data class User(
+data class Account(
     val id: Long,
     private val username: String,
     private val password: String,
-    private val status: UserStatus,
+    private val status: AccountStatus,
     val details: Map<String, Any> = emptyMap(),
 ) : UserDetails {
     override fun getUsername(): String = username
@@ -20,16 +20,16 @@ data class User(
 
     override fun getAuthorities(): Collection<GrantedAuthority> = AuthorityUtils.NO_AUTHORITIES
 
-    override fun isAccountNonLocked(): Boolean = status != UserStatus.LOCKED
+    override fun isAccountNonLocked(): Boolean = status != AccountStatus.LOCKED
 
-    override fun isEnabled(): Boolean = status == UserStatus.ENABLED
+    override fun isEnabled(): Boolean = status == AccountStatus.ENABLED
 
     fun verify() {
         if (!isAccountNonLocked) {
-            throw AuthException(USER_LOCKED_ERROR)
+            throw AuthException(ACCOUNT_LOCKED_ERROR)
         }
         if (!isEnabled) {
-            throw AuthException(USER_DISABLED_ERROR)
+            throw AuthException(ACCOUNT_DISABLED_ERROR)
         }
     }
 }

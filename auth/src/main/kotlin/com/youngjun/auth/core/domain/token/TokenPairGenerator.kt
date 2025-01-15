@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.domain.token
 
-import com.youngjun.auth.core.domain.user.User
+import com.youngjun.auth.core.domain.account.Account
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
@@ -16,11 +16,11 @@ class TokenPairGenerator(
     @Value("\${spring.security.jwt.exp.access}") private val accessExpiresIn: Long,
     @Value("\${spring.security.jwt.exp.refresh}") private val refreshExpiresIn: Long,
 ) {
-    fun issue(user: User): TokenPair {
+    fun generate(account: Account): TokenPair {
         val now = now()
-        val (accessToken, accessTokenExpiration) = buildJwt(user.username, now, accessExpiresIn)
-        val (refreshToken, refreshTokenExpiration) = buildJwt(user.username, now, refreshExpiresIn)
-        return TokenPair(user.id, accessToken, accessTokenExpiration, refreshToken, refreshTokenExpiration)
+        val (accessToken, accessTokenExpiration) = buildJwt(account.username, now, accessExpiresIn)
+        val (refreshToken, refreshTokenExpiration) = buildJwt(account.username, now, refreshExpiresIn)
+        return TokenPair(account.id, accessToken, accessTokenExpiration, refreshToken, refreshTokenExpiration)
     }
 
     private fun buildJwt(

@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.support.DomainTest
-import com.youngjun.auth.core.domain.user.UserBuilder
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import io.kotest.core.spec.IsolationMode
@@ -26,21 +26,21 @@ class TokenPairGeneratorTest :
 
             context("발급") {
                 test("성공") {
-                    val user = UserBuilder().build()
+                    val account = AccountBuilder().build()
 
-                    val actual = tokenPairGenerator.issue(user)
+                    val actual = tokenPairGenerator.generate(account)
 
                     val parser = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.toByteArray())).build()
-                    parser.parseSignedClaims(actual.accessToken).payload.subject shouldBe user.username
-                    parser.parseSignedClaims(actual.refreshToken).payload.subject shouldBe user.username
+                    parser.parseSignedClaims(actual.accessToken).payload.subject shouldBe account.username
+                    parser.parseSignedClaims(actual.refreshToken).payload.subject shouldBe account.username
                 }
 
                 test("access token 만료 시간 검증") {
                     val now = now()
                     withConstantNow(now) {
-                        val user = UserBuilder().build()
+                        val account = AccountBuilder().build()
 
-                        val actual = tokenPairGenerator.issue(user)
+                        val actual = tokenPairGenerator.generate(account)
 
                         actual.accessTokenExpiration shouldBe
                             now.atZone(ZoneId.systemDefault()).toEpochSecond() + accessExpiresIn
@@ -50,9 +50,9 @@ class TokenPairGeneratorTest :
                 test("refresh token 만료 시간 검증") {
                     val now = now()
                     withConstantNow(now) {
-                        val user = UserBuilder().build()
+                        val account = AccountBuilder().build()
 
-                        val actual = tokenPairGenerator.issue(user)
+                        val actual = tokenPairGenerator.generate(account)
 
                         actual.refreshTokenExpiration shouldBe
                             now.atZone(ZoneId.systemDefault()).toEpochSecond() + refreshExpiresIn

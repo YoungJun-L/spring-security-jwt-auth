@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.api.security
 
-import com.youngjun.auth.core.domain.user.User
+import com.youngjun.auth.core.domain.account.Account
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 
@@ -21,11 +21,11 @@ data class JwtAuthenticationToken private constructor(
     override fun getDetails(): Map<String, Any> = details
 
     companion object {
-        fun authenticated(user: User): JwtAuthenticationToken =
+        fun authenticated(account: Account): JwtAuthenticationToken =
             JwtAuthenticationToken(
-                user.username,
-                user.details,
-                user.authorities,
+                account.username,
+                account.details,
+                account.authorities,
             )
     }
 }

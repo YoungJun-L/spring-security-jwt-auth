@@ -1,6 +1,6 @@
 package com.youngjun.auth.core.api.security
 
-import com.youngjun.auth.core.domain.user.UserBuilder
+import com.youngjun.auth.core.domain.account.AccountBuilder
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -37,7 +37,7 @@ class JwtAuthenticationFilterTest :
                 test("성공") {
                     every { bearerTokenResolver.resolve(any()) } returns "token"
                     every { authenticationManager.authenticate(any()) } returns
-                        JwtAuthenticationToken.authenticated(UserBuilder().build())
+                        JwtAuthenticationToken.authenticated(AccountBuilder().build())
 
                     jwtAuthenticationFilter.doFilter(request, response, filterChain)
 

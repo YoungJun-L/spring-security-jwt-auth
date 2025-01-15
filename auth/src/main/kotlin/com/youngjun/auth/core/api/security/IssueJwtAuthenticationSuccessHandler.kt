@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.response.LoginResponse
 import com.youngjun.auth.core.api.support.response.AuthResponse
-import com.youngjun.auth.core.domain.user.User
+import com.youngjun.auth.core.domain.account.Account
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.MediaType
@@ -21,7 +21,7 @@ class IssueJwtAuthenticationSuccessHandler(
         response: HttpServletResponse,
         authentication: Authentication,
     ) {
-        val tokenPair = tokenService.issue(authentication.principal as User)
+        val tokenPair = tokenService.issue(authentication.principal as Account)
         val authResponse = AuthResponse.success(LoginResponse.from(tokenPair))
         write(response, authResponse)
     }

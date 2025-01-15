@@ -1,12 +1,12 @@
 package com.youngjun.auth.core.api.controller.v1
 
-import com.youngjun.auth.core.api.application.UserService
-import com.youngjun.auth.core.api.controller.v1.request.RegisterUserRequest
+import com.youngjun.auth.core.api.application.AccountService
+import com.youngjun.auth.core.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.core.api.support.RestDocsTest
 import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.type
-import com.youngjun.auth.core.domain.user.UserBuilder
+import com.youngjun.auth.core.domain.account.AccountBuilder
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType
@@ -21,26 +21,26 @@ import org.springframework.restdocs.payload.JsonFieldType.STRING
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 
-class UserControllerTest : RestDocsTest() {
-    private lateinit var userService: UserService
+class AccountControllerTest : RestDocsTest() {
+    private lateinit var accountService: AccountService
 
     @BeforeEach
     fun setUp() {
-        userService = mockk()
-        val userController = UserController(userService)
-        setMockMvc(userController)
+        accountService = mockk()
+        val accountController = AccountController(accountService)
+        setMockMvc(accountController)
     }
 
     @Test
     fun `회원가입 성공`() {
-        every { userService.register(any()) } returns UserBuilder().build()
+        every { accountService.register(any()) } returns AccountBuilder().build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
             .body(
-                RegisterUserRequest("username123", "password123!"),
+                RegisterAccountRequest("username123", "password123!"),
             ).post("/auth/register")
             .then()
             .log()

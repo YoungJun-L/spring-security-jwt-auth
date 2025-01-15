@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.api.security
 
+import com.youngjun.auth.core.api.application.AccountService
 import com.youngjun.auth.core.api.application.TokenService
-import com.youngjun.auth.core.api.application.UserService
 import com.youngjun.auth.core.api.controller.v1.request.LoginRequest
 import com.youngjun.auth.core.api.support.SecurityTest
 import com.youngjun.auth.core.api.support.VALID_PASSWORD
@@ -10,9 +10,9 @@ import com.youngjun.auth.core.api.support.description
 import com.youngjun.auth.core.api.support.error.ErrorCode
 import com.youngjun.auth.core.api.support.ignored
 import com.youngjun.auth.core.api.support.type
+import com.youngjun.auth.core.domain.account.AccountBuilder
+import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.token.TokenPairBuilder
-import com.youngjun.auth.core.domain.user.UserBuilder
-import com.youngjun.auth.core.domain.user.UserStatus
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.restassured.http.ContentType
@@ -28,14 +28,14 @@ import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 class LoginTest(
-    private val userService: UserService,
+    private val accountService: AccountService,
     private val tokenService: TokenService,
 ) : SecurityTest() {
     @Test
     fun `로그인 성공`() {
-        val user = UserBuilder(username = VALID_USERNAME).build()
-        every { userService.loadUserByUsername(any()) } returns user
-        every { tokenService.issue(any()) } returns TokenPairBuilder(userId = user.id).build()
+        val account = AccountBuilder(username = VALID_USERNAME).build()
+        every { accountService.loadUserByUsername(any()) } returns account
+        every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
 
         given()
             .log()
@@ -70,7 +70,7 @@ class LoginTest(
 
     @Test
     fun `존재하지 않는 회원이면 실패한다`() {
-        every { userService.loadUserByUsername(any()) } throws UsernameNotFoundException("")
+        every { accountService.loadUserByUsername(any()) } throws UsernameNotFoundException("")
 
         val actual = login("username123", "password123!")
 
@@ -79,7 +79,7 @@ class LoginTest(
 
     @Test
     fun `비밀번호가 다르면 실패한다`() {
-        every { userService.loadUserByUsername(any()) } returns UserBuilder(username = VALID_USERNAME).build()
+        every { accountService.loadUserByUsername(any()) } returns AccountBuilder(username = VALID_USERNAME).build()
 
         val actual = login(VALID_USERNAME, "invalidPassword123!")
 
@@ -88,10 +88,10 @@ class LoginTest(
 
     @Test
     fun `서비스 이용이 제한된 유저이면 실패한다`() {
-        every { userService.loadUserByUsername(any()) } returns
-            UserBuilder(
+        every { accountService.loadUserByUsername(any()) } returns
+            AccountBuilder(
                 username = VALID_USERNAME,
-                status = UserStatus.DISABLED,
+                status = AccountStatus.DISABLED,
             ).build()
 
         val actual = login(VALID_USERNAME, VALID_PASSWORD)
