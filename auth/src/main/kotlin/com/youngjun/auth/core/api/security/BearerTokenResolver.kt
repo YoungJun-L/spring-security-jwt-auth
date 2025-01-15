@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders
 
 class BearerTokenResolver {
     fun resolve(request: HttpServletRequest): String {
-        val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val authorization = request.getHeader(HttpHeaders.AUTHORIZATION) ?: return ""
         if (!authorization.startsWith(AUTHENTICATION_SCHEME_BEARER)) {
             return ""
         }
