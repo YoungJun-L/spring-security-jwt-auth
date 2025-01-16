@@ -19,7 +19,6 @@ import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
-import java.nio.charset.StandardCharsets
 
 class ApiAuthenticationEntryPoint(
     private val objectMapper: ObjectMapper,
@@ -62,7 +61,7 @@ class ApiAuthenticationEntryPoint(
     ) {
         response.status = errorType.status.value()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.characterEncoding = StandardCharsets.UTF_8.name()
+        response.characterEncoding = Charsets.UTF_8.toString()
         response.writer.write(objectMapper.writeValueAsString(AuthResponse.error(errorType)))
     }
 }
