@@ -28,13 +28,6 @@ spring:
       data-source-properties:
         rewriteBatchedStatements: true
 
-  security:
-    jwt:
-      secret-key: 012345678abcdefghijklmnopqrstuvwxyz
-      exp:
-        access: 1800
-        refresh: 2592000
-
 ---
 spring.config.activate.on-profile: local
 
@@ -56,13 +49,6 @@ spring:
     hikari:
       data-source-properties:
         rewriteBatchedStatements: true
-
-  security:
-    jwt:
-      secret-key: 012345678abcdefghijklmnopqrstuvwxyz
-      exp:
-        access: 1800
-        refresh: 2592000
 
 ---
 spring.config.activate.on-profile: dev
@@ -92,10 +78,3 @@ spring:
         cacheServerConfiguration: true
         elideSetAutoCommits: true
         maintainTimeStats: false
-
-  security:
-    jwt:
-      secret-key: 012345678abcdefghijklmnopqrstuvwxyz
-      exp:
-        access: 1800
-        refresh: 2592000

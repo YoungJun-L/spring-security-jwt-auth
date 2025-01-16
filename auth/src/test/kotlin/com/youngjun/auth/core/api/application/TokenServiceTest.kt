@@ -2,10 +2,14 @@ package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.api.support.ApplicationTest
 import com.youngjun.auth.core.api.support.error.AuthException
+import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_EXPIRED_ERROR
+import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_INVALID_ERROR
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.token.JwtBuilder
 import com.youngjun.auth.core.domain.token.RefreshTokenBuilder
+import com.youngjun.auth.core.domain.token.SecretKeyHolder
 import com.youngjun.auth.storage.db.core.account.AccountEntityBuilder
 import com.youngjun.auth.storage.db.core.account.AccountJpaRepository
 import com.youngjun.auth.storage.db.core.token.TokenEntity
@@ -17,7 +21,6 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import org.springframework.beans.factory.annotation.Value
 import java.time.LocalDateTime.now
 
 @ApplicationTest
@@ -25,7 +28,7 @@ class TokenServiceTest(
     private val tokenService: TokenService,
     private val tokenJpaRepository: TokenJpaRepository,
     private val accountJpaRepository: AccountJpaRepository,
-    @Value("\${spring.security.jwt.secret-key}") private val secretKey: String,
+    private val secretKeyHolder: SecretKeyHolder,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -43,7 +46,7 @@ class TokenServiceTest(
                 test("이전 refresh token 은 제거된다.") {
                     val userId = 1L
                     val account = AccountBuilder(id = userId).build()
-                    val previousToken = JwtBuilder(secretKey = secretKey).build()
+                    val previousToken = JwtBuilder().build()
                     tokenJpaRepository.save(TokenEntity(userId, previousToken))
 
                     tokenService.issue(account)
@@ -57,7 +60,7 @@ class TokenServiceTest(
             context("토큰 재발급") {
                 test("성공") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
-                    val refreshToken = JwtBuilder(secretKey = secretKey).build()
+                    val refreshToken = JwtBuilder(secretKey = secretKeyHolder.get()).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 
                     val actual = tokenService.reissue(RefreshTokenBuilder(refreshToken).build())
@@ -80,22 +83,25 @@ class TokenServiceTest(
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
                     val accountEntity =
                         accountJpaRepository.save(AccountEntityBuilder(status = AccountStatus.DISABLED).build())
-                    val refreshToken = JwtBuilder(secretKey = secretKey, subject = accountEntity.username).build()
+                    val refreshToken =
+                        JwtBuilder(secretKey = secretKeyHolder.get(), subject = accountEntity.username).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 
                     shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                        .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
 
                 test("토큰이 유효하지 않으면 실패한다.") {
                     val refreshToken = "invalid"
                     shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                        .errorType shouldBe TOKEN_INVALID_ERROR
                 }
 
                 test("토큰이 만료되었으면 실패한다.") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
                     val refreshToken =
                         JwtBuilder(
-                            secretKey = secretKey,
+                            secretKey = secretKeyHolder.get(),
                             subject = accountEntity.username,
                             issuedAt = now(),
                             expiresInSeconds = 0,
@@ -103,6 +109,7 @@ class TokenServiceTest(
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 
                     shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                        .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
             }
         },

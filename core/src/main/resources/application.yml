@@ -1,8 +1,4 @@
 spring:
-  config:
-    import:
-      - auth.yml
-
   jpa:
     open-in-view: false
     hibernate:

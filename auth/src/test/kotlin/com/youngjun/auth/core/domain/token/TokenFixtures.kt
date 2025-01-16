@@ -1,15 +1,18 @@
 package com.youngjun.auth.core.domain.token
 
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.security.Keys
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 import java.time.ZoneId
 import java.util.Date
+import javax.crypto.SecretKey
 import kotlin.time.Duration.Companion.days
 
 data class JwtBuilder(
-    val secretKey: String = "012345678abcdefghijklmnopqrstuvwxyz",
+    val secretKey: SecretKey =
+        Jwts.SIG.HS256
+            .key()
+            .build(),
     val subject: String = "username123",
     val issuedAt: LocalDateTime = now(),
     val expiresInSeconds: Long = 30.days.inWholeSeconds,
@@ -23,7 +26,7 @@ data class JwtBuilder(
             .issuedAt(Date(issuedAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))
             .expiration(Date(expiration * 1_000))
             .claims(extraClaims)
-            .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray()))
+            .signWith(secretKey)
             .compact()
     }
 }
