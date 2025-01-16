@@ -10,9 +10,6 @@ import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts
 import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
-import java.time.LocalDateTime.now
-import java.time.ZoneId
 import java.util.Date
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -20,6 +17,7 @@ import kotlin.time.Duration.Companion.hours
 @Component
 class TokenProvider(
     private val secretKeyHolder: SecretKeyHolder,
+    private val timeHolder: TimeHolder = TimeHolder.Default,
     private val accessExpiresIn: Long = 2.hours.inWholeMilliseconds,
     private val refreshExpiresIn: Long = 1.days.inWholeMilliseconds,
 ) {
@@ -46,7 +44,7 @@ class TokenProvider(
     }
 
     fun generate(account: Account): TokenPair {
-        val now = now()
+        val now = timeHolder.now()
         val (accessToken, accessTokenExpiration) = buildJwt(account.username, now, accessExpiresIn)
         val (refreshToken, refreshTokenExpiration) = buildJwt(account.username, now, refreshExpiresIn)
         return TokenPair(account.id, accessToken, accessTokenExpiration, refreshToken, refreshTokenExpiration)
@@ -54,16 +52,16 @@ class TokenProvider(
 
     private fun buildJwt(
         subject: String,
-        issuedAt: LocalDateTime,
-        expiresInSeconds: Long,
+        issuedAt: Long,
+        expiresInMilliseconds: Long,
         extraClaims: Map<String, Any> = emptyMap(),
     ): Pair<String, Long> {
-        val expiration = issuedAt.atZone(ZoneId.systemDefault()).toEpochSecond() + expiresInSeconds
+        val expiration = issuedAt + expiresInMilliseconds
         return Jwts
             .builder()
             .subject(subject)
-            .issuedAt(Date(issuedAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))
-            .expiration(Date(expiration * 1_000))
+            .issuedAt(Date(issuedAt))
+            .expiration(Date(expiration))
             .claims(extraClaims)
             .signWith(secretKeyHolder.get())
             .compact() to expiration

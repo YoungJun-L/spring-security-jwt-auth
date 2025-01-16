@@ -21,7 +21,6 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import java.time.LocalDateTime.now
 
 @ApplicationTest
 class TokenServiceTest(
@@ -103,8 +102,7 @@ class TokenServiceTest(
                         JwtBuilder(
                             secretKey = secretKeyHolder.get(),
                             subject = accountEntity.username,
-                            issuedAt = now(),
-                            expiresInSeconds = 0,
+                            expiresInMilliseconds = 0,
                         ).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 

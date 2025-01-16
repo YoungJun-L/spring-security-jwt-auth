@@ -11,11 +11,8 @@ import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.shouldBe
 import org.springframework.security.authentication.CredentialsExpiredException
-import java.time.LocalDateTime.now
-import java.time.ZoneId
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
@@ -32,7 +29,8 @@ class TokenProviderTest :
             val secretKeyHolder = SecretKeyHolder(secretKey)
             val accessExpiresIn: Long = 2.hours.inWholeMilliseconds
             val refreshExpiresIn: Long = 1.days.inWholeMilliseconds
-            val tokenProvider = TokenProvider(secretKeyHolder, accessExpiresIn, refreshExpiresIn)
+            val now = System.currentTimeMillis()
+            val tokenProvider = TokenProvider(secretKeyHolder, { now }, accessExpiresIn, refreshExpiresIn)
 
             context("subject 파싱") {
                 test("성공") {
@@ -45,7 +43,7 @@ class TokenProviderTest :
                 }
 
                 test("만료된 경우 실패한다.") {
-                    val token = JwtBuilder(secretKey = secretKeyHolder.get(), expiresInSeconds = 0).build()
+                    val token = JwtBuilder(secretKey = secretKeyHolder.get(), expiresInMilliseconds = 0).build()
 
                     shouldThrow<CredentialsExpiredException> { tokenProvider.parseSubject(token) }
                 }
@@ -65,7 +63,7 @@ class TokenProviderTest :
                 }
 
                 test("만료된 경우 실패한다.") {
-                    val token = JwtBuilder(secretKey = secretKeyHolder.get(), expiresInSeconds = 0).build()
+                    val token = JwtBuilder(secretKey = secretKeyHolder.get(), expiresInMilliseconds = 0).build()
 
                     shouldThrow<AuthException> { tokenProvider.verify(RefreshTokenBuilder(token).build()) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
@@ -91,27 +89,19 @@ class TokenProviderTest :
                 }
 
                 test("access token 만료 시간 검증") {
-                    val now = now()
-                    withConstantNow(now) {
-                        val account = AccountBuilder().build()
+                    val account = AccountBuilder().build()
 
-                        val actual = tokenProvider.generate(account)
+                    val actual = tokenProvider.generate(account)
 
-                        actual.accessTokenExpiration shouldBe
-                            now.atZone(ZoneId.systemDefault()).toEpochSecond() + accessExpiresIn
-                    }
+                    actual.accessTokenExpiration shouldBe now + accessExpiresIn
                 }
 
                 test("refresh token 만료 시간 검증") {
-                    val now = now()
-                    withConstantNow(now) {
-                        val account = AccountBuilder().build()
+                    val account = AccountBuilder().build()
 
-                        val actual = tokenProvider.generate(account)
+                    val actual = tokenProvider.generate(account)
 
-                        actual.refreshTokenExpiration shouldBe
-                            now.atZone(ZoneId.systemDefault()).toEpochSecond() + refreshExpiresIn
-                    }
+                    actual.refreshTokenExpiration shouldBe now + refreshExpiresIn
                 }
             }
         },

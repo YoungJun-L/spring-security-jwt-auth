@@ -1,9 +1,6 @@
 package com.youngjun.auth.core.domain.token
 
 import io.jsonwebtoken.Jwts
-import java.time.LocalDateTime
-import java.time.LocalDateTime.now
-import java.time.ZoneId
 import java.util.Date
 import javax.crypto.SecretKey
 import kotlin.time.Duration.Companion.days
@@ -14,17 +11,17 @@ data class JwtBuilder(
             .key()
             .build(),
     val subject: String = "username123",
-    val issuedAt: LocalDateTime = now(),
-    val expiresInSeconds: Long = 30.days.inWholeSeconds,
+    val issuedAt: Long = System.currentTimeMillis(),
+    val expiresInMilliseconds: Long = 1.days.inWholeMilliseconds,
     val extraClaims: Map<String, Any> = emptyMap(),
 ) {
     fun build(): String {
-        val expiration = issuedAt.atZone(ZoneId.systemDefault()).toEpochSecond() + expiresInSeconds
+        val expiration = issuedAt + expiresInMilliseconds
         return Jwts
             .builder()
             .subject(subject)
-            .issuedAt(Date(issuedAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))
-            .expiration(Date(expiration * 1_000))
+            .issuedAt(Date(issuedAt))
+            .expiration(Date(expiration))
             .claims(extraClaims)
             .signWith(secretKey)
             .compact()
