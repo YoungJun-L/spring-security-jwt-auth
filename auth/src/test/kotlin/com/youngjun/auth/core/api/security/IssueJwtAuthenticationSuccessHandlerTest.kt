@@ -4,10 +4,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.response.LoginResponse
-import com.youngjun.auth.core.api.support.response.AuthResponse
-import com.youngjun.auth.core.api.support.response.ResultType
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.token.TokenPairBuilder
+import com.youngjun.auth.core.support.response.AuthResponse
+import com.youngjun.auth.core.support.response.ResultType
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

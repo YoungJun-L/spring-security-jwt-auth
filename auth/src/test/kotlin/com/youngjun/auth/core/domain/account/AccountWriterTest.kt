@@ -1,8 +1,8 @@
 package com.youngjun.auth.core.domain.account
 
-import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
-import com.youngjun.auth.core.domain.support.DomainTest
+import com.youngjun.auth.core.support.DomainTest
+import com.youngjun.auth.core.support.error.AuthException
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
 import com.youngjun.auth.storage.db.core.account.AccountRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode

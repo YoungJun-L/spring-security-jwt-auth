@@ -1,10 +1,10 @@
 package com.youngjun.auth.core.api.controller
 
-import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType.BAD_REQUEST_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.DEFAULT_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.NOT_FOUND_ERROR
-import com.youngjun.auth.core.api.support.response.AuthResponse
+import com.youngjun.auth.core.support.error.AuthException
+import com.youngjun.auth.core.support.error.ErrorType.BAD_REQUEST_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.DEFAULT_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.NOT_FOUND_ERROR
+import com.youngjun.auth.core.support.response.AuthResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.logging.LogLevel

@@ -1,7 +1,7 @@
-package com.youngjun.auth.core.api.support.response
+package com.youngjun.auth.core.support.response
 
-import com.youngjun.auth.core.api.support.error.ErrorMessage
-import com.youngjun.auth.core.api.support.error.ErrorType
+import com.youngjun.auth.core.support.error.ErrorMessage
+import com.youngjun.auth.core.support.error.ErrorType
 
 data class AuthResponse<T> private constructor(
     val status: ResultType,

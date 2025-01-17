@@ -1,8 +1,8 @@
 package com.youngjun.auth.core.domain.account
 
-import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
+import com.youngjun.auth.core.support.error.AuthException
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails

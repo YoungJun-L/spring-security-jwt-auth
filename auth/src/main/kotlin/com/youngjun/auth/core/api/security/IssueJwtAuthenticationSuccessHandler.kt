@@ -3,8 +3,8 @@ package com.youngjun.auth.core.api.security
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.response.LoginResponse
-import com.youngjun.auth.core.api.support.response.AuthResponse
 import com.youngjun.auth.core.domain.account.Account
+import com.youngjun.auth.core.support.response.AuthResponse
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus

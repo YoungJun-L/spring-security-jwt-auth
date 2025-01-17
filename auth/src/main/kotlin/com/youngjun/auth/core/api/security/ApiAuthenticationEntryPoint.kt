@@ -1,13 +1,13 @@
 package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.youngjun.auth.core.api.support.error.ErrorType
-import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_INVALID_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.UNAUTHORIZED_ERROR
-import com.youngjun.auth.core.api.support.response.AuthResponse
+import com.youngjun.auth.core.support.error.ErrorType
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.UNAUTHORIZED_ERROR
+import com.youngjun.auth.core.support.response.AuthResponse
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger

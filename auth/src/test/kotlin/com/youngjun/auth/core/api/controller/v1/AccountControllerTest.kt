@@ -2,11 +2,11 @@ package com.youngjun.auth.core.api.controller.v1
 
 import com.youngjun.auth.core.api.application.AccountService
 import com.youngjun.auth.core.api.controller.v1.request.RegisterAccountRequest
-import com.youngjun.auth.core.api.support.RestDocsTest
-import com.youngjun.auth.core.api.support.description
-import com.youngjun.auth.core.api.support.ignored
-import com.youngjun.auth.core.api.support.type
 import com.youngjun.auth.core.domain.account.AccountBuilder
+import com.youngjun.auth.core.support.RestDocsTest
+import com.youngjun.auth.core.support.description
+import com.youngjun.auth.core.support.ignored
+import com.youngjun.auth.core.support.type
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType

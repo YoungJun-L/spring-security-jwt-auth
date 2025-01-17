@@ -1,4 +1,4 @@
-package com.youngjun.auth.core.api.support.error
+package com.youngjun.auth.core.support.error
 
 import org.springframework.boot.logging.LogLevel
 import org.springframework.http.HttpStatus

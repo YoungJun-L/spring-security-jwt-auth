@@ -1,4 +1,4 @@
-package com.youngjun.auth.core.api.support
+package com.youngjun.auth.core.support
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach

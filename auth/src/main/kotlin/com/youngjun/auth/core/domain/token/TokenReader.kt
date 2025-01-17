@@ -1,7 +1,7 @@
 package com.youngjun.auth.core.domain.token
 
-import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_NOT_FOUND_ERROR
+import com.youngjun.auth.core.support.error.AuthException
+import com.youngjun.auth.core.support.error.ErrorType.TOKEN_NOT_FOUND_ERROR
 import com.youngjun.auth.storage.db.core.token.TokenRepository
 import org.springframework.stereotype.Component
 

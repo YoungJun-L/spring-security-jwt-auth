@@ -1,11 +1,11 @@
 package com.youngjun.auth.core.domain.token
 
 import com.youngjun.auth.core.api.security.InvalidTokenException
-import com.youngjun.auth.core.api.support.error.AuthException
-import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_EXPIRED_ERROR
-import com.youngjun.auth.core.api.support.error.ErrorType.TOKEN_INVALID_ERROR
 import com.youngjun.auth.core.domain.account.AccountBuilder
-import com.youngjun.auth.core.domain.support.DomainTest
+import com.youngjun.auth.core.support.DomainTest
+import com.youngjun.auth.core.support.error.AuthException
+import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
 import io.jsonwebtoken.Jwts
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow

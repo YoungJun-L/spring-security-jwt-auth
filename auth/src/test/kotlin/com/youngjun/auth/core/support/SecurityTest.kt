@@ -1,4 +1,4 @@
-package com.youngjun.auth.core.api.support
+package com.youngjun.auth.core.support
 
 import com.ninjasquad.springmockk.MockkBean
 import com.youngjun.auth.core.api.application.AccountService

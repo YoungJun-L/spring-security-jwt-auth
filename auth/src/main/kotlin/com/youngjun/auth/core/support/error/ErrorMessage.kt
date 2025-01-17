@@ -1,4 +1,4 @@
-package com.youngjun.auth.core.api.support.error
+package com.youngjun.auth.core.support.error
 
 data class ErrorMessage private constructor(
     val code: String,

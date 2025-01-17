@@ -1,4 +1,4 @@
-package com.youngjun.auth.core.api.support
+package com.youngjun.auth.core.support
 
 import io.kotest.core.annotation.Tags
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration

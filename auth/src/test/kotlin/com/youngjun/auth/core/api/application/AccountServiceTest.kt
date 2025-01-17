@@ -1,8 +1,8 @@
 package com.youngjun.auth.core.api.application
 
-import com.youngjun.auth.core.api.support.ApplicationTest
-import com.youngjun.auth.core.api.support.VALID_PASSWORD
 import com.youngjun.auth.core.domain.account.NewAccountBuilder
+import com.youngjun.auth.core.support.ApplicationTest
+import com.youngjun.auth.core.support.VALID_PASSWORD
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
