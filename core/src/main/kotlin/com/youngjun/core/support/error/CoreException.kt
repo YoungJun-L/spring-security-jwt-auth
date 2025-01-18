@@ -1,4 +1,4 @@
-package com.youngjun.core.api.support.error
+package com.youngjun.core.support.error
 
 class CoreException(
     val errorType: ErrorType,

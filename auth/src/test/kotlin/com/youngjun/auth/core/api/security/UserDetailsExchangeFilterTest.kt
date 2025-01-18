@@ -16,7 +16,8 @@ class UserDetailsExchangeFilterTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val userDetailsExchangeFilter = UserDetailsExchangeFilter(jacksonObjectMapper())
+            val objectMapper = jacksonObjectMapper()
+            val userDetailsExchangeFilter = UserDetailsExchangeFilter(objectMapper)
 
             afterTest { SecurityContextHolder.clearContext() }
 
@@ -26,14 +27,20 @@ class UserDetailsExchangeFilterTest :
                 val filterChain = MockFilterChain()
 
                 test("성공") {
-                    val username = "username123"
-                    SecurityContextHolder.getContext().authentication =
-                        JwtAuthenticationToken.authenticated(AccountBuilder(username = username).build())
+                    val authentication = JwtAuthenticationToken.authenticated(AccountBuilder().build())
+                    SecurityContextHolder.getContext().authentication = authentication
 
                     userDetailsExchangeFilter.doFilter(request, response, filterChain)
 
                     val actual = (filterChain.request as HttpServletRequest).cookies.first { it.name == "user" }.value
-                    actual shouldBe "{\"username\":\"$username\",\"details\":{}}"
+                    val expect =
+                        objectMapper.writeValueAsString(
+                            mapOf(
+                                "id" to authentication.principal,
+                                "details" to authentication.details,
+                            ),
+                        )
+                    actual shouldBe expect
                 }
 
                 test("성공하면 인증 정보는 비워진다.") {

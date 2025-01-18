@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.ComponentScan
-import org.springframework.http.ResponseEntity
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
@@ -78,5 +77,6 @@ abstract class SecurityTest {
 @RestController
 class TestController {
     @GetMapping("/test")
-    fun test() = ResponseEntity.ok().build<Any>()
+    fun test() {
+    }
 }

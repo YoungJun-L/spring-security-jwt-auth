@@ -6,7 +6,6 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletRequestWrapper
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -33,21 +32,22 @@ class UserDetailsExchangeFilter(
     private class UserRequest(
         private val request: HttpServletRequest,
         private val token: String,
-        private val cookies: Array<Cookie> = (request.cookies ?: emptyArray<Cookie>()) + Cookie("user", token),
+        private val cookies: Array<Cookie> =
+            (request.cookies ?: emptyArray<Cookie>()) + Cookie(USER_COOKIE_NAME, token),
     ) : HttpServletRequestWrapper(request) {
         override fun getCookies(): Array<Cookie> = cookies
+
+        companion object {
+            private const val USER_COOKIE_NAME = "user"
+        }
     }
 
     private data class AuthUserDetails(
-        val username: Any,
+        val id: Any,
         val details: Any,
     ) {
         companion object {
-            fun from(authentication: Authentication): AuthUserDetails =
-                AuthUserDetails(
-                    if (authentication is AnonymousAuthenticationToken) "" else authentication.principal,
-                    authentication.details,
-                )
+            fun from(authentication: Authentication): AuthUserDetails = AuthUserDetails(authentication.principal, authentication.details)
         }
     }
 }

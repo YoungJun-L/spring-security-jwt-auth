@@ -23,12 +23,13 @@ class RequestBodyUsernamePasswordAuthenticationFilterTest :
             isolationMode = IsolationMode.InstancePerLeaf
 
             val authenticationManager = mockk<AuthenticationManager>()
+            val objectMapper = jacksonObjectMapper()
             val authenticationSuccessHandler = mockk<AuthenticationSuccessHandler>()
             val authenticationFailureHandler = mockk<AuthenticationFailureHandler>()
             val requestBodyUsernamePasswordAuthenticationFilter =
                 RequestBodyUsernamePasswordAuthenticationFilter(
                     authenticationManager,
-                    jacksonObjectMapper(),
+                    objectMapper,
                     authenticationSuccessHandler,
                     authenticationFailureHandler,
                 )
@@ -41,7 +42,14 @@ class RequestBodyUsernamePasswordAuthenticationFilterTest :
                     val username = "username123"
                     val password = "password123!"
                     request.contentType = MediaType.APPLICATION_JSON_VALUE
-                    request.setContent("{\"username\":\"$username\",\"password\":\"$password\"}".toByteArray())
+                    request.setContent(
+                        objectMapper.writeValueAsBytes(
+                            mapOf(
+                                "username" to username,
+                                "password" to password,
+                            ),
+                        ),
+                    )
                     every { authenticationManager.authenticate(any()) } returns
                         UsernamePasswordAuthenticationToken.authenticated(
                             username,

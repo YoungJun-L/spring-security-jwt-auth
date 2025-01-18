@@ -12,7 +12,7 @@ data class Account(
     private val username: String,
     private val password: String,
     private val status: AccountStatus,
-    val details: Map<String, Any> = emptyMap(),
+    val details: Map<String, Any> = mapOf("username" to username),
 ) : UserDetails {
     override fun getUsername(): String = username
 
