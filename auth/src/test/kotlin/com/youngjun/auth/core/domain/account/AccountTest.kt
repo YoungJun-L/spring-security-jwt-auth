@@ -19,12 +19,14 @@ class AccountTest :
 
                 test("계정 잠김") {
                     val account = AccountBuilder(status = AccountStatus.LOCKED).build()
-                    shouldThrow<AuthException> { account.verify() }.errorType shouldBe ACCOUNT_LOCKED_ERROR
+                    shouldThrow<AuthException> { account.verify() }
+                        .errorType shouldBe ACCOUNT_LOCKED_ERROR
                 }
 
                 test("이용 제한") {
                     val account = AccountBuilder(status = AccountStatus.DISABLED).build()
-                    shouldThrow<AuthException> { account.verify() }.errorType shouldBe ACCOUNT_DISABLED_ERROR
+                    shouldThrow<AuthException> { account.verify() }
+                        .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
             }
         },
