@@ -13,11 +13,7 @@ class TokenRepository(
         tokenJpaRepository.deleteByUserId(userId)
     }
 
-    fun write(tokenPair: TokenPair): Token {
-        val tokenEntity = TokenEntity(tokenPair.userId, tokenPair.refreshToken)
-        tokenJpaRepository.save(tokenEntity)
-        return tokenEntity.toToken()
-    }
+    fun write(tokenPair: TokenPair): Token = tokenJpaRepository.save(TokenEntity(tokenPair.userId, tokenPair.refreshToken)).toToken()
 
     fun read(refreshToken: RefreshToken): List<Token> = tokenJpaRepository.findByRefreshToken(refreshToken.value).map { it.toToken() }
 }
