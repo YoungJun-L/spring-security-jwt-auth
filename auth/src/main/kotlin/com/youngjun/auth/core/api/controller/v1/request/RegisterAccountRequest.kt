@@ -13,7 +13,7 @@ data class RegisterAccountRequest(
     }
 
     companion object {
-        private val usernameRegex = Regex("^(?!.*\\s)(?=.*[a-zA-Z])(?=.*\\d).{8,49}$")
-        private val passwordRegex = Regex("^(?!.*\\s)(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{10,49}$")
+        private val usernameRegex = Regex("^(?=.*[a-zA-Z])(?=.*\\d)\\w{8,49}$")
+        private val passwordRegex = Regex("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#\$%^*()+=-])[\\w!@#\$%^*()+=-]{10,49}$")
     }
 }

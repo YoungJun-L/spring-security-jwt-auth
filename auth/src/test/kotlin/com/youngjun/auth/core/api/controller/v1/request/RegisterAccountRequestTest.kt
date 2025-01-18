@@ -1,11 +1,20 @@
 package com.youngjun.auth.core.api.controller.v1.request
 
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 
 class RegisterAccountRequestTest :
     FunSpec(
         {
+            context("검증") {
+                test("성공") {
+                    shouldNotThrow<IllegalArgumentException> {
+                        RegisterAccountRequest("username123", "password123!").toNewAccount()
+                    }
+                }
+            }
+
             context("아이디 검증") {
                 arrayOf(
                     "",
@@ -15,6 +24,7 @@ class RegisterAccountRequestTest :
                     "abcdefgh",
                     "01234567",
                     "abcdef 123",
+                    "ㄱㄴㄷㄹㅁ123123",
                 ).forEach { invalidUsername ->
                     test("\"$invalidUsername\"") {
                         val validPassword = "password123!"
@@ -36,6 +46,7 @@ class RegisterAccountRequestTest :
                     "01234567",
                     "!@#$%^&*",
                     "abcdef 123 !",
+                    "ㄱㄴㄷㄹㅁ123123!!@@",
                 ).forEach { invalidPassword ->
                     test("\"$invalidPassword\"") {
                         val validUsername = "username123"
