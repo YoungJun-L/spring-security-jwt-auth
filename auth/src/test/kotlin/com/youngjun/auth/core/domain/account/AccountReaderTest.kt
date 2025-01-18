@@ -2,6 +2,7 @@ package com.youngjun.auth.core.domain.account
 
 import com.youngjun.auth.core.support.DomainTest
 import com.youngjun.auth.core.support.error.AuthException
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.UNAUTHORIZED_ERROR
 import com.youngjun.auth.storage.db.core.account.AccountRepository
 import io.kotest.assertions.throwables.shouldThrow
@@ -51,7 +52,8 @@ class AccountReaderTest :
                 test("회원이 존재하지 않는 경우 실패한다.") {
                     every { accountRepository.read(any<Long>()) } returns null
 
-                    shouldThrow<AuthException> { accountReader.readEnabled(1L) }.errorType shouldBe UNAUTHORIZED_ERROR
+                    shouldThrow<AuthException> { accountReader.readEnabled(1L) }
+                        .errorType shouldBe UNAUTHORIZED_ERROR
                 }
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
@@ -59,6 +61,7 @@ class AccountReaderTest :
                     every { accountRepository.read(any<Long>()) } returns account
 
                     shouldThrow<AuthException> { accountReader.readEnabled(account.id) }
+                        .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
             }
         },
