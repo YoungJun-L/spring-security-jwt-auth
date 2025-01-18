@@ -18,7 +18,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
@@ -42,17 +41,14 @@ class TokenServiceTest(
                     actual.userId shouldBe account.id
                 }
 
-                test("이전 refresh token 은 제거된다.") {
-                    val userId = 1L
-                    val account = AccountBuilder(id = userId).build()
+                test("이전 refresh token 은 교체된다.") {
+                    val account = AccountBuilder().build()
                     val previousToken = JwtBuilder().build()
-                    tokenJpaRepository.save(TokenEntity(userId, previousToken))
+                    tokenJpaRepository.save(TokenEntity(account.id, previousToken))
 
-                    tokenService.issue(account)
+                    val actual = tokenService.issue(account)
 
-                    val actual = tokenJpaRepository.findByUserId(userId)
-                    actual shouldHaveSize 1
-                    actual[0] shouldNotBe previousToken
+                    actual.refreshToken shouldNotBe previousToken
                 }
             }
 
