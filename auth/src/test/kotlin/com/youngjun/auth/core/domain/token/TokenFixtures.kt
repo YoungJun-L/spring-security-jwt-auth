@@ -5,6 +5,19 @@ import java.util.Date
 import javax.crypto.SecretKey
 import kotlin.time.Duration.Companion.days
 
+data class TokenBuilder(
+    val id: Long = 0,
+    val userId: Long = 0,
+    val refreshToken: RefreshToken = RefreshTokenBuilder().build(),
+) {
+    fun build(): Token =
+        Token(
+            id = id,
+            userId = userId,
+            refreshToken = refreshToken,
+        )
+}
+
 data class JwtBuilder(
     val secretKey: SecretKey =
         Jwts.SIG.HS256
