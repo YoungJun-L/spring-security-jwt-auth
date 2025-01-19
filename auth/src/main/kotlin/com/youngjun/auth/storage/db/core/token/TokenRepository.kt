@@ -15,5 +15,5 @@ class TokenRepository(
 
     fun write(tokenPair: TokenPair): Token = tokenJpaRepository.save(TokenEntity(tokenPair.userId, tokenPair.refreshToken)).toToken()
 
-    fun read(refreshToken: RefreshToken): List<Token> = tokenJpaRepository.findByRefreshToken(refreshToken.value).map { it.toToken() }
+    fun read(refreshToken: RefreshToken): Token? = tokenJpaRepository.findByRefreshToken(refreshToken.value)?.toToken()
 }

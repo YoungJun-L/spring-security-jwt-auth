@@ -9,11 +9,5 @@ import org.springframework.stereotype.Component
 class TokenReader(
     private val tokenRepository: TokenRepository,
 ) {
-    fun read(refreshToken: RefreshToken): Token {
-        val tokens = tokenRepository.read(refreshToken)
-        if (tokens.isEmpty()) {
-            throw AuthException(TOKEN_NOT_FOUND_ERROR)
-        }
-        return tokens.first()
-    }
+    fun read(refreshToken: RefreshToken): Token = tokenRepository.read(refreshToken) ?: throw AuthException(TOKEN_NOT_FOUND_ERROR)
 }
