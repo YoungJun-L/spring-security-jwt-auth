@@ -12,5 +12,5 @@ class TokenEntity(
     val userId: Long,
     val refreshToken: String,
 ) : BaseEntity() {
-    fun toToken(): Token = Token(userId, RefreshToken(refreshToken))
+    fun toToken(): Token = Token(id, userId, RefreshToken(refreshToken))
 }
