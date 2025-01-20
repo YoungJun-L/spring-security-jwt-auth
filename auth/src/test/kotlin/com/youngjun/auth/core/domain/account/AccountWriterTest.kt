@@ -3,28 +3,26 @@ package com.youngjun.auth.core.domain.account
 import com.youngjun.auth.core.support.DomainTest
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
-import com.youngjun.auth.storage.db.core.account.AccountRepository
+import com.youngjun.auth.storage.db.core.account.AccountEntityBuilder
+import com.youngjun.auth.storage.db.core.account.AccountJpaRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
-import io.mockk.every
-import io.mockk.mockk
 
 @DomainTest
-class AccountWriterTest :
-    FunSpec(
+class AccountWriterTest(
+    private val accountWriter: AccountWriter,
+    private val accountJpaRepository: AccountJpaRepository,
+) : FunSpec(
         {
+            extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
-
-            val accountRepository = mockk<AccountRepository>()
-            val accountWriter = AccountWriter(accountRepository)
 
             context("저장") {
                 test("성공") {
                     val newAccount = NewAccountBuilder().build()
-                    every { accountRepository.existsByUsername(any()) } returns false
-                    every { accountRepository.write(any()) } returns AccountBuilder(username = newAccount.username).build()
 
                     val actual = accountWriter.write(newAccount)
 
@@ -32,9 +30,10 @@ class AccountWriterTest :
                 }
 
                 test("동일한 이름으로 저장하면 실패한다.") {
-                    every { accountRepository.existsByUsername(any()) } returns true
+                    val username = "username123"
+                    accountJpaRepository.save(AccountEntityBuilder(username = username).build())
 
-                    shouldThrow<AuthException> { accountWriter.write(NewAccountBuilder(username = "username123").build()) }
+                    shouldThrow<AuthException> { accountWriter.write(NewAccountBuilder(username = username).build()) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }
