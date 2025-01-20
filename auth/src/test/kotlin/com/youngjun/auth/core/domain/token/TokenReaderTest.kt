@@ -24,13 +24,13 @@ class TokenReaderTest(
                 test("성공") {
                     val tokenEntity = tokenJpaRepository.save(TokenEntityBuilder().build())
 
-                    val actual = tokenReader.read(RefreshToken(tokenEntity.refreshToken))
+                    val actual = tokenReader.read(tokenEntity.refreshToken)
 
-                    actual.refreshToken.value shouldBe tokenEntity.refreshToken
+                    actual.refreshToken shouldBe tokenEntity.refreshToken
                 }
 
                 test("토큰이 존재하지 않는 경우 실패한다.") {
-                    shouldThrow<AuthException> { tokenReader.read(RefreshTokenBuilder().build()) }
+                    shouldThrow<AuthException> { tokenReader.read("") }
                         .errorType shouldBe TOKEN_NOT_FOUND_ERROR
                 }
             }

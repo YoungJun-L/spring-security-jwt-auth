@@ -33,9 +33,9 @@ class TokenProvider(
         }
     }
 
-    fun verify(token: RefreshToken) {
+    fun verify(token: String) {
         try {
-            jwtParser.parseSignedClaims(token.value)
+            jwtParser.parseSignedClaims(token)
         } catch (ex: ExpiredJwtException) {
             throw AuthException(TOKEN_EXPIRED_ERROR)
         } catch (ex: Exception) {

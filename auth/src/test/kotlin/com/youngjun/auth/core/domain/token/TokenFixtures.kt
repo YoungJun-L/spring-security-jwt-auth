@@ -8,7 +8,8 @@ import kotlin.time.Duration.Companion.days
 data class TokenBuilder(
     val id: Long = 1,
     val userId: Long = 1,
-    val refreshToken: RefreshToken = RefreshTokenBuilder().build(),
+    val refreshToken: String =
+        "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczODU2MTY5MH0.vhoGUbS5qZzlIgjz7cwCQaoqG7P0iJR9pEUCYbDwSbg",
 ) {
     fun build(): Token =
         Token(
@@ -69,15 +70,5 @@ data class TokenPairBuilder(
             accessTokenExpiration = accessTokenExpiresIn,
             refreshToken = refreshToken,
             refreshTokenExpiration = refreshTokenExpiresIn,
-        )
-}
-
-data class RefreshTokenBuilder(
-    val value: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczODU2MTY5MH0.vhoGUbS5qZzlIgjz7cwCQaoqG7P0iJR9pEUCYbDwSbg",
-) {
-    fun build(): RefreshToken =
-        RefreshToken(
-            value = value,
         )
 }

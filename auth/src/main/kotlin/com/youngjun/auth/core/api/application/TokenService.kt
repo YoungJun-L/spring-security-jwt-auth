@@ -3,7 +3,6 @@ package com.youngjun.auth.core.api.application
 import com.youngjun.auth.core.domain.account.Account
 import com.youngjun.auth.core.domain.account.AccountReader
 import com.youngjun.auth.core.domain.token.NewToken
-import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.TokenPair
 import com.youngjun.auth.core.domain.token.TokenProvider
 import com.youngjun.auth.core.domain.token.TokenReader
@@ -23,7 +22,7 @@ class TokenService(
         return tokenPair
     }
 
-    fun reissue(refreshToken: RefreshToken): TokenPair {
+    fun reissue(refreshToken: String): TokenPair {
         tokenProvider.verify(refreshToken)
         val token = tokenReader.read(refreshToken)
         val account = accountReader.readEnabled(token.userId)

@@ -1,7 +1,6 @@
 package com.youngjun.auth.storage.db.core.token
 
 import com.youngjun.auth.core.domain.token.NewToken
-import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.Token
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Repository
@@ -23,5 +22,5 @@ class TokenRepository(
         return tokenEntity.toToken()
     }
 
-    fun read(refreshToken: RefreshToken): Token? = tokenJpaRepository.findByRefreshToken(refreshToken.value)?.toToken()
+    fun read(refreshToken: String): Token? = tokenJpaRepository.findByRefreshToken(refreshToken)?.toToken()
 }

@@ -25,7 +25,7 @@ class TokenWriterTest(
 
                     val actual = tokenWriter.replace(newToken)
 
-                    actual.refreshToken.value shouldBe newToken.refreshToken
+                    actual.refreshToken shouldBe newToken.refreshToken
                 }
 
                 test("이전 토큰은 제거된다.") {

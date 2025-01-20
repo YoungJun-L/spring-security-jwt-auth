@@ -3,7 +3,6 @@ package com.youngjun.auth.core.api.application
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.token.JwtBuilder
-import com.youngjun.auth.core.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.core.domain.token.SecretKeyHolder
 import com.youngjun.auth.core.support.ApplicationTest
 import com.youngjun.auth.core.support.error.AuthException
@@ -58,7 +57,7 @@ class TokenServiceTest(
                     val refreshToken = JwtBuilder(secretKey = secretKeyHolder.get()).build()
                     tokenJpaRepository.save(TokenEntityBuilder(accountEntity.id, refreshToken).build())
 
-                    val actual = tokenService.reissue(RefreshTokenBuilder(refreshToken).build())
+                    val actual = tokenService.reissue(refreshToken)
 
                     actual.userId shouldBe accountEntity.id
                 }
@@ -82,13 +81,13 @@ class TokenServiceTest(
                         JwtBuilder(secretKey = secretKeyHolder.get(), subject = accountEntity.username).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 
-                    shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                    shouldThrow<AuthException> { tokenService.reissue(refreshToken) }
                         .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
 
                 test("토큰이 유효하지 않으면 실패한다.") {
                     val refreshToken = "invalid"
-                    shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                    shouldThrow<AuthException> { tokenService.reissue(refreshToken) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
 
@@ -102,7 +101,7 @@ class TokenServiceTest(
                         ).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 
-                    shouldThrow<AuthException> { tokenService.reissue(RefreshTokenBuilder(refreshToken).build()) }
+                    shouldThrow<AuthException> { tokenService.reissue(refreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
             }

@@ -59,20 +59,20 @@ class TokenProviderTest :
                 test("성공") {
                     val token = JwtBuilder(secretKey = secretKeyHolder.get()).build()
 
-                    shouldNotThrow<AuthException> { tokenProvider.verify(RefreshTokenBuilder(token).build()) }
+                    shouldNotThrow<AuthException> { tokenProvider.verify(token) }
                 }
 
                 test("만료된 경우 실패한다.") {
                     val token = JwtBuilder(secretKey = secretKeyHolder.get(), expiresInMilliseconds = 0).build()
 
-                    shouldThrow<AuthException> { tokenProvider.verify(RefreshTokenBuilder(token).build()) }
+                    shouldThrow<AuthException> { tokenProvider.verify(token) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
 
                 test("유효하지 않는 경우 실패한다.") {
                     val token = JwtBuilder().build()
 
-                    shouldThrow<AuthException> { tokenProvider.verify(RefreshTokenBuilder(token).build()) }
+                    shouldThrow<AuthException> { tokenProvider.verify(token) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
             }
