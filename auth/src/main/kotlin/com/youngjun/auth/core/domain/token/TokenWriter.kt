@@ -9,8 +9,8 @@ class TokenWriter(
     private val tokenRepository: TokenRepository,
 ) {
     @Transactional
-    fun replaceTo(tokenPair: TokenPair) {
+    fun update(tokenPair: TokenPair): Token {
         tokenRepository.delete(tokenPair.userId)
-        tokenRepository.write(tokenPair)
+        return tokenRepository.update(tokenPair)
     }
 }

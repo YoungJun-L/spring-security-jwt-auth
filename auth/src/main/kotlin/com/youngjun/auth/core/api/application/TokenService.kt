@@ -18,7 +18,7 @@ class TokenService(
 ) {
     fun issue(account: Account): TokenPair {
         val tokenPair = tokenProvider.generate(account)
-        tokenWriter.replaceTo(tokenPair)
+        tokenWriter.update(tokenPair)
         return tokenPair
     }
 
@@ -27,7 +27,7 @@ class TokenService(
         val token = tokenReader.read(refreshToken)
         val account = accountReader.readEnabled(token.userId)
         val tokenPair = tokenProvider.generate(account)
-        tokenWriter.replaceTo(tokenPair)
+        tokenWriter.update(tokenPair)
         return tokenPair
     }
 }
