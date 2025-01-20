@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.TestContext
 import org.springframework.test.context.support.AbstractTestExecutionListener
 
-object ApplicationTestExecutionListener : AbstractTestExecutionListener() {
+object DatabaseCleanupTestExecutionListener : AbstractTestExecutionListener() {
     override fun afterTestMethod(testContext: TestContext) {
         val jdbcTemplate = testContext.applicationContext.getBean(JdbcTemplate::class.java)
         val truncateQueries = getTruncateQueries(jdbcTemplate)

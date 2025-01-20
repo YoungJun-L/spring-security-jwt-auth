@@ -13,7 +13,7 @@ import org.springframework.test.context.TestExecutionListeners
 @ActiveProfiles("test")
 @EnableAutoConfiguration(exclude = [SecurityAutoConfiguration::class, WebMvcAutoConfiguration::class])
 @TestExecutionListeners(
-    value = [ApplicationTestExecutionListener::class],
+    value = [DatabaseCleanupTestExecutionListener::class],
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS,
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
