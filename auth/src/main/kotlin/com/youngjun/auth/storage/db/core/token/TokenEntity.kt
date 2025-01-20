@@ -10,7 +10,7 @@ import jakarta.persistence.Table
 @Entity
 class TokenEntity(
     val userId: Long,
-    val refreshToken: String,
+    var refreshToken: String,
 ) : BaseEntity() {
     fun toToken(): Token = Token(id, userId, RefreshToken(refreshToken))
 }

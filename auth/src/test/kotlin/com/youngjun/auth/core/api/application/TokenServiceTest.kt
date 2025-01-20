@@ -13,6 +13,7 @@ import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
 import com.youngjun.auth.storage.db.core.account.AccountEntityBuilder
 import com.youngjun.auth.storage.db.core.account.AccountJpaRepository
 import com.youngjun.auth.storage.db.core.token.TokenEntity
+import com.youngjun.auth.storage.db.core.token.TokenEntityBuilder
 import com.youngjun.auth.storage.db.core.token.TokenJpaRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -43,12 +44,11 @@ class TokenServiceTest(
 
                 test("이전 refresh token 은 교체된다.") {
                     val account = AccountBuilder().build()
-                    val previousToken = JwtBuilder().build()
-                    tokenJpaRepository.save(TokenEntity(account.id, previousToken))
+                    val tokenEntity = tokenJpaRepository.save(TokenEntityBuilder(account.id).build())
 
                     val actual = tokenService.issue(account)
 
-                    actual.refreshToken shouldNotBe previousToken
+                    actual.refreshToken shouldNotBe tokenEntity.refreshToken
                 }
             }
 
@@ -56,7 +56,7 @@ class TokenServiceTest(
                 test("성공") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
                     val refreshToken = JwtBuilder(secretKey = secretKeyHolder.get()).build()
-                    tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
+                    tokenJpaRepository.save(TokenEntityBuilder(accountEntity.id, refreshToken).build())
 
                     val actual = tokenService.reissue(RefreshTokenBuilder(refreshToken).build())
 

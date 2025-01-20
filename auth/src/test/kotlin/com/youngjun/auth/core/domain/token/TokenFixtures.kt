@@ -6,13 +6,25 @@ import javax.crypto.SecretKey
 import kotlin.time.Duration.Companion.days
 
 data class TokenBuilder(
-    val id: Long = 0,
-    val userId: Long = 0,
+    val id: Long = 1,
+    val userId: Long = 1,
     val refreshToken: RefreshToken = RefreshTokenBuilder().build(),
 ) {
     fun build(): Token =
         Token(
             id = id,
+            userId = userId,
+            refreshToken = refreshToken,
+        )
+}
+
+data class NewTokenBuilder(
+    val userId: Long = 1,
+    val refreshToken: String =
+        "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczODU2MTY5MH0.vhoGUbS5qZzlIgjz7cwCQaoqG7P0iJR9pEUCYbDwSbg",
+) {
+    fun build(): NewToken =
+        NewToken(
             userId = userId,
             refreshToken = refreshToken,
         )
@@ -61,7 +73,8 @@ data class TokenPairBuilder(
 }
 
 data class RefreshTokenBuilder(
-    val value: String = "",
+    val value: String =
+        "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczODU2MTY5MH0.vhoGUbS5qZzlIgjz7cwCQaoqG7P0iJR9pEUCYbDwSbg",
 ) {
     fun build(): RefreshToken =
         RefreshToken(
