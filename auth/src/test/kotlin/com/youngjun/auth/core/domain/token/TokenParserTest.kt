@@ -33,14 +33,14 @@ class TokenParserTest :
                     actual shouldBe userId
                 }
 
-                test("만료된 경우 실패한다.") {
+                test("토큰의 만료 시간이 지났으면 실패한다.") {
                     val token = JwtBuilder(secretKey = secretKeyHolder.get(), expiresInMilliseconds = 0).build()
 
                     shouldThrow<AuthException> { tokenParser.parseUserId(token) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
 
-                test("유효하지 않는 경우 실패한다.") {
+                test("토큰이 유효하지 않으면 실패한다.") {
                     val token = JwtBuilder().build()
 
                     shouldThrow<AuthException> { tokenParser.parseUserId(token) }

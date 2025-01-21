@@ -24,7 +24,7 @@ class BearerTokenResolverTest :
                     actual shouldBe "a.b.c"
                 }
 
-                test("Bearer 로 시작하지 않는 경우 빈 값을 반환한다.") {
+                test("Bearer 로 시작하지 않으면 빈 값을 반환한다.") {
                     request.addHeader(AUTHORIZATION, "No-Bearer a.b.c")
 
                     val actual = bearerTokenResolver.resolve(request)
@@ -32,7 +32,7 @@ class BearerTokenResolverTest :
                 }
             }
 
-            context("토큰의 형식이 다를 경우 추출에 실패한다.") {
+            context("토큰의 형식이 다르면 추출에 실패한다.") {
                 arrayOf(" . . ", "a.b", " ").forEach {
                     test("\"$it\"") {
                         request.addHeader(AUTHORIZATION, "Bearer $it")

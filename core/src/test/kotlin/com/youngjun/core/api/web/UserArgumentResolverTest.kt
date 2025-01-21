@@ -71,7 +71,7 @@ class UserArgumentResolverTest :
                     actual.id shouldBe id
                 }
 
-                test("값이 변조된 경우 실패한다.") {
+                test("값이 변조되었으면 실패한다.") {
                     val request = MockHttpServletRequest()
                     request.setCookies(Cookie("user", ""))
                     val webRequest = ServletWebRequest(request)

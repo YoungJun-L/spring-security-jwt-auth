@@ -78,7 +78,7 @@ class TokenServiceTest(
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
 
-                test("토큰이 만료되었으면 실패한다.") {
+                test("토큰의 만료 시간이 지났으면 실패한다.") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
                     val refreshToken =
                         JwtBuilder(
@@ -118,7 +118,7 @@ class TokenServiceTest(
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
 
-                test("토큰이 만료되었으면 실패한다.") {
+                test("토큰의 만료 시간이 지났으면 실패한다.") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
                     val accessToken =
                         JwtBuilder(

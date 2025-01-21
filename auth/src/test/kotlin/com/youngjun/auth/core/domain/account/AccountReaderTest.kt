@@ -31,7 +31,7 @@ class AccountReaderTest(
                     actual.id shouldBe accountEntity.id
                 }
 
-                test("회원이 존재하지 않는 경우 실패한다.") {
+                test("회원이 존재하지 않으면 실패한다.") {
                     shouldThrow<UsernameNotFoundException> { accountReader.read("username123") }
                 }
             }
@@ -46,7 +46,7 @@ class AccountReaderTest(
                     actual.id shouldBe accountEntity.id
                 }
 
-                test("회원이 존재하지 않는 경우 실패한다.") {
+                test("회원이 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { accountReader.readEnabled(1L) }
                         .errorType shouldBe UNAUTHORIZED_ERROR
                 }

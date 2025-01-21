@@ -29,7 +29,7 @@ class TokenReaderTest(
                     actual.refreshToken shouldBe tokenEntity.refreshToken
                 }
 
-                test("토큰이 존재하지 않는 경우 실패한다.") {
+                test("토큰이 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { tokenReader.read("") }
                         .errorType shouldBe TOKEN_NOT_FOUND_ERROR
                 }
