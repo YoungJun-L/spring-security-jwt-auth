@@ -62,30 +62,6 @@ class TokenServiceTest(
                     actual.userId shouldBe accountEntity.id
                 }
 
-                xtest("refresh token 의 만료 기간이 1주일 이상 남았으면 refresh token 은 갱신되지 않는다.") {
-//                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
-//                    val refreshToken =
-//                        JwtBuilder(
-//                            secretKey = secretKeyHolder.get(),
-//                            expiresInMilliseconds = 7.days.inWholeMilliseconds + 1.minutes.inWholeMilliseconds,
-//                        ).build()
-//                    tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
-//
-//                    val actual = tokenService.reissue(RefreshTokenBuilder(refreshToken).build())
-//
-//                    actual.refreshToken shouldBe ""
-//                    actual.refreshTokenExpiration shouldBe -1
-//                    tokenJpaRepository.findByUserId(accountEntity.id)
-                }
-
-                xtest("refresh token 의 만료 기간이 1주일 미만 남았으면 refresh token 도 갱신된다.") {
-                    TODO()
-                }
-
-                xtest("refresh token 이 갱신되면 이전 토큰은 제거된다.") {
-                    TODO()
-                }
-
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
                     val accountEntity =
                         accountJpaRepository.save(AccountEntityBuilder(status = AccountStatus.DISABLED).build())
@@ -98,8 +74,7 @@ class TokenServiceTest(
                 }
 
                 test("토큰이 유효하지 않으면 실패한다.") {
-                    val refreshToken = "invalid"
-                    shouldThrow<AuthException> { tokenService.reissue(refreshToken) }
+                    shouldThrow<AuthException> { tokenService.reissue("invalid") }
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
 
@@ -118,8 +93,43 @@ class TokenServiceTest(
                 }
             }
 
-            context("토큰 파싱") {
+            context("accessToken 파싱") {
                 test("성공") {
+                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
+                    val accessToken = JwtBuilder(secretKey = secretKeyHolder.get()).build()
+
+                    val actual = tokenService.parse(accessToken)
+
+                    actual.id shouldBe accountEntity.id
+                }
+
+                test("서비스 이용이 제한된 유저이면 실패한다.") {
+                    val accountEntity =
+                        accountJpaRepository.save(AccountEntityBuilder(status = AccountStatus.DISABLED).build())
+                    val accessToken =
+                        JwtBuilder(secretKey = secretKeyHolder.get(), subject = accountEntity.id.toString()).build()
+
+                    shouldThrow<AuthException> { tokenService.parse(accessToken) }
+                        .errorType shouldBe ACCOUNT_DISABLED_ERROR
+                }
+
+                test("토큰이 유효하지 않으면 실패한다.") {
+                    shouldThrow<AuthException> { tokenService.parse("invalid") }
+                        .errorType shouldBe TOKEN_INVALID_ERROR
+                }
+
+                test("토큰이 만료되었으면 실패한다.") {
+                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
+                    val accessToken =
+                        JwtBuilder(
+                            secretKey = secretKeyHolder.get(),
+                            subject = accountEntity.id.toString(),
+                            expiresInMilliseconds = 0,
+                        ).build()
+                    tokenJpaRepository.save(TokenEntity(accountEntity.id, accessToken))
+
+                    shouldThrow<AuthException> { tokenService.parse(accessToken) }
+                        .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
             }
         },
