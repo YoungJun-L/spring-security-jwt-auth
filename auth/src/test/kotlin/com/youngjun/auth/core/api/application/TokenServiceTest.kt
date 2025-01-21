@@ -4,6 +4,7 @@ import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.token.JwtBuilder
 import com.youngjun.auth.core.domain.token.SecretKeyHolder
+import com.youngjun.auth.core.domain.token.TokenStatus
 import com.youngjun.auth.core.support.ApplicationTest
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
@@ -87,6 +88,16 @@ class TokenServiceTest(
                             expiresInMilliseconds = 0,
                         ).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
+
+                    shouldThrow<AuthException> { tokenService.reissue(refreshToken) }
+                        .errorType shouldBe TOKEN_EXPIRED_ERROR
+                }
+
+                test("토큰이 만료되었으면 실패한다.") {
+                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
+                    val refreshToken =
+                        JwtBuilder(secretKey = secretKeyHolder.get(), subject = accountEntity.id.toString()).build()
+                    tokenJpaRepository.save(TokenEntityBuilder(accountEntity.id, refreshToken, TokenStatus.EXPIRED).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(refreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
