@@ -1,6 +1,5 @@
 package com.youngjun.auth.core.domain.token
 
-import com.youngjun.auth.core.api.security.InvalidTokenException
 import com.youngjun.auth.core.domain.account.Account
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
@@ -8,7 +7,6 @@ import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts
-import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.stereotype.Component
 import java.util.Date
 import kotlin.time.Duration.Companion.days
@@ -26,16 +24,6 @@ class TokenProvider(
     fun parseSubject(token: String): String {
         try {
             return jwtParser.parseSignedClaims(token).payload.subject
-        } catch (ex: ExpiredJwtException) {
-            throw CredentialsExpiredException("Token is expired", ex)
-        } catch (ex: Exception) {
-            throw InvalidTokenException("Invalid token", ex)
-        }
-    }
-
-    fun verify(token: String) {
-        try {
-            jwtParser.parseSignedClaims(token)
         } catch (ex: ExpiredJwtException) {
             throw AuthException(TOKEN_EXPIRED_ERROR)
         } catch (ex: Exception) {

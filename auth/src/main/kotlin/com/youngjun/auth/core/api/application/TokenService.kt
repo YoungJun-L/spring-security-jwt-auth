@@ -23,7 +23,7 @@ class TokenService(
     }
 
     fun reissue(refreshToken: String): TokenPair {
-        tokenProvider.verify(refreshToken)
+        tokenProvider.parseSubject(refreshToken)
         val token = tokenReader.read(refreshToken)
         val account = accountReader.readEnabled(token.userId)
         val tokenPair = tokenProvider.generate(account)
