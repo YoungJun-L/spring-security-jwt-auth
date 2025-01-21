@@ -23,27 +23,27 @@ class TokenParserTest :
             val secretKeyHolder = SecretKeyHolder(secretKey)
             val tokenParser = TokenParser(secretKeyHolder)
 
-            context("subject 파싱") {
+            context("userId 파싱") {
                 test("성공") {
-                    val subject = "username123"
-                    val token = JwtBuilder(secretKey = secretKey, subject = subject).build()
+                    val userId = 1L
+                    val token = JwtBuilder(secretKey = secretKey, subject = userId.toString()).build()
 
-                    val actual = tokenParser.parseSubject(token)
+                    val actual = tokenParser.parseUserId(token)
 
-                    actual shouldBe subject
+                    actual shouldBe userId
                 }
 
                 test("만료된 경우 실패한다.") {
                     val token = JwtBuilder(secretKey = secretKeyHolder.get(), expiresInMilliseconds = 0).build()
 
-                    shouldThrow<AuthException> { tokenParser.parseSubject(token) }
+                    shouldThrow<AuthException> { tokenParser.parseUserId(token) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
 
                 test("유효하지 않는 경우 실패한다.") {
                     val token = JwtBuilder().build()
 
-                    shouldThrow<AuthException> { tokenParser.parseSubject(token) }
+                    shouldThrow<AuthException> { tokenParser.parseUserId(token) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
             }

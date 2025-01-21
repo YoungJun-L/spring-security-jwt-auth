@@ -14,13 +14,15 @@ class TokenParser(
 ) {
     private val jwtParser: JwtParser = Jwts.parser().verifyWith(secretKeyHolder.get()).build()
 
-    fun parseSubject(token: String): String {
+    fun parseUserId(token: String) =
         try {
-            return jwtParser.parseSignedClaims(token).payload.subject
+            jwtParser
+                .parseSignedClaims(token)
+                .payload.subject
+                .toLong()
         } catch (ex: ExpiredJwtException) {
             throw AuthException(TOKEN_EXPIRED_ERROR)
         } catch (ex: Exception) {
             throw AuthException(TOKEN_INVALID_ERROR)
         }
-    }
 }

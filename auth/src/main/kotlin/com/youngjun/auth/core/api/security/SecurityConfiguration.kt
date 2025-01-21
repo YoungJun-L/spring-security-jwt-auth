@@ -3,6 +3,7 @@ package com.youngjun.auth.core.api.security
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.youngjun.auth.core.api.application.AccountService
 import com.youngjun.auth.core.api.application.TokenService
+import com.youngjun.auth.core.domain.account.AccountReader
 import com.youngjun.auth.core.domain.token.TokenParser
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,6 +27,7 @@ class SecurityConfiguration(
     private val tokenService: TokenService,
     private val tokenParser: TokenParser,
     private val accountService: AccountService,
+    private val accountReader: AccountReader,
     private val passwordEncoder: PasswordEncoder,
     private val objectMapper: ObjectMapper,
 ) {
@@ -71,7 +73,7 @@ class SecurityConfiguration(
     fun authenticationManager(): AuthenticationManager {
         val daoAuthenticationProvider = DaoAuthenticationProvider(passwordEncoder)
         daoAuthenticationProvider.setUserDetailsService(accountService)
-        return ProviderManager(JwtAuthenticationProvider(tokenParser, accountService), daoAuthenticationProvider)
+        return ProviderManager(JwtAuthenticationProvider(tokenParser, accountReader), daoAuthenticationProvider)
     }
 
     @Bean

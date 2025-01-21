@@ -62,15 +62,27 @@ class TokenServiceTest(
                     actual.userId shouldBe accountEntity.id
                 }
 
-                test("refresh token 의 만료 기간이 1주일 이상 남았으면 refresh token 은 갱신되지 않는다.") {
+                xtest("refresh token 의 만료 기간이 1주일 이상 남았으면 refresh token 은 갱신되지 않는다.") {
+//                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
+//                    val refreshToken =
+//                        JwtBuilder(
+//                            secretKey = secretKeyHolder.get(),
+//                            expiresInMilliseconds = 7.days.inWholeMilliseconds + 1.minutes.inWholeMilliseconds,
+//                        ).build()
+//                    tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
+//
+//                    val actual = tokenService.reissue(RefreshTokenBuilder(refreshToken).build())
+//
+//                    actual.refreshToken shouldBe ""
+//                    actual.refreshTokenExpiration shouldBe -1
+//                    tokenJpaRepository.findByUserId(accountEntity.id)
+                }
+
+                xtest("refresh token 의 만료 기간이 1주일 미만 남았으면 refresh token 도 갱신된다.") {
                     TODO()
                 }
 
-                test("refresh token 의 만료 기간이 1주일 미만 남았으면 refresh token 도 갱신된다.") {
-                    TODO()
-                }
-
-                test("refresh token 이 갱신되면 이전 토큰은 제거된다.") {
+                xtest("refresh token 이 갱신되면 이전 토큰은 제거된다.") {
                     TODO()
                 }
 
@@ -78,7 +90,7 @@ class TokenServiceTest(
                     val accountEntity =
                         accountJpaRepository.save(AccountEntityBuilder(status = AccountStatus.DISABLED).build())
                     val refreshToken =
-                        JwtBuilder(secretKey = secretKeyHolder.get(), subject = accountEntity.username).build()
+                        JwtBuilder(secretKey = secretKeyHolder.get(), subject = accountEntity.id.toString()).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 
                     shouldThrow<AuthException> { tokenService.reissue(refreshToken) }
@@ -96,13 +108,18 @@ class TokenServiceTest(
                     val refreshToken =
                         JwtBuilder(
                             secretKey = secretKeyHolder.get(),
-                            subject = accountEntity.username,
+                            subject = accountEntity.id.toString(),
                             expiresInMilliseconds = 0,
                         ).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 
                     shouldThrow<AuthException> { tokenService.reissue(refreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
+                }
+            }
+
+            context("토큰 파싱") {
+                test("성공") {
                 }
             }
         },

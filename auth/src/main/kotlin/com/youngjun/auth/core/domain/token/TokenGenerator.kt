@@ -16,13 +16,13 @@ class TokenGenerator(
 ) {
     fun generate(account: Account): TokenPair {
         val now = timeHolder.now()
-        val (accessToken, accessTokenExpiration) = buildJwt(account.username, now, accessExpiresIn)
-        val (refreshToken, refreshTokenExpiration) = buildJwt(account.username, now, refreshExpiresIn)
+        val (accessToken, accessTokenExpiration) = buildJwt(account, now, accessExpiresIn)
+        val (refreshToken, refreshTokenExpiration) = buildJwt(account, now, refreshExpiresIn)
         return TokenPair(account.id, accessToken, accessTokenExpiration, refreshToken, refreshTokenExpiration)
     }
 
     private fun buildJwt(
-        subject: String,
+        account: Account,
         issuedAt: Long,
         expiresInMilliseconds: Long,
         extraClaims: Map<String, Any> = emptyMap(),
@@ -30,7 +30,7 @@ class TokenGenerator(
         val expiration = issuedAt + expiresInMilliseconds
         return Jwts
             .builder()
-            .subject(subject)
+            .subject(account.id.toString())
             .issuedAt(Date(issuedAt))
             .expiration(Date(expiration))
             .claims(extraClaims)

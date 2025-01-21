@@ -3,6 +3,7 @@ package com.youngjun.auth.core.support
 import com.ninjasquad.springmockk.MockkBean
 import com.youngjun.auth.core.api.application.AccountService
 import com.youngjun.auth.core.api.application.TokenService
+import com.youngjun.auth.core.domain.account.AccountReader
 import com.youngjun.auth.core.domain.token.TokenParser
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
@@ -32,6 +33,9 @@ import org.springframework.web.context.WebApplicationContext
 abstract class SecurityTest {
     @MockkBean
     private lateinit var accountService: AccountService
+
+    @MockkBean
+    private lateinit var accountReader: AccountReader
 
     @MockkBean
     private lateinit var tokenService: TokenService

@@ -32,8 +32,8 @@ class TokenGeneratorTest :
                     val actual = tokenGenerator.generate(account)
 
                     val parser = Jwts.parser().verifyWith(secretKeyHolder.get()).build()
-                    parser.parseSignedClaims(actual.accessToken).payload.subject shouldBe account.username
-                    parser.parseSignedClaims(actual.refreshToken).payload.subject shouldBe account.username
+                    parser.parseSignedClaims(actual.accessToken).payload.subject shouldBe "${account.id}"
+                    parser.parseSignedClaims(actual.refreshToken).payload.subject shouldBe "${account.id}"
                 }
 
                 test("access token 만료 시간 검증") {

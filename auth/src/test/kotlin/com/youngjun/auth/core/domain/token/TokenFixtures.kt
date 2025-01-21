@@ -36,7 +36,7 @@ data class JwtBuilder(
         Jwts.SIG.HS256
             .key()
             .build(),
-    val subject: String = "username123",
+    val subject: String = "1",
     val issuedAt: Long = System.currentTimeMillis(),
     val expiresInMilliseconds: Long = 1.days.inWholeMilliseconds,
     val extraClaims: Map<String, Any> = emptyMap(),

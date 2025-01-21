@@ -20,12 +20,12 @@ class TokenService(
 ) {
     fun issue(account: Account): TokenPair {
         val tokenPair = tokenGenerator.generate(account)
-        tokenWriter.replace(NewToken(account.id, tokenPair.refreshToken))
+        tokenWriter.replace(NewToken.from(tokenPair))
         return tokenPair
     }
 
     fun reissue(refreshToken: String): TokenPair {
-        tokenParser.parseSubject(refreshToken)
+        tokenParser.parseUserId(refreshToken)
         val token = tokenReader.read(refreshToken)
         val account = accountReader.readEnabled(token.userId)
         val tokenPair = tokenGenerator.generate(account)

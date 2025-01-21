@@ -1,12 +1,15 @@
 package com.youngjun.auth.core.api.security
 
-import com.youngjun.auth.core.api.application.AccountService
 import com.youngjun.auth.core.domain.account.AccountBuilder
-import com.youngjun.auth.core.domain.account.AccountStatus
+import com.youngjun.auth.core.domain.account.AccountReader
 import com.youngjun.auth.core.domain.token.TokenParser
 import com.youngjun.auth.core.support.SecurityTest
-import com.youngjun.auth.core.support.VALID_USERNAME
+import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorCode
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_NOT_FOUND_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.restassured.http.ContentType
@@ -17,18 +20,16 @@ import org.springframework.http.HttpStatus
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.security.authentication.CredentialsExpiredException
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 class JwtAuthenticationTest(
-    private val accountService: AccountService,
     private val tokenParser: TokenParser,
+    private val accountReader: AccountReader,
 ) : SecurityTest() {
     @Test
     fun `JWT 인증 성공`() {
-        val username = "username123"
-        every { tokenParser.parseSubject(any()) } returns username
-        every { accountService.loadUserByUsername(any()) } returns AccountBuilder(username = username).build()
+        val userId = 1L
+        every { tokenParser.parseUserId(any()) } returns userId
+        every { accountReader.readEnabled(any()) } returns AccountBuilder(id = userId).build()
 
         given()
             .log()
@@ -52,7 +53,7 @@ class JwtAuthenticationTest(
 
     @Test
     fun `유효하지 않은 JWT 이면 실패한다`() {
-        every { tokenParser.parseSubject(any()) } throws InvalidTokenException("")
+        every { tokenParser.parseUserId(any()) } throws AuthException(TOKEN_INVALID_ERROR)
 
         val actual = authenticate()
 
@@ -61,7 +62,7 @@ class JwtAuthenticationTest(
 
     @Test
     fun `만료된 JWT 이면 실패한다`() {
-        every { tokenParser.parseSubject(any()) } throws CredentialsExpiredException("")
+        every { tokenParser.parseUserId(any()) } throws AuthException(TOKEN_EXPIRED_ERROR)
 
         val actual = authenticate()
 
@@ -70,8 +71,8 @@ class JwtAuthenticationTest(
 
     @Test
     fun `존재하지 않는 회원이면 실패한다`() {
-        every { tokenParser.parseSubject(any()) } returns "username123"
-        every { accountService.loadUserByUsername(any()) } throws UsernameNotFoundException("")
+        every { tokenParser.parseUserId(any()) } returns 1L
+        every { accountReader.readEnabled(any()) } throws AuthException(ACCOUNT_NOT_FOUND_ERROR)
 
         val actual = authenticate()
 
@@ -80,12 +81,9 @@ class JwtAuthenticationTest(
 
     @Test
     fun `서비스 이용이 제한된 유저이면 실패한다`() {
-        every { tokenParser.parseSubject(any()) } returns VALID_USERNAME
-        every { accountService.loadUserByUsername(any()) } returns
-            AccountBuilder(
-                username = VALID_USERNAME,
-                status = AccountStatus.DISABLED,
-            ).build()
+        val userId = 1L
+        every { tokenParser.parseUserId(any()) } returns userId
+        every { accountReader.readEnabled(any()) } throws AuthException(ACCOUNT_DISABLED_ERROR)
 
         val actual = authenticate()
 
