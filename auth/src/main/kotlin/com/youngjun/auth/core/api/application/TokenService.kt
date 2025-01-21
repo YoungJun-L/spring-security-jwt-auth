@@ -27,7 +27,7 @@ class TokenService(
         val token = tokenReader.read(refreshToken)
         val account = accountReader.readEnabled(token.userId)
         val tokenPair = tokenProvider.generate(account)
-        tokenWriter.update(NewToken(account.id, tokenPair.refreshToken))
+        tokenWriter.update(NewToken.from(tokenPair))
         return tokenPair
     }
 }
