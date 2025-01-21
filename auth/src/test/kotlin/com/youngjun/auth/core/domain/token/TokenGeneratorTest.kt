@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 @DomainTest
-class TokenProviderTest :
+class TokenGeneratorTest :
     FunSpec(
         {
             isolationMode = IsolationMode.InstancePerLeaf
@@ -23,13 +23,13 @@ class TokenProviderTest :
             val accessExpiresIn: Long = 2.hours.inWholeMilliseconds
             val refreshExpiresIn: Long = 1.days.inWholeMilliseconds
             val now = System.currentTimeMillis()
-            val tokenProvider = TokenProvider(secretKeyHolder, { now }, accessExpiresIn, refreshExpiresIn)
+            val tokenGenerator = TokenGenerator(secretKeyHolder, { now }, accessExpiresIn, refreshExpiresIn)
 
             context("발급") {
                 test("성공") {
                     val account = AccountBuilder().build()
 
-                    val actual = tokenProvider.generate(account)
+                    val actual = tokenGenerator.generate(account)
 
                     val parser = Jwts.parser().verifyWith(secretKeyHolder.get()).build()
                     parser.parseSignedClaims(actual.accessToken).payload.subject shouldBe account.username
@@ -39,7 +39,7 @@ class TokenProviderTest :
                 test("access token 만료 시간 검증") {
                     val account = AccountBuilder().build()
 
-                    val actual = tokenProvider.generate(account)
+                    val actual = tokenGenerator.generate(account)
 
                     actual.accessTokenExpiration shouldBe now + accessExpiresIn
                 }
@@ -47,7 +47,7 @@ class TokenProviderTest :
                 test("refresh token 만료 시간 검증") {
                     val account = AccountBuilder().build()
 
-                    val actual = tokenProvider.generate(account)
+                    val actual = tokenGenerator.generate(account)
 
                     actual.refreshTokenExpiration shouldBe now + refreshExpiresIn
                 }

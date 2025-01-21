@@ -8,7 +8,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 @Component
-class TokenProvider(
+class TokenGenerator(
     private val secretKeyHolder: SecretKeyHolder,
     private val timeHolder: TimeHolder = TimeHolder.Default,
     private val accessExpiresIn: Long = 2.hours.inWholeMilliseconds,
