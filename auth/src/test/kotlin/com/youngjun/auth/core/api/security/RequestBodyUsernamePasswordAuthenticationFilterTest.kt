@@ -1,6 +1,7 @@
 package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.youngjun.auth.core.support.error.ErrorType.BAD_REQUEST_ERROR
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -11,7 +12,6 @@ import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
@@ -67,9 +67,9 @@ class RequestBodyUsernamePasswordAuthenticationFilterTest :
                     request.contentType = MediaType.APPLICATION_JSON_VALUE
                     request.setContent("".toByteArray())
 
-                    shouldThrow<BadCredentialsException> {
+                    shouldThrow<TypedAuthenticationException> {
                         requestBodyUsernamePasswordAuthenticationFilter.attemptAuthentication(request, response)
-                    }
+                    }.errorType shouldBe BAD_REQUEST_ERROR
                 }
             }
         },

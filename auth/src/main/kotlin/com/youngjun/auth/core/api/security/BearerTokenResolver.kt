@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.api.security
 
+import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
 
@@ -11,7 +12,7 @@ class BearerTokenResolver {
         }
         val result =
             authorizationRegex.matchEntire(authorization)
-                ?: throw InvalidTokenException("Invalid input format")
+                ?: throw TypedAuthenticationException(TOKEN_INVALID_ERROR)
         return result.groups[GROUP_NAME]!!.value
     }
 

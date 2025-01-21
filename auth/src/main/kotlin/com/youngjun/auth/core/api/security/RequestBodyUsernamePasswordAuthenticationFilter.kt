@@ -3,11 +3,11 @@ package com.youngjun.auth.core.api.security
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.youngjun.auth.core.api.controller.v1.request.LoginRequest
+import com.youngjun.auth.core.support.error.ErrorType.BAD_REQUEST_ERROR
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
@@ -41,7 +41,7 @@ class RequestBodyUsernamePasswordAuthenticationFilter(
             try {
                 objectMapper.readValue(request.reader)
             } catch (ex: Exception) {
-                throw BadCredentialsException(ex.message, ex)
+                throw TypedAuthenticationException(BAD_REQUEST_ERROR, ex)
             }
         return authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username, loginRequest.password),
