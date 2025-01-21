@@ -5,6 +5,7 @@ import com.youngjun.auth.core.support.error.ErrorType
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.UNAUTHORIZED_ERROR
 import com.youngjun.auth.core.support.response.AuthResponse
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.logging.LogLevel
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.AuthenticationException
@@ -38,6 +40,7 @@ class ApiAuthenticationEntryPoint(
     private fun resolve(ex: AuthenticationException) =
         when (ex) {
             is InvalidTokenException -> TOKEN_INVALID_ERROR
+            is CredentialsExpiredException -> TOKEN_EXPIRED_ERROR
             is BadCredentialsException -> ACCOUNT_BAD_CREDENTIALS_ERROR
             is LockedException -> ACCOUNT_LOCKED_ERROR
             is DisabledException -> ACCOUNT_DISABLED_ERROR

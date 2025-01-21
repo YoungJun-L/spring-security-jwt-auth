@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.security.authentication.AccountStatusException
+import org.springframework.security.authentication.CredentialsExpiredException
 
 class JwtAuthenticationProviderTest :
     FunSpec(
@@ -45,6 +46,20 @@ class JwtAuthenticationProviderTest :
                         ).build()
 
                     shouldThrow<AccountStatusException> { jwtAuthenticationProvider.authenticate(authentication) }
+                }
+
+                test("토큰이 유효하지 않으면 실패한다.") {
+                    val authentication = BearerTokenAuthenticationToken(JwtBuilder().build())
+                    every { tokenProvider.parseSubject(any()) } throws InvalidTokenException("")
+
+                    shouldThrow<InvalidTokenException> { jwtAuthenticationProvider.authenticate(authentication) }
+                }
+
+                test("토큰이 만료되었으면 실패한다.") {
+                    val authentication = BearerTokenAuthenticationToken(JwtBuilder().build())
+                    every { tokenProvider.parseSubject(any()) } throws CredentialsExpiredException("")
+
+                    shouldThrow<CredentialsExpiredException> { jwtAuthenticationProvider.authenticate(authentication) }
                 }
             }
         },

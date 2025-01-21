@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 class JwtAuthenticationTest(
@@ -56,6 +57,15 @@ class JwtAuthenticationTest(
         val actual = authenticate()
 
         actual["code"] shouldBe ErrorCode.E4012.name
+    }
+
+    @Test
+    fun `만료된 JWT 이면 실패한다`() {
+        every { tokenProvider.parseSubject(any()) } throws CredentialsExpiredException("")
+
+        val actual = authenticate()
+
+        actual["code"] shouldBe ErrorCode.E4013.name
     }
 
     @Test
