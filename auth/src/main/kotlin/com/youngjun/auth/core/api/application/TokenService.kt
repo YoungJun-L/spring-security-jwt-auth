@@ -32,4 +32,9 @@ class TokenService(
         tokenWriter.update(NewToken.from(tokenPair))
         return tokenPair
     }
+
+    fun parse(accessToken: String): Account {
+        val userId = tokenParser.parseUserId(accessToken)
+        return accountReader.readEnabled(userId)
+    }
 }
