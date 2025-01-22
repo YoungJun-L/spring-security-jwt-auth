@@ -21,6 +21,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import java.time.Duration
 
 @ApplicationTest
 class TokenServiceTest(
@@ -85,7 +86,7 @@ class TokenServiceTest(
                         JwtBuilder(
                             secretKey = secretKeyHolder.get(),
                             subject = accountEntity.id.toString(),
-                            expiresInMilliseconds = 0,
+                            expiresIn = Duration.ZERO,
                         ).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, refreshToken))
 
@@ -135,7 +136,7 @@ class TokenServiceTest(
                         JwtBuilder(
                             secretKey = secretKeyHolder.get(),
                             subject = accountEntity.id.toString(),
-                            expiresInMilliseconds = 0,
+                            expiresIn = Duration.ZERO,
                         ).build()
                     tokenJpaRepository.save(TokenEntity(accountEntity.id, accessToken))
 

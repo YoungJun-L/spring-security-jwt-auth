@@ -1,13 +1,16 @@
 package com.youngjun.auth.core.domain.token
 
 import com.youngjun.auth.core.domain.account.AccountBuilder
+import com.youngjun.auth.core.domain.support.hours
 import com.youngjun.auth.core.support.DomainTest
 import io.jsonwebtoken.Jwts
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
+import java.time.Clock
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @DomainTest
 class TokenGeneratorTest :
@@ -19,11 +22,11 @@ class TokenGeneratorTest :
                 Jwts.SIG.HS256
                     .key()
                     .build()
-            val secretKeyHolder = SecretKeyHolder(secretKey)
-            val accessExpiresIn: Long = 2.hours.inWholeMilliseconds
-            val refreshExpiresIn: Long = 1.days.inWholeMilliseconds
-            val now = System.currentTimeMillis()
-            val tokenGenerator = TokenGenerator(secretKeyHolder, { now }, accessExpiresIn, refreshExpiresIn)
+            val accessExpiresIn = 1.hours
+            val refreshExpiresIn = 12.hours
+            val clock = Clock.fixed(Instant.now(), ZoneId.systemDefault())
+            val now = LocalDateTime.now(clock)
+            val tokenGenerator = TokenGenerator(SecretKeyHolder(secretKey), accessExpiresIn, refreshExpiresIn, clock)
 
             context("발급") {
                 test("성공") {
@@ -31,7 +34,7 @@ class TokenGeneratorTest :
 
                     val actual = tokenGenerator.generate(account)
 
-                    val parser = Jwts.parser().verifyWith(secretKeyHolder.get()).build()
+                    val parser = Jwts.parser().verifyWith(secretKey).build()
                     parser.parseSignedClaims(actual.accessToken).payload.subject shouldBe "${account.id}"
                     parser.parseSignedClaims(actual.refreshToken).payload.subject shouldBe "${account.id}"
                 }

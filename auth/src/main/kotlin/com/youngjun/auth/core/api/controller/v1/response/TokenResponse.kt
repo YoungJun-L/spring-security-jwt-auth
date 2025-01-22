@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.api.controller.v1.response
 
+import com.youngjun.auth.core.domain.support.toEpochSecond
 import com.youngjun.auth.core.domain.token.TokenPair
 
 data class TokenResponse(
@@ -12,9 +13,9 @@ data class TokenResponse(
         fun from(tokenPair: TokenPair): TokenResponse =
             TokenResponse(
                 tokenPair.accessToken,
-                tokenPair.accessTokenExpiration,
+                tokenPair.accessTokenExpiration.toEpochSecond(),
                 tokenPair.refreshToken,
-                tokenPair.refreshTokenExpiration,
+                tokenPair.refreshTokenExpiration.toEpochSecond(),
             )
     }
 }

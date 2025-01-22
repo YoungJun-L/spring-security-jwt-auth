@@ -9,6 +9,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import java.time.Duration
 
 @DomainTest
 class TokenParserTest :
@@ -20,8 +21,7 @@ class TokenParserTest :
                 Jwts.SIG.HS256
                     .key()
                     .build()
-            val secretKeyHolder = SecretKeyHolder(secretKey)
-            val tokenParser = TokenParser(secretKeyHolder)
+            val tokenParser = TokenParser(SecretKeyHolder(secretKey))
 
             context("userId 파싱") {
                 test("성공") {
@@ -34,7 +34,7 @@ class TokenParserTest :
                 }
 
                 test("토큰의 만료 시간이 지났으면 실패한다.") {
-                    val token = JwtBuilder(secretKey = secretKeyHolder.get(), expiresInMilliseconds = 0).build()
+                    val token = JwtBuilder(secretKey = secretKey, expiresIn = Duration.ZERO).build()
 
                     shouldThrow<AuthException> { tokenParser.parseUserId(token) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR

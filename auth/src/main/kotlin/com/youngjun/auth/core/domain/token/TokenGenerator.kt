@@ -1,38 +1,41 @@
 package com.youngjun.auth.core.domain.token
 
 import com.youngjun.auth.core.domain.account.Account
+import com.youngjun.auth.core.domain.support.hours
+import com.youngjun.auth.core.domain.support.toInstant
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
+import java.time.Clock
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.Date
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
 
 @Component
 class TokenGenerator(
     private val secretKeyHolder: SecretKeyHolder,
-    private val timeHolder: TimeHolder = TimeHolder.Default,
-    private val accessExpiresIn: Long = 2.hours.inWholeMilliseconds,
-    private val refreshExpiresIn: Long = 1.days.inWholeMilliseconds,
+    private val accessTokenExpiresIn: Duration = 1.hours,
+    private val refreshTokenExpiresIn: Duration = 12.hours,
+    private val clock: Clock = Clock.systemDefaultZone(),
 ) {
     fun generate(account: Account): TokenPair {
-        val now = timeHolder.now()
-        val (accessToken, accessTokenExpiration) = buildJwt(account, now, accessExpiresIn)
-        val (refreshToken, refreshTokenExpiration) = buildJwt(account, now, refreshExpiresIn)
+        val now = LocalDateTime.now(clock)
+        val (accessToken, accessTokenExpiration) = buildJwt(account, now, accessTokenExpiresIn)
+        val (refreshToken, refreshTokenExpiration) = buildJwt(account, now, refreshTokenExpiresIn)
         return TokenPair(account.id, accessToken, accessTokenExpiration, refreshToken, refreshTokenExpiration)
     }
 
     private fun buildJwt(
         account: Account,
-        issuedAt: Long,
-        expiresInMilliseconds: Long,
+        issuedAt: LocalDateTime,
+        expiresIn: Duration,
         extraClaims: Map<String, Any> = emptyMap(),
-    ): Pair<String, Long> {
-        val expiration = issuedAt + expiresInMilliseconds
+    ): Pair<String, LocalDateTime> {
+        val expiration = issuedAt + expiresIn
         return Jwts
             .builder()
             .subject(account.id.toString())
-            .issuedAt(Date(issuedAt))
-            .expiration(Date(expiration))
+            .issuedAt(Date.from(issuedAt.toInstant()))
+            .expiration(Date.from(expiration.toInstant()))
             .claims(extraClaims)
             .signWith(secretKeyHolder.get())
             .compact() to expiration

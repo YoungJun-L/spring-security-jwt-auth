@@ -1,9 +1,12 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.domain.support.hours
+import com.youngjun.auth.core.domain.support.toInstant
 import io.jsonwebtoken.Jwts
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.Date
 import javax.crypto.SecretKey
-import kotlin.time.Duration.Companion.days
 
 data class TokenBuilder(
     val id: Long = 1,
@@ -39,31 +42,29 @@ data class JwtBuilder(
             .key()
             .build(),
     val subject: String = "1",
-    val issuedAt: Long = System.currentTimeMillis(),
-    val expiresInMilliseconds: Long = 1.days.inWholeMilliseconds,
+    val issuedAt: LocalDateTime = LocalDateTime.now(),
+    val expiresIn: Duration = 12.hours,
     val extraClaims: Map<String, Any> = emptyMap(),
 ) {
-    fun build(): String {
-        val expiration = issuedAt + expiresInMilliseconds
-        return Jwts
+    fun build(): String =
+        Jwts
             .builder()
             .subject(subject)
-            .issuedAt(Date(issuedAt))
-            .expiration(Date(expiration))
+            .issuedAt(Date.from(issuedAt.toInstant()))
+            .expiration(Date.from((issuedAt + expiresIn).toInstant()))
             .claims(extraClaims)
             .signWith(secretKey)
             .compact()
-    }
 }
 
 data class TokenPairBuilder(
     var userId: Long = 1,
     var accessToken: String =
         "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczNTk3MTQ5MH0.DRnoLwFpmwER9VoCmbyR-tIUIJSrRjOufzAsR3G3miA",
-    var accessTokenExpiresIn: Long = 17359714909720,
+    var accessTokenExpiresIn: LocalDateTime = LocalDateTime.now(),
     var refreshToken: String =
         "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczODU2MTY5MH0.vhoGUbS5qZzlIgjz7cwCQaoqG7P0iJR9pEUCYbDwSbg",
-    var refreshTokenExpiresIn: Long = 1738561690972,
+    var refreshTokenExpiresIn: LocalDateTime = LocalDateTime.now(),
 ) {
     fun build(): TokenPair =
         TokenPair(
