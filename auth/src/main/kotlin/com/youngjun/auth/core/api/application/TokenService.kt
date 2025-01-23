@@ -26,10 +26,8 @@ class TokenService(
         return tokenPairDetails
     }
 
-    fun reissue(refreshToken: String): TokenPair {
-        tokenParser.parseUserId(refreshToken)
-        val refreshTokenDetails = refreshTokenReader.read(refreshToken)
-        refreshTokenDetails.verify()
+    fun reissue(refreshToken: RefreshToken): TokenPairDetails {
+        val refreshTokenDetails = refreshTokenReader.readEnabled(refreshToken)
         val account = accountReader.readEnabled(refreshTokenDetails.userId)
         val tokenPairDetails = tokenGenerator.generate(account)
         refreshTokenWriter.update(NewRefreshToken.from(tokenPairDetails))

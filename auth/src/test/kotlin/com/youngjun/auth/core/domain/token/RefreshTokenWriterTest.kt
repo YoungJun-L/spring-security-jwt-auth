@@ -18,7 +18,7 @@ class RefreshTokenWriterTest(
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("토큰 교체") {
+            context("refreshToken 교체") {
                 test("성공") {
                     val newRefreshToken = NewRefreshTokenBuilder().build()
                     refreshTokenJpaRepository.save(
@@ -33,15 +33,10 @@ class RefreshTokenWriterTest(
                     actual.refreshToken shouldBe newRefreshToken.refreshToken
                 }
 
-                test("이전 토큰은 제거된다.") {
+                test("이전 refreshToken 은 제거된다.") {
                     val newRefreshToken = NewRefreshTokenBuilder().build()
                     val refreshTokenEntity =
-                        refreshTokenJpaRepository.save(
-                            RefreshTokenEntityBuilder(
-                                newRefreshToken.userId,
-                                "previousToken",
-                            ).build(),
-                        )
+                        refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(newRefreshToken.userId).build())
 
                     refreshTokenWriter.replace(newRefreshToken)
 
@@ -49,21 +44,14 @@ class RefreshTokenWriterTest(
                 }
             }
 
-            context("토큰 값 변경") {
+            context("refreshToken 값 변경") {
                 test("성공") {
                     val newRefreshToken = NewRefreshTokenBuilder().build()
-                    val refreshTokenEntity =
-                        refreshTokenJpaRepository.save(
-                            RefreshTokenEntityBuilder(
-                                newRefreshToken.userId,
-                                "previousToken",
-                            ).build(),
-                        )
+                    refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(newRefreshToken.userId).build())
 
-                    refreshTokenWriter.update(newRefreshToken)
+                    val actual = refreshTokenWriter.update(newRefreshToken)
 
-                    val actual = refreshTokenJpaRepository.findByIdOrNull(refreshTokenEntity.id)!!
-                    actual.refreshToken shouldBe newRefreshToken.refreshToken.value
+                    actual.refreshToken shouldBe newRefreshToken.refreshToken
                 }
             }
         },

@@ -12,7 +12,7 @@ import io.kotest.matchers.shouldBe
 class RefreshTokenDetailsTest :
     FunSpec(
         {
-            context("토큰 상태 검증") {
+            context("refreshToken 상태 검증") {
                 test("이용 가능") {
                     val refreshTokenDetails = RefreshTokenDetailsBuilder(status = TokenStatus.ENABLED).build()
                     shouldNotThrow<AuthException> { refreshTokenDetails.verify() }

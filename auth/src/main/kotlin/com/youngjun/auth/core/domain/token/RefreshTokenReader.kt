@@ -8,7 +8,13 @@ import org.springframework.stereotype.Component
 @Component
 class RefreshTokenReader(
     private val refreshTokenRepository: RefreshTokenRepository,
+    private val tokenParser: TokenParser,
 ) {
-    fun read(refreshToken: RefreshToken): RefreshTokenDetails =
-        refreshTokenRepository.read(refreshToken) ?: throw AuthException(TOKEN_NOT_FOUND_ERROR)
+    fun readEnabled(refreshToken: RefreshToken): RefreshTokenDetails {
+        val userId = tokenParser.parseUserId(refreshToken)
+        val refreshTokenDetails =
+            refreshTokenRepository.read(userId) ?: throw AuthException(TOKEN_NOT_FOUND_ERROR)
+        refreshTokenDetails.verify()
+        return refreshTokenDetails
+    }
 }

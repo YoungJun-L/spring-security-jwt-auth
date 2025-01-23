@@ -81,12 +81,12 @@ class TokenServiceTest(
                         .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
 
-                test("토큰이 유효하지 않으면 실패한다.") {
+                test("refreshToken 이 유효하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { tokenService.reissue(RefreshToken("INVALID")) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
 
-                test("토큰의 만료 시간이 지났으면 실패한다.") {
+                test("refreshToken 의 만료 시간이 지났으면 실패한다.") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
                     val refreshToken =
                         RefreshToken(
@@ -102,7 +102,7 @@ class TokenServiceTest(
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
 
-                test("토큰이 만료되었으면 실패한다.") {
+                test("refreshToken 이 만료되었으면 실패한다.") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
                     val refreshToken =
                         RefreshToken(
@@ -149,12 +149,12 @@ class TokenServiceTest(
                         .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
 
-                test("토큰이 유효하지 않으면 실패한다.") {
+                test("accessToken 이 유효하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { tokenService.parse(AccessToken("INVALID")) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
 
-                test("토큰의 만료 시간이 지났으면 실패한다.") {
+                test("accessToken 의 만료 시간이 지났으면 실패한다.") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
                     val accessToken =
                         AccessToken(

@@ -6,6 +6,4 @@ interface RefreshTokenJpaRepository : JpaRepository<RefreshTokenEntity, Long> {
     fun deleteByUserId(userId: Long)
 
     fun findByUserId(userId: Long): RefreshTokenEntity?
-
-    fun findByRefreshToken(refreshToken: String): RefreshTokenEntity?
 }

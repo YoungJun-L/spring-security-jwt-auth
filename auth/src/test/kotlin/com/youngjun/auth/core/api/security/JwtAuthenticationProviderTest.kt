@@ -42,7 +42,7 @@ class JwtAuthenticationProviderTest :
                         .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
 
-                test("토큰이 유효하지 않으면 실패한다.") {
+                test("accessToken 이 유효하지 않으면 실패한다.") {
                     val authentication = BearerTokenAuthenticationToken(JwtBuilder().build())
                     every { tokenService.parse(any()) } throws AuthException(TOKEN_INVALID_ERROR)
 
@@ -50,7 +50,7 @@ class JwtAuthenticationProviderTest :
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
 
-                test("토큰이 만료되었으면 실패한다.") {
+                test("accessToken 이 만료되었으면 실패한다.") {
                     val authentication = BearerTokenAuthenticationToken(JwtBuilder().build())
                     every { tokenService.parse(any()) } throws AuthException(TOKEN_EXPIRED_ERROR)
 
