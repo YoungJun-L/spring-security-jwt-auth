@@ -6,6 +6,7 @@ import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.response.LoginResponse
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.token.TokenPairDetailsBuilder
+import com.youngjun.auth.core.support.SecurityTest
 import com.youngjun.auth.core.support.response.AuthResponse
 import com.youngjun.auth.core.support.response.ResultType
 import io.kotest.core.spec.IsolationMode
@@ -19,6 +20,7 @@ import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 
+@SecurityTest
 class IssueJwtAuthenticationSuccessHandlerTest :
     FunSpec(
         {

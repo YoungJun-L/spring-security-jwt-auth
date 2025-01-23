@@ -16,7 +16,7 @@ dependencies {
 tasks.test {
     systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
     useJUnitPlatform {
-        excludeTags("security", "restDocs")
+        excludeTags("securityContext", "restDocs")
     }
 }
 
@@ -24,7 +24,8 @@ tasks.register<Test>("securityTest") {
     group = "verification"
     description = "Runs tests for security components."
     useJUnitPlatform {
-        includeTags("security")
+        systemProperty("kotest.tags.include", "security")
+        excludeTags("restDocs")
     }
 }
 
@@ -32,7 +33,7 @@ tasks.getByName<Test>("restDocsTest") {
     group = "verification"
     description = "Runs presentation-layer tests."
     useJUnitPlatform {
-        includeTags("restDocs")
+        includeTags("securityContext", "restDocs")
     }
 }
 
@@ -41,7 +42,7 @@ tasks.getByName<Test>("applicationTest") {
     description = "Runs application-level integration tests."
     useJUnitPlatform {
         systemProperty("kotest.tags.include", "application")
-        excludeTags("security", "restDocs")
+        excludeTags("securityContext", "restDocs")
     }
 }
 
@@ -50,20 +51,10 @@ tasks.getByName<Test>("domainTest") {
     description = "Runs domain-layer tests."
     useJUnitPlatform {
         systemProperty("kotest.tags.include", "domain")
-        excludeTags("security", "restDocs")
-    }
-}
-
-tasks.getByName<Test>("unitTest") {
-    group = "verification"
-    description = "Runs unit tests."
-    useJUnitPlatform {
-        excludeTags("security", "restDocs")
-        systemProperty("kotest.tags.exclude", "application,domain")
+        excludeTags("securityContext", "restDocs")
     }
 }
 
 tasks.getByName("asciidoctor") {
-    dependsOn("securityTest")
     dependsOn("restDocsTest")
 }

@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.domain.account
 
+import com.youngjun.auth.core.support.DomainTest
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
@@ -8,6 +9,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
+@DomainTest
 class AccountTest :
     FunSpec(
         {

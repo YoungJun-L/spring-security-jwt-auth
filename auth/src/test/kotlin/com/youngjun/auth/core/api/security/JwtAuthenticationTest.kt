@@ -2,7 +2,7 @@ package com.youngjun.auth.core.api.security
 
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.domain.account.AccountBuilder
-import com.youngjun.auth.core.support.SecurityTest
+import com.youngjun.auth.core.support.SecurityContextTest
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorCode
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
@@ -22,7 +22,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 
 class JwtAuthenticationTest(
     private val tokenService: TokenService,
-) : SecurityTest() {
+) : SecurityContextTest() {
     @Test
     fun `JWT 인증 성공`() {
         every { tokenService.parse(any()) } returns AccountBuilder().build()

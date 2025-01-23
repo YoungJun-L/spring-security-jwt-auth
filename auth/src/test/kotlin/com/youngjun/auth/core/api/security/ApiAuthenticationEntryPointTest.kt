@@ -2,6 +2,7 @@ package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.youngjun.auth.core.support.SecurityTest
 import com.youngjun.auth.core.support.response.AuthResponse
 import com.youngjun.auth.core.support.response.ResultType
 import io.kotest.core.spec.IsolationMode
@@ -12,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.authentication.BadCredentialsException
 
+@SecurityTest
 class ApiAuthenticationEntryPointTest :
     FunSpec(
         {

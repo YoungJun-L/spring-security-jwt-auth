@@ -106,15 +106,6 @@ subprojects {
         }
     }
 
-    tasks.register<Test>("unitTest") {
-        group = "verification"
-        description = "Runs unit tests."
-        useJUnitPlatform {
-            excludeTags("restDocs")
-            systemProperty("kotest.tags.exclude", "application,domain")
-        }
-    }
-
     tasks.getByName("asciidoctor") {
         dependsOn("restDocsTest")
     }

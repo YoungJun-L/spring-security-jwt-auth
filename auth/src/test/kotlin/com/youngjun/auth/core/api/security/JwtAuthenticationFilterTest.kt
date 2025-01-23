@@ -1,6 +1,7 @@
 package com.youngjun.auth.core.api.security
 
 import com.youngjun.auth.core.domain.account.AccountBuilder
+import com.youngjun.auth.core.support.SecurityTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 
+@SecurityTest
 class JwtAuthenticationFilterTest :
     FunSpec(
         {

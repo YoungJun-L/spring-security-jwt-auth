@@ -2,6 +2,7 @@ package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.youngjun.auth.core.domain.account.AccountBuilder
+import com.youngjun.auth.core.support.SecurityTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -11,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
 
+@SecurityTest
 class UserDetailsExchangeFilterTest :
     FunSpec(
         {

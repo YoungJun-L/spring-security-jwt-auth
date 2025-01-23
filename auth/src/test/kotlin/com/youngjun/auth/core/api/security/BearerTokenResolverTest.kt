@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.api.security
 
+import com.youngjun.auth.core.support.SecurityTest
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -8,6 +9,7 @@ import io.kotest.matchers.shouldBe
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.mock.web.MockHttpServletRequest
 
+@SecurityTest
 class BearerTokenResolverTest :
     FunSpec(
         {

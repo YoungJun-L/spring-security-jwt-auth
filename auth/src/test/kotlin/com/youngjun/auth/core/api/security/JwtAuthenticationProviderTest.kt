@@ -3,6 +3,7 @@ package com.youngjun.auth.core.api.security
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.token.JwtBuilder
+import com.youngjun.auth.core.support.SecurityTest
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
@@ -14,6 +15,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 
+@SecurityTest
 class JwtAuthenticationProviderTest :
     FunSpec(
         {

@@ -6,7 +6,7 @@ import com.youngjun.auth.core.api.controller.v1.request.LoginRequest
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.token.TokenPairDetailsBuilder
-import com.youngjun.auth.core.support.SecurityTest
+import com.youngjun.auth.core.support.SecurityContextTest
 import com.youngjun.auth.core.support.description
 import com.youngjun.auth.core.support.error.ErrorCode
 import com.youngjun.auth.core.support.ignored
@@ -30,7 +30,7 @@ class LoginTest(
     private val accountService: AccountService,
     private val tokenService: TokenService,
     private val passwordEncoder: PasswordEncoder,
-) : SecurityTest() {
+) : SecurityContextTest() {
     @Test
     fun `로그인 성공`() {
         val username = "username123"

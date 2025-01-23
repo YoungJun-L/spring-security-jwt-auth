@@ -1,6 +1,7 @@
 package com.youngjun.auth.core.api.security
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.youngjun.auth.core.support.SecurityTest
 import com.youngjun.auth.core.support.error.ErrorType.BAD_REQUEST_ERROR
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -17,6 +18,7 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 
+@SecurityTest
 class RequestBodyUsernamePasswordAuthenticationFilterTest :
     FunSpec(
         {
