@@ -2,7 +2,6 @@ package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.domain.account.NewAccountBuilder
 import com.youngjun.auth.core.support.ApplicationTest
-import com.youngjun.auth.core.support.VALID_PASSWORD
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
@@ -28,7 +27,7 @@ class AccountServiceTest(
                 }
 
                 test("비밀번호는 인코딩된다.") {
-                    val newAccount = NewAccountBuilder(password = VALID_PASSWORD).build()
+                    val newAccount = NewAccountBuilder().build()
 
                     val actual = accountService.register(newAccount)
 
