@@ -1,5 +1,11 @@
 package com.youngjun.auth.core.domain.token
 
-class AccessToken(
-    val value: String,
-)
+data class AccessToken(
+    val token: Token,
+) {
+    val value: String get() = token.value
+
+    companion object {
+        operator fun invoke(value: String): AccessToken = AccessToken(Token(value))
+    }
+}

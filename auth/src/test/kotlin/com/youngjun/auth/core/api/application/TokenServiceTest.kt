@@ -2,6 +2,9 @@ package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.account.AccountStatus
+import com.youngjun.auth.core.domain.support.EPOCH
+import com.youngjun.auth.core.domain.support.days
+import com.youngjun.auth.core.domain.support.seconds
 import com.youngjun.auth.core.domain.token.AccessToken
 import com.youngjun.auth.core.domain.token.JwtBuilder
 import com.youngjun.auth.core.domain.token.RefreshToken
@@ -50,7 +53,7 @@ class TokenServiceTest(
 
                     val actual = tokenService.issue(account)
 
-                    actual.refreshToken shouldNotBe refreshTokenEntity.refreshToken
+                    actual.refreshToken.value shouldNotBe refreshTokenEntity.refreshToken
                 }
             }
 

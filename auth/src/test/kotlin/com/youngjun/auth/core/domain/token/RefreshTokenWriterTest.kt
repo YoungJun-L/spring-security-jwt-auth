@@ -21,12 +21,7 @@ class RefreshTokenWriterTest(
             context("refreshToken 교체") {
                 test("성공") {
                     val newRefreshToken = NewRefreshTokenBuilder().build()
-                    refreshTokenJpaRepository.save(
-                        RefreshTokenEntityBuilder(
-                            newRefreshToken.userId,
-                            "previousToken",
-                        ).build(),
-                    )
+                    refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(newRefreshToken.userId).build())
 
                     val actual = refreshTokenWriter.replace(newRefreshToken)
 

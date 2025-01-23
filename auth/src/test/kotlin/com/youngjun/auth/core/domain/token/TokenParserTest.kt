@@ -23,56 +23,27 @@ class TokenParserTest :
                     .build()
             val tokenParser = TokenParser(SecretKeyHolder(secretKey))
 
-            context("refreshToken userId 파싱") {
+            context("userId 파싱") {
                 test("성공") {
                     val userId = 1L
-                    val refreshToken =
-                        RefreshToken(JwtBuilder(secretKey = secretKey, subject = userId.toString()).build())
+                    val token = Token(JwtBuilder(secretKey = secretKey, subject = userId.toString()).build())
 
-                    val actual = tokenParser.parseUserId(refreshToken)
+                    val actual = tokenParser.parseUserId(token)
 
                     actual shouldBe userId
                 }
 
                 test("토큰의 만료 시간이 지났으면 실패한다.") {
-                    val refreshToken =
-                        RefreshToken(JwtBuilder(secretKey = secretKey, expiresIn = Duration.ZERO).build())
+                    val token = Token(JwtBuilder(secretKey = secretKey, expiresIn = Duration.ZERO).build())
 
-                    shouldThrow<AuthException> { tokenParser.parseUserId(refreshToken) }
+                    shouldThrow<AuthException> { tokenParser.parseUserId(token) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
 
                 test("토큰이 유효하지 않으면 실패한다.") {
-                    val refreshToken = RefreshToken(JwtBuilder().build())
+                    val token = Token(JwtBuilder().build())
 
-                    shouldThrow<AuthException> { tokenParser.parseUserId(refreshToken) }
-                        .errorType shouldBe TOKEN_INVALID_ERROR
-                }
-            }
-
-            context("accessToken userId 파싱") {
-                test("성공") {
-                    val userId = 1L
-                    val accessToken =
-                        AccessToken(JwtBuilder(secretKey = secretKey, subject = userId.toString()).build())
-
-                    val actual = tokenParser.parseUserId(accessToken)
-
-                    actual shouldBe userId
-                }
-
-                test("토큰의 만료 시간이 지났으면 실패한다.") {
-                    val accessToken =
-                        AccessToken(JwtBuilder(secretKey = secretKey, expiresIn = Duration.ZERO).build())
-
-                    shouldThrow<AuthException> { tokenParser.parseUserId(accessToken) }
-                        .errorType shouldBe TOKEN_EXPIRED_ERROR
-                }
-
-                test("토큰이 유효하지 않으면 실패한다.") {
-                    val accessToken = AccessToken(JwtBuilder().build())
-
-                    shouldThrow<AuthException> { tokenParser.parseUserId(accessToken) }
+                    shouldThrow<AuthException> { tokenParser.parseUserId(token) }
                         .errorType shouldBe TOKEN_INVALID_ERROR
                 }
             }
