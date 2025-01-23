@@ -8,15 +8,14 @@ import java.time.LocalDateTime
 import java.util.Date
 import javax.crypto.SecretKey
 
-data class TokenBuilder(
+data class RefreshTokenDetailsBuilder(
     val id: Long = 1,
     val userId: Long = 1,
-    val refreshToken: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczODU2MTY5MH0.vhoGUbS5qZzlIgjz7cwCQaoqG7P0iJR9pEUCYbDwSbg",
+    val refreshToken: RefreshToken = RefreshToken(JwtBuilder().build()),
     val status: TokenStatus = TokenStatus.ENABLED,
 ) {
-    fun build(): Token =
-        Token(
+    fun build(): RefreshTokenDetails =
+        RefreshTokenDetails(
             id = id,
             userId = userId,
             refreshToken = refreshToken,
@@ -24,13 +23,12 @@ data class TokenBuilder(
         )
 }
 
-data class NewTokenBuilder(
+data class NewRefreshTokenBuilder(
     val userId: Long = 1,
-    val refreshToken: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczODU2MTY5MH0.vhoGUbS5qZzlIgjz7cwCQaoqG7P0iJR9pEUCYbDwSbg",
+    val refreshToken: RefreshToken = RefreshToken(JwtBuilder().build()),
 ) {
-    fun build(): NewToken =
-        NewToken(
+    fun build(): NewRefreshToken =
+        NewRefreshToken(
             userId = userId,
             refreshToken = refreshToken,
         )
@@ -57,21 +55,19 @@ data class JwtBuilder(
             .compact()
 }
 
-data class TokenPairBuilder(
-    var userId: Long = 1,
-    var accessToken: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczNTk3MTQ5MH0.DRnoLwFpmwER9VoCmbyR-tIUIJSrRjOufzAsR3G3miA",
-    var accessTokenExpiresIn: LocalDateTime = LocalDateTime.now(),
-    var refreshToken: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzU5Njk2OTAsImV4cCI6MTczODU2MTY5MH0.vhoGUbS5qZzlIgjz7cwCQaoqG7P0iJR9pEUCYbDwSbg",
-    var refreshTokenExpiresIn: LocalDateTime = LocalDateTime.now(),
+data class TokenPairDetailsBuilder(
+    val userId: Long = 1,
+    val accessToken: AccessToken = AccessToken(JwtBuilder().build()),
+    val accessTokenExpiration: LocalDateTime = LocalDateTime.now(),
+    val refreshToken: RefreshToken = RefreshToken(JwtBuilder().build()),
+    val refreshTokenExpiration: LocalDateTime = LocalDateTime.now(),
 ) {
-    fun build(): TokenPair =
-        TokenPair(
+    fun build(): TokenPairDetails =
+        TokenPairDetails(
             userId = userId,
             accessToken = accessToken,
-            accessTokenExpiration = accessTokenExpiresIn,
+            accessTokenExpiration = accessTokenExpiration,
             refreshToken = refreshToken,
-            refreshTokenExpiration = refreshTokenExpiresIn,
+            refreshTokenExpiration = refreshTokenExpiration,
         )
 }

@@ -17,11 +17,17 @@ class TokenGenerator(
     private val refreshTokenExpiresIn: Duration = 12.hours,
     private val clock: Clock = Clock.systemDefaultZone(),
 ) {
-    fun generate(account: Account): TokenPair {
+    fun generate(account: Account): TokenPairDetails {
         val now = LocalDateTime.now(clock)
         val (accessToken, accessTokenExpiration) = buildJwt(account, now, accessTokenExpiresIn)
         val (refreshToken, refreshTokenExpiration) = buildJwt(account, now, refreshTokenExpiresIn)
-        return TokenPair(account.id, accessToken, accessTokenExpiration, refreshToken, refreshTokenExpiration)
+        return TokenPairDetails(
+            account.id,
+            AccessToken(accessToken),
+            accessTokenExpiration,
+            RefreshToken(refreshToken),
+            refreshTokenExpiration,
+        )
     }
 
     private fun buildJwt(

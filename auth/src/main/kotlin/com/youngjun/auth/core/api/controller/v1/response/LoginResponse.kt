@@ -1,12 +1,13 @@
 package com.youngjun.auth.core.api.controller.v1.response
 
-import com.youngjun.auth.core.domain.token.TokenPair
+import com.youngjun.auth.core.domain.token.TokenPairDetails
 
 data class LoginResponse(
     val userId: Long,
-    val tokens: TokenResponse,
+    val tokens: TokenPairDetailsResponse,
 ) {
     companion object {
-        fun from(tokenPair: TokenPair): LoginResponse = LoginResponse(tokenPair.userId, TokenResponse.from(tokenPair))
+        fun from(tokenPairDetails: TokenPairDetails): LoginResponse =
+            LoginResponse(tokenPairDetails.userId, TokenPairDetailsResponse.from(tokenPairDetails))
     }
 }

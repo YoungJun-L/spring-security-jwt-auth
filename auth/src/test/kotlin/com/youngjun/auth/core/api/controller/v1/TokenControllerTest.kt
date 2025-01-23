@@ -2,7 +2,7 @@ package com.youngjun.auth.core.api.controller.v1
 
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.request.ReissueTokenRequest
-import com.youngjun.auth.core.domain.token.TokenPairBuilder
+import com.youngjun.auth.core.domain.token.TokenPairDetailsBuilder
 import com.youngjun.auth.core.support.RestDocsTest
 import com.youngjun.auth.core.support.description
 import com.youngjun.auth.core.support.ignored
@@ -34,7 +34,7 @@ class TokenControllerTest : RestDocsTest() {
 
     @Test
     fun `재발급 성공`() {
-        every { tokenService.reissue(any()) } returns TokenPairBuilder().build()
+        every { tokenService.reissue(any()) } returns TokenPairDetailsBuilder().build()
 
         given()
             .log()
@@ -55,9 +55,9 @@ class TokenControllerTest : RestDocsTest() {
                         "status" type STRING description "status",
                         "data" type OBJECT description "data",
                         "data.accessToken" type STRING description "accessToken",
-                        "data.accessTokenExpiresIn" type NUMBER description "accessToken 만료 시간, UNIX 타임스탬프(Timestamp)",
+                        "data.accessTokenExpiration" type NUMBER description "accessToken 만료 시간, UNIX 타임스탬프(Timestamp)",
                         "data.refreshToken" type STRING description "refreshToken" optional true,
-                        "data.refreshTokenExpiresIn" type NUMBER description "refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)" optional true,
+                        "data.refreshTokenExpiration" type NUMBER description "refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)" optional true,
                         "error" type NULL ignored true,
                     ),
                 ),

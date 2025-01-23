@@ -3,10 +3,10 @@ package com.youngjun.auth.core.domain.token
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
 
-data class Token(
+data class RefreshTokenDetails(
     val id: Long,
     val userId: Long,
-    val refreshToken: String,
+    val refreshToken: RefreshToken,
     val status: TokenStatus,
 ) {
     fun verify() {

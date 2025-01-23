@@ -7,18 +7,18 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class TokenTest :
+class RefreshTokenDetailsTest :
     FunSpec(
         {
             context("토큰 상태 검증") {
                 test("이용 가능") {
-                    val token = TokenBuilder(status = TokenStatus.ENABLED).build()
-                    shouldNotThrow<AuthException> { token.verify() }
+                    val refreshTokenDetails = RefreshTokenDetailsBuilder(status = TokenStatus.ENABLED).build()
+                    shouldNotThrow<AuthException> { refreshTokenDetails.verify() }
                 }
 
                 test("만료됨") {
-                    val token = TokenBuilder(status = TokenStatus.EXPIRED).build()
-                    shouldThrow<AuthException> { token.verify() }
+                    val refreshTokenDetails = RefreshTokenDetailsBuilder(status = TokenStatus.EXPIRED).build()
+                    shouldThrow<AuthException> { refreshTokenDetails.verify() }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
             }
