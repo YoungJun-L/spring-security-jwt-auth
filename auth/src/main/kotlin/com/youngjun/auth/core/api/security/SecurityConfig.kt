@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
-class SecurityConfiguration(
+class SecurityConfig(
     private val tokenService: TokenService,
     private val accountService: AccountService,
     private val passwordEncoder: PasswordEncoder,

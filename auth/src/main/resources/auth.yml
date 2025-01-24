@@ -6,6 +6,11 @@ spring:
     properties:
       hibernate.default_batch_fetch_size: 1000
 
+  security:
+    jwt:
+      access-secret-key: CSIggKMW2Qusk3GWgrIud1PhcZgMII3iwHutKMa23A8=
+      refresh-secret-key: Mxu2VhUoC9S5wBk9E4sy7o8DLDtHRwdG0M694ZTr874=
+
 ---
 spring.config.activate.on-profile: test
 
