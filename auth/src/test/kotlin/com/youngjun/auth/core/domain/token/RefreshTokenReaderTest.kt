@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.domain.support.seconds
 import com.youngjun.auth.core.support.DomainTest
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
@@ -13,6 +14,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import java.time.Duration
+import java.time.LocalDateTime
 
 @DomainTest
 class RefreshTokenReaderTest(
@@ -39,6 +41,29 @@ class RefreshTokenReaderTest(
                 test("refreshToken 이 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> {
                         refreshTokenReader.readEnabled(RefreshToken(JwtBuilder(secretKey = secretKeyHolder.get()).build()))
+                    }.errorType shouldBe TOKEN_NOT_FOUND_ERROR
+                }
+
+                test("유효하나 교체된 refreshToken 이면 실패한다.") {
+                    val userId = 1L
+                    refreshTokenJpaRepository.save(
+                        RefreshTokenEntityBuilder(
+                            userId = userId,
+                            token =
+                                JwtBuilder(
+                                    secretKey = secretKeyHolder.get(),
+                                    subject = userId.toString(),
+                                    issuedAt = LocalDateTime.now() + 1.seconds,
+                                ).build(),
+                        ).build(),
+                    )
+
+                    shouldThrow<AuthException> {
+                        refreshTokenReader.readEnabled(
+                            RefreshToken(
+                                JwtBuilder(secretKey = secretKeyHolder.get(), subject = userId.toString()).build(),
+                            ),
+                        )
                     }.errorType shouldBe TOKEN_NOT_FOUND_ERROR
                 }
 

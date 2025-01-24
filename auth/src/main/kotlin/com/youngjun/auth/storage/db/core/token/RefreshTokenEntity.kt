@@ -13,9 +13,9 @@ import jakarta.persistence.Table
 @Entity
 class RefreshTokenEntity(
     val userId: Long,
-    var refreshToken: String,
+    var token: String,
     @Enumerated(EnumType.STRING)
     val status: TokenStatus = TokenStatus.ENABLED,
 ) : BaseEntity() {
-    fun toRefreshTokenDetails(): RefreshTokenDetails = RefreshTokenDetails(id, userId, RefreshToken(refreshToken), status)
+    fun toRefreshTokenDetails(): RefreshTokenDetails = RefreshTokenDetails(id, userId, RefreshToken(token), status)
 }

@@ -1,6 +1,7 @@
 package com.youngjun.auth.storage.db.core.token
 
 import com.youngjun.auth.core.domain.token.NewRefreshToken
+import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.RefreshTokenDetails
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Repository
@@ -20,9 +21,16 @@ class RefreshTokenRepository(
     @Transactional
     fun update(newRefreshToken: NewRefreshToken): RefreshTokenDetails {
         val refreshTokenEntity = refreshTokenJpaRepository.findByUserId(newRefreshToken.userId)!!
-        refreshTokenEntity.refreshToken = newRefreshToken.refreshToken.value
+        refreshTokenEntity.token = newRefreshToken.refreshToken.value
         return refreshTokenEntity.toRefreshTokenDetails()
     }
 
-    fun read(userId: Long): RefreshTokenDetails? = refreshTokenJpaRepository.findByUserId(userId)?.toRefreshTokenDetails()
+    fun read(
+        userId: Long,
+        refreshToken: RefreshToken,
+    ): RefreshTokenDetails? =
+        refreshTokenJpaRepository
+            .findByUserId(userId)
+            ?.takeIf { it.token == refreshToken.value }
+            ?.toRefreshTokenDetails()
 }

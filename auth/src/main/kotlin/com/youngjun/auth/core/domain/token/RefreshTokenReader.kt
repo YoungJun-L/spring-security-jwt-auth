@@ -13,7 +13,7 @@ class RefreshTokenReader(
     fun readEnabled(refreshToken: RefreshToken): RefreshTokenDetails {
         val userId = tokenParser.parseUserId(refreshToken.token)
         val refreshTokenDetails =
-            refreshTokenRepository.read(userId) ?: throw AuthException(TOKEN_NOT_FOUND_ERROR)
+            refreshTokenRepository.read(userId, refreshToken) ?: throw AuthException(TOKEN_NOT_FOUND_ERROR)
         refreshTokenDetails.verify()
         return refreshTokenDetails
     }

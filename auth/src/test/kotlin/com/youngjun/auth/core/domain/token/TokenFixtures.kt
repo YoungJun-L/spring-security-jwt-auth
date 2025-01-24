@@ -58,9 +58,9 @@ data class JwtBuilder(
 data class TokenPairDetailsBuilder(
     val userId: Long = 1,
     val accessToken: AccessToken = AccessToken(JwtBuilder().build()),
-    val accessTokenExpiration: LocalDateTime = LocalDateTime.now(),
+    val accessTokenExpiration: LocalDateTime = LocalDateTime.now() + 1.hours,
     val refreshToken: RefreshToken = RefreshToken(JwtBuilder().build()),
-    val refreshTokenExpiration: LocalDateTime = LocalDateTime.now(),
+    val refreshTokenExpiration: LocalDateTime = LocalDateTime.now() + 12.hours,
 ) {
     fun build(): TokenPairDetails =
         TokenPairDetails(
