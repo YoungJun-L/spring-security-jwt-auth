@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.api.security.JwtProperties
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
@@ -10,14 +11,27 @@ import org.springframework.stereotype.Component
 
 @Component
 class TokenParser(
-    secretKeyHolder: SecretKeyHolder,
+    jwtProperties: JwtProperties,
 ) {
-    private val jwtParser: JwtParser = Jwts.parser().verifyWith(secretKeyHolder.get()).build()
+    private val accessTokenParser: JwtParser = Jwts.parser().verifyWith(jwtProperties.accessSecretKey).build()
+    private val refreshTokenParser: JwtParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
 
-    fun parseUserId(token: Token) =
+    fun parseUserId(accessToken: AccessToken) =
         try {
-            jwtParser
-                .parseSignedClaims(token.value)
+            accessTokenParser
+                .parseSignedClaims(accessToken.value)
+                .payload.subject
+                .toLong()
+        } catch (ex: ExpiredJwtException) {
+            throw AuthException(TOKEN_EXPIRED_ERROR)
+        } catch (ex: Exception) {
+            throw AuthException(TOKEN_INVALID_ERROR)
+        }
+
+    fun parseUserId(refreshToken: RefreshToken) =
+        try {
+            refreshTokenParser
+                .parseSignedClaims(refreshToken.value)
                 .payload.subject
                 .toLong()
         } catch (ex: ExpiredJwtException) {

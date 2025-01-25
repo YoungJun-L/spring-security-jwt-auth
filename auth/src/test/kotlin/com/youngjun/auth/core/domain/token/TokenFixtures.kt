@@ -35,14 +35,14 @@ data class NewRefreshTokenBuilder(
 }
 
 data class JwtBuilder(
-    val secretKey: SecretKey =
-        Jwts.SIG.HS256
-            .key()
-            .build(),
     val subject: String = "1",
     val issuedAt: LocalDateTime = LocalDateTime.now(),
     val expiresIn: Duration = 12.hours,
     val extraClaims: Map<String, Any> = emptyMap(),
+    val secretKey: SecretKey =
+        Jwts.SIG.HS256
+            .key()
+            .build(),
 ) {
     fun build(): String =
         Jwts

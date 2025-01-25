@@ -7,10 +7,10 @@ tasks.getByName("jar") {
 }
 
 dependencies {
-    runtimeOnly(project(":auth"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
+    runtimeOnly(project(":auth"))
     runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("com.h2database:h2")
 }

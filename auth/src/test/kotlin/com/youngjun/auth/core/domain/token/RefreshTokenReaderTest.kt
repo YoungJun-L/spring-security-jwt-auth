@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.api.security.JwtProperties
 import com.youngjun.auth.core.domain.support.seconds
 import com.youngjun.auth.core.support.DomainTest
 import com.youngjun.auth.core.support.error.AuthException
@@ -20,7 +21,7 @@ import java.time.LocalDateTime
 class RefreshTokenReaderTest(
     private val refreshTokenReader: RefreshTokenReader,
     private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
-    private val secretKeyHolder: SecretKeyHolder,
+    private val jwtProperties: JwtProperties,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -30,7 +31,9 @@ class RefreshTokenReaderTest(
                 test("성공") {
                     val userId = 1L
                     val refreshToken =
-                        RefreshToken(JwtBuilder(secretKey = secretKeyHolder.get(), subject = userId.toString()).build())
+                        RefreshToken(
+                            JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build(),
+                        )
                     refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(userId, refreshToken.value).build())
 
                     val actual = refreshTokenReader.readEnabled(refreshToken)
@@ -40,7 +43,7 @@ class RefreshTokenReaderTest(
 
                 test("refreshToken 이 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> {
-                        refreshTokenReader.readEnabled(RefreshToken(JwtBuilder(secretKey = secretKeyHolder.get()).build()))
+                        refreshTokenReader.readEnabled(RefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey).build()))
                     }.errorType shouldBe TOKEN_NOT_FOUND_ERROR
                 }
 
@@ -51,7 +54,7 @@ class RefreshTokenReaderTest(
                             userId = userId,
                             token =
                                 JwtBuilder(
-                                    secretKey = secretKeyHolder.get(),
+                                    secretKey = jwtProperties.refreshSecretKey,
                                     subject = userId.toString(),
                                     issuedAt = LocalDateTime.now() + 1.seconds,
                                 ).build(),
@@ -61,7 +64,7 @@ class RefreshTokenReaderTest(
                     shouldThrow<AuthException> {
                         refreshTokenReader.readEnabled(
                             RefreshToken(
-                                JwtBuilder(secretKey = secretKeyHolder.get(), subject = userId.toString()).build(),
+                                JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build(),
                             ),
                         )
                     }.errorType shouldBe TOKEN_NOT_FOUND_ERROR
@@ -77,7 +80,7 @@ class RefreshTokenReaderTest(
                     val refreshToken =
                         RefreshToken(
                             JwtBuilder(
-                                secretKey = secretKeyHolder.get(),
+                                secretKey = jwtProperties.refreshSecretKey,
                                 subject = userId.toString(),
                                 expiresIn = Duration.ZERO,
                             ).build(),
@@ -93,7 +96,7 @@ class RefreshTokenReaderTest(
                     val refreshToken =
                         RefreshToken(
                             JwtBuilder(
-                                secretKey = secretKeyHolder.get(),
+                                secretKey = jwtProperties.refreshSecretKey,
                                 subject = userId.toString(),
                             ).build(),
                         )

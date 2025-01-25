@@ -6,10 +6,10 @@ spring:
     properties:
       hibernate.default_batch_fetch_size: 1000
 
-  security:
-    jwt:
-      access-secret-key: CSIggKMW2Qusk3GWgrIud1PhcZgMII3iwHutKMa23A8=
-      refresh-secret-key: Mxu2VhUoC9S5wBk9E4sy7o8DLDtHRwdG0M694ZTr874=
+security:
+  jwt:
+    access-secret-key: CSIggKMW2Qusk3GWgrIud1PhcZgMII3iwHutKMa23A8=
+    refresh-secret-key: Mxu2VhUoC9S5wBk9E4sy7o8DLDtHRwdG0M694ZTr874=
 
 ---
 spring.config.activate.on-profile: test
@@ -32,54 +32,3 @@ spring:
     hikari:
       data-source-properties:
         rewriteBatchedStatements: true
-
----
-spring.config.activate.on-profile: local
-
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
-
-  h2:
-    console:
-      enabled: true
-
-  datasource:
-    url: jdbc:h2:mem:auth;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    hikari:
-      data-source-properties:
-        rewriteBatchedStatements: true
-
----
-spring.config.activate.on-profile: dev
-
-spring:
-  jpa:
-    properties:
-      hibernate:
-        show_log: true
-        format_sql: true
-    show-sql: true
-
-  datasource:
-    url: jdbc:mysql://localhost:3306/auth
-    username: root
-    password: 1234
-    hikari:
-      data-source-properties:
-        socketTimeout: 3000
-        cachePrepStmts: true
-        prepStmtCacheSize: 250
-        prepStmtCacheSqlLimit: 2048
-        useServerPrepStmts: true
-        useLocalSessionState: true
-        rewriteBatchedStatements: true
-        cacheResultSetMetadata: true
-        cacheServerConfiguration: true
-        elideSetAutoCommits: true
-        maintainTimeStats: false

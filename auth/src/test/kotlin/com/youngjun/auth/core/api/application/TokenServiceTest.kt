@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.api.application
 
+import com.youngjun.auth.core.api.security.JwtProperties
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.support.EPOCH
@@ -8,7 +9,6 @@ import com.youngjun.auth.core.domain.support.seconds
 import com.youngjun.auth.core.domain.token.AccessToken
 import com.youngjun.auth.core.domain.token.JwtBuilder
 import com.youngjun.auth.core.domain.token.RefreshToken
-import com.youngjun.auth.core.domain.token.SecretKeyHolder
 import com.youngjun.auth.core.domain.token.TokenStatus
 import com.youngjun.auth.core.support.ApplicationTest
 import com.youngjun.auth.core.support.error.AuthException
@@ -32,7 +32,7 @@ class TokenServiceTest(
     private val tokenService: TokenService,
     private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
     private val accountJpaRepository: AccountJpaRepository,
-    private val secretKeyHolder: SecretKeyHolder,
+    private val jwtProperties: JwtProperties,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -53,14 +53,14 @@ class TokenServiceTest(
 
                     val actual = tokenService.issue(account)
 
-                    actual.refreshToken.value shouldNotBe refreshTokenEntity.refreshToken
+                    actual.refreshToken.value shouldNotBe refreshTokenEntity.token
                 }
             }
 
             context("토큰 재발급") {
                 test("성공") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
-                    val refreshToken = RefreshToken(JwtBuilder(secretKey = secretKeyHolder.get()).build())
+                    val refreshToken = RefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey).build())
                     refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(accountEntity.id, refreshToken.value).build())
 
                     val actual = tokenService.reissue(refreshToken)
@@ -74,7 +74,7 @@ class TokenServiceTest(
                     val refreshToken =
                         RefreshToken(
                             JwtBuilder(
-                                secretKey = secretKeyHolder.get(),
+                                secretKey = jwtProperties.refreshSecretKey,
                                 subject = accountEntity.id.toString(),
                             ).build(),
                         )
@@ -94,7 +94,7 @@ class TokenServiceTest(
                     val refreshToken =
                         RefreshToken(
                             JwtBuilder(
-                                secretKey = secretKeyHolder.get(),
+                                secretKey = jwtProperties.refreshSecretKey,
                                 subject = accountEntity.id.toString(),
                                 expiresIn = Duration.ZERO,
                             ).build(),
@@ -110,7 +110,7 @@ class TokenServiceTest(
                     val refreshToken =
                         RefreshToken(
                             JwtBuilder(
-                                secretKey = secretKeyHolder.get(),
+                                secretKey = jwtProperties.refreshSecretKey,
                                 subject = accountEntity.id.toString(),
                             ).build(),
                         )
@@ -130,7 +130,7 @@ class TokenServiceTest(
             context("accessToken 파싱") {
                 test("성공") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
-                    val accessToken = AccessToken(JwtBuilder(secretKey = secretKeyHolder.get()).build())
+                    val accessToken = AccessToken(JwtBuilder(secretKey = jwtProperties.accessSecretKey).build())
 
                     val actual = tokenService.parse(accessToken)
 
@@ -143,7 +143,7 @@ class TokenServiceTest(
                     val accessToken =
                         AccessToken(
                             JwtBuilder(
-                                secretKey = secretKeyHolder.get(),
+                                secretKey = jwtProperties.accessSecretKey,
                                 subject = accountEntity.id.toString(),
                             ).build(),
                         )
@@ -162,7 +162,7 @@ class TokenServiceTest(
                     val accessToken =
                         AccessToken(
                             JwtBuilder(
-                                secretKey = secretKeyHolder.get(),
+                                secretKey = jwtProperties.accessSecretKey,
                                 subject = accountEntity.id.toString(),
                                 expiresIn = Duration.ZERO,
                             ).build(),

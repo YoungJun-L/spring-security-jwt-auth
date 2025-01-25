@@ -1,12 +1,13 @@
 package com.youngjun.auth.core.domain.token
 
+import com.youngjun.auth.core.api.security.JwtProperties
 import com.youngjun.auth.core.domain.account.AccountBuilder
-import com.youngjun.auth.core.domain.support.hours
 import com.youngjun.auth.core.domain.support.toEpochSecond
 import com.youngjun.auth.core.support.DomainTest
 import io.jsonwebtoken.Jwts
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import java.time.Clock
 import java.time.Instant
@@ -14,31 +15,28 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 @DomainTest
-class TokenGeneratorTest :
-    FunSpec(
+class TokenGeneratorTest(
+    private val jwtProperties: JwtProperties,
+) : FunSpec(
         {
+            extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val secretKey =
-                Jwts.SIG.HS256
-                    .key()
-                    .build()
-            val accessExpiresIn = 1.hours
-            val refreshExpiresIn = 12.hours
             val clock = Clock.fixed(Instant.now(), ZoneId.systemDefault())
             val now = LocalDateTime.now(clock)
-            val tokenGenerator = TokenGenerator(SecretKeyHolder(secretKey), accessExpiresIn, refreshExpiresIn, clock)
+            val tokenGenerator = TokenGenerator(jwtProperties, clock)
 
             context("발급") {
-                val parser = Jwts.parser().verifyWith(secretKey).build()
+                val accessTokenParser = Jwts.parser().verifyWith(jwtProperties.accessSecretKey).build()
+                val refreshTokenParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
 
                 test("성공") {
                     val account = AccountBuilder().build()
 
                     val actual = tokenGenerator.generate(account)
 
-                    parser.parseSignedClaims(actual.accessToken.value).payload.subject shouldBe "${account.id}"
-                    parser.parseSignedClaims(actual.refreshToken.value).payload.subject shouldBe "${account.id}"
+                    accessTokenParser.parseSignedClaims(actual.accessToken.value).payload.subject shouldBe "${account.id}"
+                    refreshTokenParser.parseSignedClaims(actual.refreshToken.value).payload.subject shouldBe "${account.id}"
                 }
 
                 test("access token 만료 시간 검증") {
@@ -46,9 +44,9 @@ class TokenGeneratorTest :
 
                     val actual = tokenGenerator.generate(account)
 
-                    val expected = now + accessExpiresIn
+                    val expected = now + jwtProperties.accessTokenExpiresIn
                     actual.accessTokenExpiration shouldBe expected
-                    parser
+                    accessTokenParser
                         .parseSignedClaims(actual.accessToken.value)
                         .payload.expiration
                         .toInstant()
@@ -60,9 +58,9 @@ class TokenGeneratorTest :
 
                     val actual = tokenGenerator.generate(account)
 
-                    val expected = now + refreshExpiresIn
+                    val expected = now + jwtProperties.refreshTokenExpiresIn
                     actual.refreshTokenExpiration shouldBe expected
-                    parser
+                    refreshTokenParser
                         .parseSignedClaims(actual.refreshToken.value)
                         .payload.expiration
                         .toInstant()

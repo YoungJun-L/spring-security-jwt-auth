@@ -35,7 +35,7 @@ class TokenService(
     }
 
     fun parse(accessToken: AccessToken): Account {
-        val userId = tokenParser.parseUserId(accessToken.token)
+        val userId = tokenParser.parseUserId(accessToken)
         return accountReader.readEnabled(userId)
     }
 }
