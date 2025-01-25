@@ -1,6 +1,5 @@
 package com.youngjun.auth.storage.db.core.token
 
-import com.youngjun.auth.core.domain.token.NewRefreshToken
 import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.RefreshTokenDetails
 import jakarta.transaction.Transactional
@@ -11,17 +10,21 @@ class RefreshTokenRepository(
     private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
 ) {
     @Transactional
-    fun replace(newRefreshToken: NewRefreshToken): RefreshTokenDetails {
-        refreshTokenJpaRepository.deleteByUserId(newRefreshToken.userId)
-        return refreshTokenJpaRepository
-            .save(RefreshTokenEntity(newRefreshToken.userId, newRefreshToken.refreshToken.value))
-            .toRefreshTokenDetails()
+    fun replace(
+        userId: Long,
+        refreshToken: RefreshToken,
+    ): RefreshTokenDetails {
+        refreshTokenJpaRepository.deleteByUserId(userId)
+        return refreshTokenJpaRepository.save(RefreshTokenEntity(userId, refreshToken.value)).toRefreshTokenDetails()
     }
 
     @Transactional
-    fun update(newRefreshToken: NewRefreshToken): RefreshTokenDetails {
-        val refreshTokenEntity = refreshTokenJpaRepository.findByUserId(newRefreshToken.userId)!!
-        refreshTokenEntity.token = newRefreshToken.refreshToken.value
+    fun update(
+        userId: Long,
+        refreshToken: RefreshToken,
+    ): RefreshTokenDetails {
+        val refreshTokenEntity = refreshTokenJpaRepository.findByUserId(userId)!!
+        refreshTokenEntity.token = refreshToken.value
         return refreshTokenEntity.toRefreshTokenDetails()
     }
 

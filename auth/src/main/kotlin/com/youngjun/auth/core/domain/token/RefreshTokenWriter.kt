@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component
 class RefreshTokenWriter(
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-    fun replace(newRefreshToken: NewRefreshToken): RefreshTokenDetails = refreshTokenRepository.replace(newRefreshToken)
+    fun replace(tokenPairDetails: TokenPairDetails): RefreshTokenDetails =
+        refreshTokenRepository.replace(tokenPairDetails.userId, tokenPairDetails.refreshToken)
 
-    fun update(newRefreshToken: NewRefreshToken): RefreshTokenDetails = refreshTokenRepository.update(newRefreshToken)
+    fun update(tokenPairDetails: TokenPairDetails): RefreshTokenDetails =
+        refreshTokenRepository.update(tokenPairDetails.userId, tokenPairDetails.refreshToken)
 }

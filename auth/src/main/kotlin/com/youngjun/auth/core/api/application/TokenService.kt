@@ -3,7 +3,6 @@ package com.youngjun.auth.core.api.application
 import com.youngjun.auth.core.domain.account.Account
 import com.youngjun.auth.core.domain.account.AccountReader
 import com.youngjun.auth.core.domain.token.AccessToken
-import com.youngjun.auth.core.domain.token.NewRefreshToken
 import com.youngjun.auth.core.domain.token.RefreshToken
 import com.youngjun.auth.core.domain.token.RefreshTokenReader
 import com.youngjun.auth.core.domain.token.RefreshTokenWriter
@@ -22,7 +21,7 @@ class TokenService(
 ) {
     fun issue(account: Account): TokenPairDetails {
         val tokenPairDetails = tokenGenerator.generate(account)
-        refreshTokenWriter.replace(NewRefreshToken.from(tokenPairDetails))
+        refreshTokenWriter.replace(tokenPairDetails)
         return tokenPairDetails
     }
 
@@ -30,7 +29,7 @@ class TokenService(
         val refreshTokenDetails = refreshTokenReader.readEnabled(refreshToken)
         val account = accountReader.readEnabled(refreshTokenDetails.userId)
         val tokenPairDetails = tokenGenerator.generate(account)
-        refreshTokenWriter.update(NewRefreshToken.from(tokenPairDetails))
+        refreshTokenWriter.update(tokenPairDetails)
         return tokenPairDetails
     }
 

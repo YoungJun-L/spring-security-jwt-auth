@@ -20,20 +20,25 @@ class RefreshTokenWriterTest(
 
             context("refreshToken 교체") {
                 test("성공") {
-                    val newRefreshToken = NewRefreshTokenBuilder().build()
-                    refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(newRefreshToken.userId).build())
+                    val tokenPairDetails = TokenPairDetailsBuilder().build()
+                    refreshTokenJpaRepository.save(
+                        RefreshTokenEntityBuilder(
+                            userId = tokenPairDetails.userId,
+                            token = "PREVIOUS",
+                        ).build(),
+                    )
 
-                    val actual = refreshTokenWriter.replace(newRefreshToken)
+                    val actual = refreshTokenWriter.replace(tokenPairDetails)
 
-                    actual.refreshToken shouldBe newRefreshToken.refreshToken
+                    actual.refreshToken shouldBe tokenPairDetails.refreshToken
                 }
 
                 test("이전 refreshToken 은 제거된다.") {
-                    val newRefreshToken = NewRefreshTokenBuilder().build()
+                    val tokenPairDetails = TokenPairDetailsBuilder().build()
                     val refreshTokenEntity =
-                        refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(newRefreshToken.userId).build())
+                        refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(tokenPairDetails.userId).build())
 
-                    refreshTokenWriter.replace(newRefreshToken)
+                    refreshTokenWriter.replace(tokenPairDetails)
 
                     refreshTokenJpaRepository.findByIdOrNull(refreshTokenEntity.id) shouldBe null
                 }
@@ -41,12 +46,12 @@ class RefreshTokenWriterTest(
 
             context("refreshToken 값 변경") {
                 test("성공") {
-                    val newRefreshToken = NewRefreshTokenBuilder().build()
-                    refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(newRefreshToken.userId).build())
+                    val tokenPairDetails = TokenPairDetailsBuilder().build()
+                    refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(tokenPairDetails.userId).build())
 
-                    val actual = refreshTokenWriter.update(newRefreshToken)
+                    val actual = refreshTokenWriter.update(tokenPairDetails)
 
-                    actual.refreshToken shouldBe newRefreshToken.refreshToken
+                    actual.refreshToken shouldBe tokenPairDetails.refreshToken
                 }
             }
         },

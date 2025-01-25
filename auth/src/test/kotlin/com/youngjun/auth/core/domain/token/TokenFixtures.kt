@@ -23,17 +23,6 @@ data class RefreshTokenDetailsBuilder(
         )
 }
 
-data class NewRefreshTokenBuilder(
-    val userId: Long = 1,
-    val refreshToken: RefreshToken = RefreshToken(JwtBuilder().build()),
-) {
-    fun build(): NewRefreshToken =
-        NewRefreshToken(
-            userId = userId,
-            refreshToken = refreshToken,
-        )
-}
-
 data class JwtBuilder(
     val subject: String = "1",
     val issuedAt: LocalDateTime = LocalDateTime.now(),
