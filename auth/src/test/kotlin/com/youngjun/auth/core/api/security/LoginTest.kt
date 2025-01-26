@@ -5,7 +5,7 @@ import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.request.LoginRequest
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.account.AccountStatus
-import com.youngjun.auth.core.domain.token.TokenPairDetailsBuilder
+import com.youngjun.auth.core.domain.token.TokenPairBuilder
 import com.youngjun.auth.core.support.SecurityContextTest
 import com.youngjun.auth.core.support.description
 import com.youngjun.auth.core.support.error.ErrorCode
@@ -37,7 +37,7 @@ class LoginTest(
         val password = "password123!"
         val account = AccountBuilder(username = username, password = passwordEncoder.encode(password)).build()
         every { accountService.loadUserByUsername(any()) } returns account
-        every { tokenService.issue(any()) } returns TokenPairDetailsBuilder(userId = account.id).build()
+        every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
 
         given()
             .log()

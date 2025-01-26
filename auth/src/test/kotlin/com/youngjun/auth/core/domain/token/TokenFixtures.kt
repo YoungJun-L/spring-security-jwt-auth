@@ -8,17 +8,17 @@ import java.time.LocalDateTime
 import java.util.Date
 import javax.crypto.SecretKey
 
-data class RefreshTokenDetailsBuilder(
+data class RefreshTokenBuilder(
     val id: Long = 1,
     val userId: Long = 1,
-    val refreshToken: RefreshToken = RefreshToken(JwtBuilder().build()),
+    val value: String = JwtBuilder().build(),
     val status: TokenStatus = TokenStatus.ENABLED,
 ) {
-    fun build(): RefreshTokenDetails =
-        RefreshTokenDetails(
+    fun build(): RefreshToken =
+        RefreshToken(
             id = id,
             userId = userId,
-            refreshToken = refreshToken,
+            value = value,
             status = status,
         )
 }
@@ -44,19 +44,58 @@ data class JwtBuilder(
             .compact()
 }
 
-data class TokenPairDetailsBuilder(
+data class TokenPairBuilder(
     val userId: Long = 1,
-    val accessToken: AccessToken = AccessToken(JwtBuilder().build()),
-    val accessTokenExpiration: LocalDateTime = LocalDateTime.now() + 1.hours,
-    val refreshToken: RefreshToken = RefreshToken(JwtBuilder().build()),
-    val refreshTokenExpiration: LocalDateTime = LocalDateTime.now() + 12.hours,
+    val accessToken: ParsedAccessToken = ParsedAccessTokenBuilder().build(),
+    val refreshToken: ParsedRefreshToken = ParsedRefreshTokenBuilder().build(),
 ) {
-    fun build(): TokenPairDetails =
-        TokenPairDetails(
+    fun build(): TokenPair =
+        TokenPair(
             userId = userId,
             accessToken = accessToken,
-            accessTokenExpiration = accessTokenExpiration,
             refreshToken = refreshToken,
-            refreshTokenExpiration = refreshTokenExpiration,
+        )
+}
+
+data class ParsedAccessTokenBuilder(
+    val userId: Long = 1,
+    val issuedAt: LocalDateTime = LocalDateTime.now(),
+    val expiresIn: Duration = 12.hours,
+    val secretKey: SecretKey =
+        Jwts.SIG.HS256
+            .key()
+            .build(),
+) {
+    fun build(): ParsedAccessToken =
+        ParsedAccessToken(
+            value = JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build(),
+            payload = PayloadBuilder(userId, issuedAt + expiresIn).build(),
+        )
+}
+
+data class ParsedRefreshTokenBuilder(
+    val userId: Long = 1,
+    val issuedAt: LocalDateTime = LocalDateTime.now(),
+    val expiresIn: Duration = 12.hours,
+    val secretKey: SecretKey =
+        Jwts.SIG.HS256
+            .key()
+            .build(),
+) {
+    fun build(): ParsedRefreshToken =
+        ParsedRefreshToken(
+            value = JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build(),
+            payload = PayloadBuilder(userId, issuedAt + expiresIn).build(),
+        )
+}
+
+data class PayloadBuilder(
+    val userId: Long = 1,
+    val expiration: LocalDateTime = LocalDateTime.now(),
+) {
+    fun build(): Payload =
+        Payload(
+            userId = userId,
+            expiration = expiration,
         )
 }

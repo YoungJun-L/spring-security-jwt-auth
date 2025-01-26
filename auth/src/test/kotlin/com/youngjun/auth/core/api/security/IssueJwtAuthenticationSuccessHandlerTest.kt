@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.response.LoginResponse
 import com.youngjun.auth.core.domain.account.AccountBuilder
-import com.youngjun.auth.core.domain.token.TokenPairDetailsBuilder
+import com.youngjun.auth.core.domain.token.TokenPairBuilder
 import com.youngjun.auth.core.support.SecurityTest
 import com.youngjun.auth.core.support.response.AuthResponse
 import com.youngjun.auth.core.support.response.ResultType
@@ -41,7 +41,7 @@ class IssueJwtAuthenticationSuccessHandlerTest :
                             null,
                             AuthorityUtils.NO_AUTHORITIES,
                         )
-                    every { tokenService.issue(any()) } returns TokenPairDetailsBuilder().build()
+                    every { tokenService.issue(any()) } returns TokenPairBuilder().build()
 
                     issueJwtAuthenticationSuccessHandler.onAuthenticationSuccess(request, response, authentication)
 

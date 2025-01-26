@@ -2,39 +2,26 @@ package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.domain.account.Account
 import com.youngjun.auth.core.domain.account.AccountReader
-import com.youngjun.auth.core.domain.token.AccessToken
-import com.youngjun.auth.core.domain.token.RefreshToken
-import com.youngjun.auth.core.domain.token.RefreshTokenReader
-import com.youngjun.auth.core.domain.token.RefreshTokenWriter
-import com.youngjun.auth.core.domain.token.TokenGenerator
-import com.youngjun.auth.core.domain.token.TokenPairDetails
+import com.youngjun.auth.core.domain.token.RawAccessToken
+import com.youngjun.auth.core.domain.token.RawRefreshToken
+import com.youngjun.auth.core.domain.token.TokenPair
+import com.youngjun.auth.core.domain.token.TokenPairGenerator
 import com.youngjun.auth.core.domain.token.TokenParser
 import org.springframework.stereotype.Service
 
 @Service
 class TokenService(
-    private val refreshTokenWriter: RefreshTokenWriter,
-    private val refreshTokenReader: RefreshTokenReader,
-    private val tokenGenerator: TokenGenerator,
+    private val tokenPairGenerator: TokenPairGenerator,
     private val tokenParser: TokenParser,
     private val accountReader: AccountReader,
 ) {
-    fun issue(account: Account): TokenPairDetails {
-        val tokenPairDetails = tokenGenerator.generate(account)
-        refreshTokenWriter.replace(tokenPairDetails)
-        return tokenPairDetails
+    fun issue(account: Account): TokenPair = tokenPairGenerator.issue(account)
+
+    fun reissue(rawRefreshToken: RawRefreshToken): TokenPair {
+        val parsedRefreshToken = tokenParser.parse(rawRefreshToken)
+        val account = accountReader.readEnabled(parsedRefreshToken.userId)
+        return tokenPairGenerator.reissue(account, parsedRefreshToken)
     }
 
-    fun reissue(refreshToken: RefreshToken): TokenPairDetails {
-        val refreshTokenDetails = refreshTokenReader.readEnabled(refreshToken)
-        val account = accountReader.readEnabled(refreshTokenDetails.userId)
-        val tokenPairDetails = tokenGenerator.generate(account)
-        refreshTokenWriter.update(tokenPairDetails)
-        return tokenPairDetails
-    }
-
-    fun parse(accessToken: AccessToken): Account {
-        val userId = tokenParser.parseUserId(accessToken)
-        return accountReader.readEnabled(userId)
-    }
+    fun parse(rawAccessToken: RawAccessToken): Account = accountReader.readEnabled(tokenParser.parse(rawAccessToken).userId)
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 @DomainTest
-class TokenGeneratorTest(
+class JwtGeneratorTest(
     private val jwtProperties: JwtProperties,
 ) : FunSpec(
         {
@@ -24,44 +24,55 @@ class TokenGeneratorTest(
 
             val clock = Clock.fixed(Instant.now(), ZoneId.systemDefault())
             val now = LocalDateTime.now(clock)
-            val tokenGenerator = TokenGenerator(jwtProperties, clock)
+            val jwtGenerator = JwtGenerator(jwtProperties, clock)
 
-            context("발급") {
+            context("accessToken 발급") {
                 val accessTokenParser = Jwts.parser().verifyWith(jwtProperties.accessSecretKey).build()
-                val refreshTokenParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
 
                 test("성공") {
                     val account = AccountBuilder().build()
 
-                    val actual = tokenGenerator.generate(account)
+                    val actual = jwtGenerator.generateAccessToken(account)
 
-                    accessTokenParser.parseSignedClaims(actual.accessToken.value).payload.subject shouldBe "${account.id}"
-                    refreshTokenParser.parseSignedClaims(actual.refreshToken.value).payload.subject shouldBe "${account.id}"
+                    accessTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "${account.id}"
                 }
 
                 test("access token 만료 시간 검증") {
                     val account = AccountBuilder().build()
 
-                    val actual = tokenGenerator.generate(account)
+                    val actual = jwtGenerator.generateAccessToken(account)
 
                     val expected = now + jwtProperties.accessTokenExpiresIn
-                    actual.accessTokenExpiration shouldBe expected
+                    actual.expiration shouldBe expected
                     accessTokenParser
-                        .parseSignedClaims(actual.accessToken.value)
+                        .parseSignedClaims(actual.value)
                         .payload.expiration
                         .toInstant()
-                        .epochSecond shouldBe expected.toEpochSecond()
+                        .epochSecond shouldBe
+                        expected.toEpochSecond()
+                }
+            }
+
+            context("refreshToken 발급") {
+                val refreshTokenParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
+
+                test("성공") {
+                    val account = AccountBuilder().build()
+
+                    val actual = jwtGenerator.generateRefreshToken(account)
+
+                    refreshTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "${account.id}"
                 }
 
                 test("refresh token 만료 시간 검증") {
                     val account = AccountBuilder().build()
 
-                    val actual = tokenGenerator.generate(account)
+                    val actual = jwtGenerator.generateRefreshToken(account)
 
                     val expected = now + jwtProperties.refreshTokenExpiresIn
-                    actual.refreshTokenExpiration shouldBe expected
+                    actual.expiration shouldBe expected
                     refreshTokenParser
-                        .parseSignedClaims(actual.refreshToken.value)
+                        .parseSignedClaims(actual.value)
                         .payload.expiration
                         .toInstant()
                         .epochSecond shouldBe expected.toEpochSecond()

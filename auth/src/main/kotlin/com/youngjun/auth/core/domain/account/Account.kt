@@ -25,11 +25,9 @@ data class Account(
     override fun isEnabled(): Boolean = status == AccountStatus.ENABLED
 
     fun verify() {
-        if (!isAccountNonLocked) {
-            throw AuthException(ACCOUNT_LOCKED_ERROR)
-        }
-        if (!isEnabled) {
-            throw AuthException(ACCOUNT_DISABLED_ERROR)
+        when {
+            !isAccountNonLocked -> throw AuthException(ACCOUNT_LOCKED_ERROR)
+            !isEnabled -> throw AuthException(ACCOUNT_DISABLED_ERROR)
         }
     }
 }

@@ -2,7 +2,7 @@ package com.youngjun.auth.core.api.controller.v1
 
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.request.ReissueTokenRequest
-import com.youngjun.auth.core.domain.token.TokenPairDetailsBuilder
+import com.youngjun.auth.core.domain.token.TokenPairBuilder
 import com.youngjun.auth.core.support.RestDocsTest
 import com.youngjun.auth.core.support.description
 import com.youngjun.auth.core.support.ignored
@@ -34,7 +34,7 @@ class TokenControllerTest : RestDocsTest() {
 
     @Test
     fun `재발급 성공`() {
-        every { tokenService.reissue(any()) } returns TokenPairDetailsBuilder().build()
+        every { tokenService.reissue(any()) } returns TokenPairBuilder().build()
 
         given()
             .log()

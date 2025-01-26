@@ -9,18 +9,18 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 @DomainTest
-class RefreshTokenDetailsTest :
+class RefreshTokenTest :
     FunSpec(
         {
             context("refreshToken 상태 검증") {
                 test("이용 가능") {
-                    val refreshTokenDetails = RefreshTokenDetailsBuilder(status = TokenStatus.ENABLED).build()
-                    shouldNotThrow<AuthException> { refreshTokenDetails.verify() }
+                    val refreshToken = RefreshTokenBuilder(status = TokenStatus.ENABLED).build()
+                    shouldNotThrow<AuthException> { refreshToken.verify() }
                 }
 
                 test("만료됨") {
-                    val refreshTokenDetails = RefreshTokenDetailsBuilder(status = TokenStatus.EXPIRED).build()
-                    shouldThrow<AuthException> { refreshTokenDetails.verify() }
+                    val refreshToken = RefreshTokenBuilder(status = TokenStatus.EXPIRED).build()
+                    shouldThrow<AuthException> { refreshToken.verify() }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
             }

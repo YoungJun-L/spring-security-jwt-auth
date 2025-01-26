@@ -1,7 +1,6 @@
 package com.youngjun.auth.storage.db.core.token
 
 import com.youngjun.auth.core.domain.token.RefreshToken
-import com.youngjun.auth.core.domain.token.RefreshTokenDetails
 import com.youngjun.auth.core.domain.token.TokenStatus
 import com.youngjun.auth.storage.db.core.support.BaseEntity
 import jakarta.persistence.Entity
@@ -17,5 +16,5 @@ class RefreshTokenEntity(
     @Enumerated(EnumType.STRING)
     val status: TokenStatus = TokenStatus.ENABLED,
 ) : BaseEntity() {
-    fun toRefreshTokenDetails(): RefreshTokenDetails = RefreshTokenDetails(id, userId, RefreshToken(token), status)
+    fun toRefreshToken(): RefreshToken = RefreshToken(id, userId, token, status)
 }
