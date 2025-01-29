@@ -5,14 +5,14 @@ import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 
 data class JwtAuthenticationToken private constructor(
-    private val id: Long,
+    private val userId: Long,
     private val authorities: Collection<GrantedAuthority>,
 ) : AbstractAuthenticationToken(authorities) {
     init {
         super.setAuthenticated(true)
     }
 
-    override fun getPrincipal(): Long = id
+    override fun getPrincipal(): Long = userId
 
     override fun getCredentials() = null
 

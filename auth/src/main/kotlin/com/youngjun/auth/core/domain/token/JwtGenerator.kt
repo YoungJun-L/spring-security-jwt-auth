@@ -1,7 +1,6 @@
 package com.youngjun.auth.core.domain.token
 
 import com.youngjun.auth.core.api.security.JwtProperties
-import com.youngjun.auth.core.domain.account.Account
 import com.youngjun.auth.core.domain.support.toInstant
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
@@ -15,26 +14,26 @@ class JwtGenerator(
     private val jwtProperties: JwtProperties,
     private val clock: Clock = Clock.systemDefaultZone(),
 ) {
-    fun generateAccessToken(account: Account): ParsedAccessToken {
+    fun generateAccessToken(userId: Long): ParsedAccessToken {
         val now = LocalDateTime.now(clock)
         val expiration = now + jwtProperties.accessTokenExpiresIn
         return ParsedAccessToken(
-            buildJwt(account, now, expiration, jwtProperties.accessSecretKey),
-            Payload(account.id, expiration),
+            buildJwt(userId, now, expiration, jwtProperties.accessSecretKey),
+            Payload(userId, expiration),
         )
     }
 
-    fun generateRefreshToken(account: Account): ParsedRefreshToken {
+    fun generateRefreshToken(userId: Long): ParsedRefreshToken {
         val now = LocalDateTime.now(clock)
         val expiration = now + jwtProperties.refreshTokenExpiresIn
         return ParsedRefreshToken(
-            buildJwt(account, now, expiration, jwtProperties.refreshSecretKey),
-            Payload(account.id, expiration),
+            buildJwt(userId, now, expiration, jwtProperties.refreshSecretKey),
+            Payload(userId, expiration),
         )
     }
 
     fun generateRefreshTokenOnExpiration(
-        account: Account,
+        userId: Long,
         refreshTokenExpiration: LocalDateTime,
     ): ParsedRefreshToken {
         fun isExpiringSoon(now: LocalDateTime) =
@@ -44,8 +43,8 @@ class JwtGenerator(
         return if (isExpiringSoon(now)) {
             val expiration = now + jwtProperties.refreshTokenExpiresIn
             ParsedRefreshToken(
-                buildJwt(account, now, expiration, jwtProperties.refreshSecretKey),
-                Payload(account.id, expiration),
+                buildJwt(userId, now, expiration, jwtProperties.refreshSecretKey),
+                Payload(userId, expiration),
             )
         } else {
             ParsedRefreshToken.Empty
@@ -53,7 +52,7 @@ class JwtGenerator(
     }
 
     private fun buildJwt(
-        account: Account,
+        userId: Long,
         issuedAt: LocalDateTime,
         expiration: LocalDateTime,
         secretKey: SecretKey,
@@ -61,7 +60,7 @@ class JwtGenerator(
     ): String =
         Jwts
             .builder()
-            .subject(account.id.toString())
+            .subject(userId.toString())
             .issuedAt(Date.from(issuedAt.toInstant()))
             .expiration(Date.from(expiration.toInstant()))
             .claims(extraClaims)

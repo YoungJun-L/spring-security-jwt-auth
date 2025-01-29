@@ -1,7 +1,6 @@
 package com.youngjun.auth.core.api.application
 
 import com.youngjun.auth.core.api.security.JwtProperties
-import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.support.hours
 import com.youngjun.auth.core.domain.support.seconds
@@ -41,18 +40,18 @@ class TokenServiceTest(
 
             context("토큰 발급") {
                 test("성공") {
-                    val account = AccountBuilder().build()
+                    val userId = 1L
 
-                    val actual = tokenService.issue(account)
+                    val actual = tokenService.issue(userId)
 
-                    actual.userId shouldBe account.id
+                    actual.userId shouldBe userId
                 }
 
                 test("이전 refresh token 은 교체된다.") {
-                    val account = AccountBuilder().build()
-                    val refreshTokenEntity = refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(account.id).build())
+                    val userId = 1L
+                    val refreshTokenEntity = refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(userId).build())
 
-                    val actual = tokenService.issue(account)
+                    val actual = tokenService.issue(userId)
 
                     actual.refreshToken.value shouldNotBe refreshTokenEntity.token
                 }

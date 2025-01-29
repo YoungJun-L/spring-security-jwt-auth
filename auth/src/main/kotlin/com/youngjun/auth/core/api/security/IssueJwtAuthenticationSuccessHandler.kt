@@ -21,7 +21,7 @@ class IssueJwtAuthenticationSuccessHandler(
         response: HttpServletResponse,
         authentication: Authentication,
     ) {
-        val tokenPair = tokenService.issue(authentication.principal as Account)
+        val tokenPair = tokenService.issue((authentication.principal as Account).id)
         val authResponse = AuthResponse.success(LoginResponse.from(tokenPair))
         write(response, authResponse)
     }

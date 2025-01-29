@@ -15,12 +15,12 @@ class TokenService(
     private val tokenParser: TokenParser,
     private val accountReader: AccountReader,
 ) {
-    fun issue(account: Account): TokenPair = tokenPairGenerator.issue(account)
+    fun issue(userId: Long): TokenPair = tokenPairGenerator.issue(userId)
 
     fun reissue(rawRefreshToken: RawRefreshToken): TokenPair {
         val parsedRefreshToken = tokenParser.parse(rawRefreshToken)
-        val account = accountReader.readEnabled(parsedRefreshToken.userId)
-        return tokenPairGenerator.reissue(account, parsedRefreshToken)
+        accountReader.readEnabled(parsedRefreshToken.userId)
+        return tokenPairGenerator.reissue(parsedRefreshToken)
     }
 
     fun parse(rawAccessToken: RawAccessToken): Account = accountReader.readEnabled(tokenParser.parse(rawAccessToken).userId)

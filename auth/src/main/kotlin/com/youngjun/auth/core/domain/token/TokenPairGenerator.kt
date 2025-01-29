@@ -1,6 +1,5 @@
 package com.youngjun.auth.core.domain.token
 
-import com.youngjun.auth.core.domain.account.Account
 import com.youngjun.auth.storage.db.core.token.RefreshTokenRepository
 import org.springframework.stereotype.Component
 
@@ -9,23 +8,20 @@ class TokenPairGenerator(
     private val jwtGenerator: JwtGenerator,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-    fun issue(account: Account): TokenPair =
+    fun issue(userId: Long): TokenPair =
         TokenPair(
-            account.id,
-            jwtGenerator.generateAccessToken(account),
-            jwtGenerator.generateRefreshToken(account),
+            userId,
+            jwtGenerator.generateAccessToken(userId),
+            jwtGenerator.generateRefreshToken(userId),
         ).also {
             refreshTokenRepository.replace(it.refreshToken)
         }
 
-    fun reissue(
-        account: Account,
-        parsedRefreshToken: ParsedRefreshToken,
-    ): TokenPair =
+    fun reissue(parsedRefreshToken: ParsedRefreshToken): TokenPair =
         TokenPair(
-            account.id,
-            jwtGenerator.generateAccessToken(account),
-            jwtGenerator.generateRefreshTokenOnExpiration(account, parsedRefreshToken.expiration),
+            parsedRefreshToken.userId,
+            jwtGenerator.generateAccessToken(parsedRefreshToken.userId),
+            jwtGenerator.generateRefreshTokenOnExpiration(parsedRefreshToken.userId, parsedRefreshToken.expiration),
         ).also {
             if (it.refreshToken.exists()) {
                 refreshTokenRepository.update(it.refreshToken)
