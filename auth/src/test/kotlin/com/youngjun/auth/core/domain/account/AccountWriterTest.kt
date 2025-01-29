@@ -29,7 +29,7 @@ class AccountWriterTest(
                     actual.username shouldBe newAccount.username
                 }
 
-                test("동일한 이름으로 저장하면 실패한다.") {
+                test("동일한 아이디로 저장하면 실패한다.") {
                     val username = "username123"
                     accountJpaRepository.save(AccountEntityBuilder(username = username).build())
 
