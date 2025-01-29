@@ -33,7 +33,7 @@ class JwtGenerator(
         )
     }
 
-    fun reissueRefreshToken(
+    fun generateRefreshTokenOnExpiration(
         account: Account,
         refreshTokenExpiration: LocalDateTime,
     ): ParsedRefreshToken {

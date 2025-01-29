@@ -2,6 +2,7 @@ package com.youngjun.auth.core.domain.token
 
 import com.youngjun.auth.core.api.security.JwtProperties
 import com.youngjun.auth.core.domain.account.AccountBuilder
+import com.youngjun.auth.core.domain.support.seconds
 import com.youngjun.auth.core.domain.support.toEpochSecond
 import com.youngjun.auth.core.support.DomainTest
 import io.jsonwebtoken.Jwts
@@ -76,6 +77,53 @@ class JwtGeneratorTest(
                         .payload.expiration
                         .toInstant()
                         .epochSecond shouldBe expected.toEpochSecond()
+                }
+            }
+
+            context("만료 시간에 따른 refreshToken 발급") {
+                val refreshTokenParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
+
+                test("갱신되는 경우") {
+                    val account = AccountBuilder().build()
+
+                    val actual =
+                        jwtGenerator.generateRefreshTokenOnExpiration(
+                            account,
+                            now + jwtProperties.expirationThreshold,
+                        )
+
+                    actual.exists() shouldBe true
+                    refreshTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "${account.id}"
+                }
+
+                test("refresh token 만료 시간 검증") {
+                    val account = AccountBuilder().build()
+
+                    val actual =
+                        jwtGenerator.generateRefreshTokenOnExpiration(
+                            account,
+                            now + jwtProperties.expirationThreshold,
+                        )
+
+                    val expected = now + jwtProperties.refreshTokenExpiresIn
+                    actual.expiration shouldBe expected
+                    refreshTokenParser
+                        .parseSignedClaims(actual.value)
+                        .payload.expiration
+                        .toInstant()
+                        .epochSecond shouldBe expected.toEpochSecond()
+                }
+
+                test("갱신되지 않는 경우") {
+                    val account = AccountBuilder().build()
+
+                    val actual =
+                        jwtGenerator.generateRefreshTokenOnExpiration(
+                            account,
+                            now + jwtProperties.expirationThreshold + 1.seconds,
+                        )
+
+                    actual.exists() shouldBe false
                 }
             }
         },

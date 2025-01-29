@@ -25,7 +25,7 @@ class TokenPairGenerator(
         TokenPair(
             account.id,
             jwtGenerator.generateAccessToken(account),
-            jwtGenerator.reissueRefreshToken(account, parsedRefreshToken.expiration),
+            jwtGenerator.generateRefreshTokenOnExpiration(account, parsedRefreshToken.expiration),
         ).also {
             if (it.refreshToken.exists()) {
                 refreshTokenRepository.update(it.refreshToken)

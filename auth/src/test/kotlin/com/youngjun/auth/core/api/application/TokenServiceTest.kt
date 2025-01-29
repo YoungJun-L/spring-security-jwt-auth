@@ -26,6 +26,7 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.time.Duration
+import java.time.LocalDateTime
 
 @ApplicationTest
 class TokenServiceTest(
@@ -73,13 +74,14 @@ class TokenServiceTest(
                     actual.userId shouldBe accountEntity.id
                 }
 
-                test("refreshToken 아직 만료되지 않으면 refresh token 은 갱신되지 않는다.") {
+                test("refreshToken 이 아직 만료되지 않았으면 refresh token 은 갱신되지 않는다.") {
                     val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
                     val rawRefreshToken =
                         RawRefreshToken(
                             JwtBuilder(
                                 secretKey = jwtProperties.refreshSecretKey,
                                 subject = accountEntity.id.toString(),
+                                issuedAt = LocalDateTime.now(),
                                 expiresIn = jwtProperties.expirationThreshold + 1.hours,
                             ).build(),
                         )
@@ -102,6 +104,7 @@ class TokenServiceTest(
                             JwtBuilder(
                                 secretKey = jwtProperties.refreshSecretKey,
                                 subject = accountEntity.id.toString(),
+                                issuedAt = LocalDateTime.now(),
                                 expiresIn = jwtProperties.expirationThreshold - 1.seconds,
                             ).build(),
                         )
@@ -151,6 +154,7 @@ class TokenServiceTest(
                             JwtBuilder(
                                 secretKey = jwtProperties.refreshSecretKey,
                                 subject = accountEntity.id.toString(),
+                                issuedAt = LocalDateTime.now(),
                                 expiresIn = Duration.ZERO,
                             ).build(),
                         )
@@ -230,6 +234,7 @@ class TokenServiceTest(
                             JwtBuilder(
                                 secretKey = jwtProperties.accessSecretKey,
                                 subject = accountEntity.id.toString(),
+                                issuedAt = LocalDateTime.now(),
                                 expiresIn = Duration.ZERO,
                             ).build(),
                         )
