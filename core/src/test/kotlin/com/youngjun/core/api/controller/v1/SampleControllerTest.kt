@@ -47,7 +47,7 @@ class SampleControllerTest : RestDocsTest() {
             .apply(
                 document(
                     "sample",
-                    requestCookies(cookieWithName("user").description("Access token")),
+                    requestCookies(cookieWithName("USER_ID").description("userId")),
                     responseFields(
                         "status" type STRING description "status",
                         "data" type OBJECT description "data",

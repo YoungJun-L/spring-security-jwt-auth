@@ -1,6 +1,5 @@
 package com.youngjun.core.support
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.youngjun.core.api.web.UserArgumentResolver
 import io.restassured.http.Cookie
 import io.restassured.module.mockmvc.RestAssuredMockMvc
@@ -21,7 +20,7 @@ import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
 abstract class RestDocsTest {
     private lateinit var restDocumentation: RestDocumentationContextProvider
 
-    protected val userCookie: Cookie = Cookie.Builder("user", "{\"id\":1,\"details\":{}}").build()
+    protected val userCookie: Cookie = Cookie.Builder("USER_ID", "1").build()
 
     @BeforeEach
     fun setUp(restDocumentation: RestDocumentationContextProvider) {
@@ -33,7 +32,7 @@ abstract class RestDocsTest {
             MockMvcBuilders
                 .standaloneSetup(controller)
                 .apply<StandaloneMockMvcBuilder>(mockMvcConfigurer())
-                .setCustomArgumentResolvers(UserArgumentResolver(jacksonObjectMapper()))
+                .setCustomArgumentResolvers(UserArgumentResolver())
                 .build(),
         )
     }

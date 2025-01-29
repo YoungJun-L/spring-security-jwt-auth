@@ -1,6 +1,5 @@
 package com.youngjun.core.api.web
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.youngjun.core.domain.User
 import com.youngjun.core.support.error.CoreException
 import com.youngjun.core.support.error.ErrorType.FORBIDDEN_ERROR
@@ -20,8 +19,7 @@ class UserArgumentResolverTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val objectMapper = jacksonObjectMapper()
-            val userArgumentResolver = UserArgumentResolver(objectMapper)
+            val userArgumentResolver = UserArgumentResolver()
 
             class TestController {
                 fun user(user: User) {}
@@ -50,14 +48,9 @@ class UserArgumentResolverTest :
                 val methodParameter = MethodParameter.forExecutable(method, 0)
 
                 test("성공") {
-                    val id = 1L
+                    val userId = 1L
                     val request = MockHttpServletRequest()
-                    request.setCookies(
-                        Cookie(
-                            "user",
-                            objectMapper.writeValueAsString(mapOf("id" to id, "details" to emptyMap<String, Any>())),
-                        ),
-                    )
+                    request.setCookies(Cookie("USER_ID", userId.toString()))
                     val webRequest = ServletWebRequest(request)
 
                     val actual =
@@ -68,12 +61,12 @@ class UserArgumentResolverTest :
                             binderFactory = null,
                         )
 
-                    actual.id shouldBe id
+                    actual.id shouldBe userId
                 }
 
                 test("값이 변조되었으면 실패한다.") {
                     val request = MockHttpServletRequest()
-                    request.setCookies(Cookie("user", ""))
+                    request.setCookies(Cookie("USER_ID", ""))
                     val webRequest = ServletWebRequest(request)
 
                     shouldThrow<CoreException> {

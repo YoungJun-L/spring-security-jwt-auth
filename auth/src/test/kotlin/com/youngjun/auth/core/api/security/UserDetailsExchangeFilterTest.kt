@@ -1,6 +1,5 @@
 package com.youngjun.auth.core.api.security
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.youngjun.auth.core.domain.account.AccountBuilder
 import com.youngjun.auth.core.support.SecurityTest
 import io.kotest.core.spec.IsolationMode
@@ -18,8 +17,7 @@ class UserDetailsExchangeFilterTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val objectMapper = jacksonObjectMapper()
-            val userDetailsExchangeFilter = UserDetailsExchangeFilter(objectMapper)
+            val userDetailsExchangeFilter = UserDetailsExchangeFilter()
 
             afterTest { SecurityContextHolder.clearContext() }
 
@@ -29,20 +27,14 @@ class UserDetailsExchangeFilterTest :
                 val filterChain = MockFilterChain()
 
                 test("성공") {
-                    val authentication = JwtAuthenticationToken.authenticated(AccountBuilder().build())
-                    SecurityContextHolder.getContext().authentication = authentication
+                    val account = AccountBuilder().build()
+                    SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
 
                     userDetailsExchangeFilter.doFilter(request, response, filterChain)
 
-                    val actual = (filterChain.request as HttpServletRequest).cookies.first { it.name == "user" }.value
-                    val expect =
-                        objectMapper.writeValueAsString(
-                            mapOf(
-                                "id" to authentication.principal,
-                                "details" to authentication.details,
-                            ),
-                        )
-                    actual shouldBe expect
+                    val actual =
+                        (filterChain.request as HttpServletRequest).cookies.first { it.name == "USER_ID" }.value
+                    actual shouldBe account.id.toString()
                 }
 
                 test("성공하면 인증 정보는 비워진다.") {

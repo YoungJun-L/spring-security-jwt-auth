@@ -6,11 +6,9 @@ import org.springframework.security.core.GrantedAuthority
 
 data class JwtAuthenticationToken private constructor(
     private val id: Long,
-    private val details: Map<String, Any>,
     private val authorities: Collection<GrantedAuthority>,
 ) : AbstractAuthenticationToken(authorities) {
     init {
-        setDetails(details)
         super.setAuthenticated(true)
     }
 
@@ -18,13 +16,10 @@ data class JwtAuthenticationToken private constructor(
 
     override fun getCredentials() = null
 
-    override fun getDetails(): Map<String, Any> = details
-
     companion object {
         fun authenticated(account: Account): JwtAuthenticationToken =
             JwtAuthenticationToken(
                 account.id,
-                account.details,
                 account.authorities,
             )
     }

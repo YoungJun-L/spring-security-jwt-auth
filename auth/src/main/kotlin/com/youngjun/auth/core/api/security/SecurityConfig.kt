@@ -52,7 +52,7 @@ class SecurityConfig(
                 ),
                 UsernamePasswordAuthenticationFilter::class.java,
             ).addFilterAfter(
-                UserDetailsExchangeFilter(objectMapper),
+                UserDetailsExchangeFilter(),
                 AuthorizationFilter::class.java,
             ).exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint()) }
             .authenticationManager(authenticationManager())

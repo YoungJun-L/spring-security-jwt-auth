@@ -1,19 +1,15 @@
 package com.youngjun.auth.core.api.security
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletRequestWrapper
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.AuthenticationServiceException
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 
-class UserDetailsExchangeFilter(
-    private val objectMapper: ObjectMapper,
-) : OncePerRequestFilter() {
+class UserDetailsExchangeFilter : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -22,7 +18,7 @@ class UserDetailsExchangeFilter(
         val authentication =
             SecurityContextHolder.getContext().authentication
                 ?: throw AuthenticationServiceException("Authentication object should not be null.")
-        val userRequest = UserRequest(request, objectMapper.writeValueAsString(AuthUserDetails.from(authentication)))
+        val userRequest = UserRequest(request, authentication.principal.toString())
         SecurityContextHolder.clearContext()
         filterChain.doFilter(userRequest, response)
     }
@@ -31,23 +27,8 @@ class UserDetailsExchangeFilter(
 
     private class UserRequest(
         private val request: HttpServletRequest,
-        private val token: String,
-        private val cookies: Array<Cookie> =
-            (request.cookies ?: emptyArray<Cookie>()) + Cookie(USER_COOKIE_NAME, token),
+        private val userId: String,
     ) : HttpServletRequestWrapper(request) {
-        override fun getCookies(): Array<Cookie> = cookies
-
-        companion object {
-            private const val USER_COOKIE_NAME = "user"
-        }
-    }
-
-    private data class AuthUserDetails(
-        val id: Any,
-        val details: Any,
-    ) {
-        companion object {
-            fun from(authentication: Authentication): AuthUserDetails = AuthUserDetails(authentication.principal, authentication.details)
-        }
+        override fun getCookies(): Array<Cookie> = (request.cookies ?: emptyArray<Cookie>()) + Cookie("USER_ID", userId)
     }
 }

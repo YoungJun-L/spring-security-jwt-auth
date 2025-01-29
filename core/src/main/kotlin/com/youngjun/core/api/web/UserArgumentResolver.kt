@@ -1,7 +1,5 @@
 package com.youngjun.core.api.web
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.youngjun.core.domain.User
 import com.youngjun.core.support.error.CoreException
 import com.youngjun.core.support.error.ErrorType.FORBIDDEN_ERROR
@@ -14,9 +12,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
-class UserArgumentResolver(
-    private val objectMapper: ObjectMapper,
-) : HandlerMethodArgumentResolver {
+class UserArgumentResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean = parameter.parameterType == User::class.java
 
     override fun resolveArgument(
@@ -27,13 +23,15 @@ class UserArgumentResolver(
     ): User {
         try {
             val request = webRequest.getNativeRequest(HttpServletRequest::class.java)
-            return objectMapper.readValue(request!!.cookies.first { it.name == USER_COOKIE_NAME }.value)
+            return User(
+                request!!
+                    .cookies
+                    .first { it.name == "USER_ID" }
+                    .value
+                    .toLong(),
+            )
         } catch (ex: Exception) {
             throw CoreException(FORBIDDEN_ERROR)
         }
-    }
-
-    companion object {
-        private const val USER_COOKIE_NAME = "user"
     }
 }
