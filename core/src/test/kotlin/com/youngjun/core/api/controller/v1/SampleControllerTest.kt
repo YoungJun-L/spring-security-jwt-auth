@@ -1,6 +1,6 @@
 package com.youngjun.core.api.controller.v1
 
-import com.youngjun.core.api.application.SampleService
+import com.youngjun.core.application.SampleService
 import com.youngjun.core.domain.Sample
 import com.youngjun.core.support.RestDocsTest
 import com.youngjun.core.support.description

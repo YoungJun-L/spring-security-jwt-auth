@@ -1,7 +1,5 @@
-package com.youngjun.core.support
+package com.youngjun.auth.support
 
-import com.youngjun.core.api.config.UserArgumentResolver
-import io.restassured.http.Cookie
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
@@ -20,8 +18,6 @@ import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
 abstract class RestDocsTest {
     private lateinit var restDocumentation: RestDocumentationContextProvider
 
-    protected val userCookie: Cookie = Cookie.Builder("USER_ID", "1").build()
-
     @BeforeEach
     fun setUp(restDocumentation: RestDocumentationContextProvider) {
         this.restDocumentation = restDocumentation
@@ -32,7 +28,6 @@ abstract class RestDocsTest {
             MockMvcBuilders
                 .standaloneSetup(controller)
                 .apply<StandaloneMockMvcBuilder>(mockMvcConfigurer())
-                .setCustomArgumentResolvers(UserArgumentResolver())
                 .build(),
         )
     }
