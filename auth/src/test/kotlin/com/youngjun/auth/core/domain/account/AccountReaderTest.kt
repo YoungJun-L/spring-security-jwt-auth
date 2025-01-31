@@ -24,9 +24,10 @@ class AccountReaderTest(
 
             context("회원 조회") {
                 test("성공") {
-                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder().build())
+                    val username = "username123"
+                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder(username = username).build())
 
-                    val actual = accountReader.read(accountEntity.username)
+                    val actual = accountReader.read(username)
 
                     actual.id shouldBe accountEntity.id
                 }

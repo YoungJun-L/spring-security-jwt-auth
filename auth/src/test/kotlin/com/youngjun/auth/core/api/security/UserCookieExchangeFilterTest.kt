@@ -12,12 +12,12 @@ import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
 
 @SecurityTest
-class UserDetailsExchangeFilterTest :
+class UserCookieExchangeFilterTest :
     FunSpec(
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val userDetailsExchangeFilter = UserDetailsExchangeFilter()
+            val userCookieExchangeFilter = UserCookieExchangeFilter()
 
             afterTest { SecurityContextHolder.clearContext() }
 
@@ -30,7 +30,7 @@ class UserDetailsExchangeFilterTest :
                     val account = AccountBuilder().build()
                     SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
 
-                    userDetailsExchangeFilter.doFilter(request, response, filterChain)
+                    userCookieExchangeFilter.doFilter(request, response, filterChain)
 
                     val actual =
                         (filterChain.request as HttpServletRequest).cookies.first { it.name == "USER_ID" }.value
@@ -41,7 +41,7 @@ class UserDetailsExchangeFilterTest :
                     SecurityContextHolder.getContext().authentication =
                         JwtAuthenticationToken.authenticated(AccountBuilder().build())
 
-                    userDetailsExchangeFilter.doFilter(request, response, filterChain)
+                    userCookieExchangeFilter.doFilter(request, response, filterChain)
 
                     SecurityContextHolder.getContext().authentication shouldBe null
                 }

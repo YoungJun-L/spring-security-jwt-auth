@@ -2,6 +2,7 @@ package com.youngjun.auth.storage.db.core.account
 
 import com.youngjun.auth.core.domain.account.Account
 import com.youngjun.auth.core.domain.account.NewAccount
+import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
@@ -19,4 +20,11 @@ class AccountRepository(
     fun read(id: Long): Account? = accountJpaRepository.findByIdOrNull(id)?.toAccount()
 
     fun existsByUsername(username: String): Boolean = accountJpaRepository.existsByUsername(username)
+
+    @Transactional
+    fun update(account: Account): Account {
+        val accountEntity = accountJpaRepository.findByIdOrNull(account.id)!!
+        accountEntity.update(account)
+        return accountEntity.toAccount()
+    }
 }

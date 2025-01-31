@@ -4,6 +4,7 @@ import com.youngjun.auth.core.support.DomainTest
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_LOGOUT_ERROR
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
@@ -29,6 +30,12 @@ class AccountTest :
                     val account = AccountBuilder(status = AccountStatus.DISABLED).build()
                     shouldThrow<AuthException> { account.verify() }
                         .errorType shouldBe ACCOUNT_DISABLED_ERROR
+                }
+
+                test("로그아웃") {
+                    val account = AccountBuilder(status = AccountStatus.LOGOUT).build()
+                    shouldThrow<AuthException> { account.verify() }
+                        .errorType shouldBe ACCOUNT_LOGOUT_ERROR
                 }
             }
         },

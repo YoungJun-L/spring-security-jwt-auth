@@ -14,7 +14,7 @@ class RefreshTokenEntity(
     val userId: Long,
     var token: String,
     @Enumerated(EnumType.STRING)
-    val status: TokenStatus = TokenStatus.ENABLED,
+    var status: TokenStatus = TokenStatus.ENABLED,
 ) : BaseEntity() {
     fun toRefreshToken(): RefreshToken = RefreshToken(id, userId, token, status)
 }

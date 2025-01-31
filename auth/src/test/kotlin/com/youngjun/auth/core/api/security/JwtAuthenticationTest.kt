@@ -6,6 +6,7 @@ import com.youngjun.auth.core.support.SecurityContextTest
 import com.youngjun.auth.core.support.error.AuthException
 import com.youngjun.auth.core.support.error.ErrorCode
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
+import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_LOGOUT_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.ACCOUNT_NOT_FOUND_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_EXPIRED_ERROR
 import com.youngjun.auth.core.support.error.ErrorType.TOKEN_INVALID_ERROR
@@ -81,6 +82,15 @@ class JwtAuthenticationTest(
         val actual = authenticate()
 
         actual["code"] shouldBe ErrorCode.E4032.name
+    }
+
+    @Test
+    fun `로그아웃된 유저이면 실패한다`() {
+        every { tokenService.parse(any()) } throws AuthException(ACCOUNT_LOGOUT_ERROR)
+
+        val actual = authenticate()
+
+        actual["code"] shouldBe ErrorCode.E4033.name
     }
 }
 

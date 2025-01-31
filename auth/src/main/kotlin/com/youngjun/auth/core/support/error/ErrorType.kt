@@ -20,6 +20,7 @@ enum class ErrorType(
     ACCOUNT_DUPLICATE_ERROR(HttpStatus.BAD_REQUEST, ErrorCode.E4002, "이미 존재하는 아이디입니다.", LogLevel.INFO),
     ACCOUNT_LOCKED_ERROR(HttpStatus.FORBIDDEN, ErrorCode.E4031, "계정이 잠겼습니다.", LogLevel.WARN),
     ACCOUNT_DISABLED_ERROR(HttpStatus.FORBIDDEN, ErrorCode.E4032, "이용이 제한된 유저입니다.", LogLevel.WARN),
+    ACCOUNT_LOGOUT_ERROR(HttpStatus.FORBIDDEN, ErrorCode.E4033, "로그인이 필요합니다.", LogLevel.WARN),
     ACCOUNT_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, ErrorCode.E4041, "계정이 존재하지 않습니다.", LogLevel.INFO),
 
     // token

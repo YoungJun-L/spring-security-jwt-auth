@@ -11,10 +11,16 @@ import jakarta.persistence.Table
 @Table(name = "users")
 @Entity
 class AccountEntity(
-    val username: String,
-    val password: String,
+    private var username: String,
+    private var password: String,
     @Enumerated(EnumType.STRING)
-    val status: AccountStatus = AccountStatus.ENABLED,
+    var status: AccountStatus = AccountStatus.ENABLED,
 ) : BaseEntity() {
     fun toAccount(): Account = Account(id, username, password, status)
+
+    fun update(account: Account) {
+        username = account.username
+        password = account.password
+        status = account.status
+    }
 }

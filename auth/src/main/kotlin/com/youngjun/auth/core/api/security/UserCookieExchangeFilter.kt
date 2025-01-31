@@ -1,5 +1,6 @@
 package com.youngjun.auth.core.api.security
 
+import com.youngjun.auth.core.domain.account.Account
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
@@ -9,7 +10,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 
-class UserDetailsExchangeFilter : OncePerRequestFilter() {
+class UserCookieExchangeFilter : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -18,7 +19,7 @@ class UserDetailsExchangeFilter : OncePerRequestFilter() {
         val authentication =
             SecurityContextHolder.getContext().authentication
                 ?: throw AuthenticationServiceException("Authentication object should not be null.")
-        val userRequest = UserRequest(request, authentication.principal.toString())
+        val userRequest = UserRequest(request, (authentication.principal as Account).id)
         SecurityContextHolder.clearContext()
         filterChain.doFilter(userRequest, response)
     }
@@ -27,8 +28,8 @@ class UserDetailsExchangeFilter : OncePerRequestFilter() {
 
     private class UserRequest(
         private val request: HttpServletRequest,
-        private val userId: String,
+        private val userId: Long,
     ) : HttpServletRequestWrapper(request) {
-        override fun getCookies(): Array<Cookie> = (request.cookies ?: emptyArray<Cookie>()) + Cookie("USER_ID", userId)
+        override fun getCookies(): Array<Cookie> = (request.cookies ?: emptyArray<Cookie>()) + Cookie("USER_ID", userId.toString())
     }
 }

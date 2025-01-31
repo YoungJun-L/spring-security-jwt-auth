@@ -1,5 +1,7 @@
 package com.youngjun.auth.core.api.application
 
+import com.youngjun.auth.core.domain.account.AccountBuilder
+import com.youngjun.auth.core.domain.account.AccountStatus
 import com.youngjun.auth.core.domain.account.NewAccountBuilder
 import com.youngjun.auth.core.support.ApplicationTest
 import com.youngjun.auth.core.support.error.AuthException
@@ -62,6 +64,18 @@ class AccountServiceTest(
 
                     shouldThrow<AuthException> { accountService.register(NewAccountBuilder(username = username).build()) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
+                }
+            }
+
+            context("로그아웃") {
+                test("성공") {
+                    val account = AccountBuilder().build()
+                    accountJpaRepository.save(AccountEntityBuilder(username = account.username).build())
+
+                    val actual = accountService.logout(account)
+
+                    actual.id shouldBe account.id
+                    actual.status shouldBe AccountStatus.LOGOUT
                 }
             }
         },

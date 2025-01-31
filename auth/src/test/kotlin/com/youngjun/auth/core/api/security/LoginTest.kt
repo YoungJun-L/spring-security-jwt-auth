@@ -16,6 +16,7 @@ import io.mockk.every
 import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given
 import org.junit.jupiter.api.Test
+import org.springframework.http.HttpStatus
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.JsonFieldType.NULL
 import org.springframework.restdocs.payload.JsonFieldType.NUMBER
@@ -108,6 +109,31 @@ class LoginTest(
         val actual = login(username, password)
 
         actual["code"] shouldBe ErrorCode.E4032.name
+    }
+
+    @Test
+    fun `로그아웃된 유저이면 성공한다`() {
+        val username = "username123"
+        val password = "password123!"
+        val account =
+            AccountBuilder(
+                username = username,
+                password = passwordEncoder.encode(password),
+                status = AccountStatus.LOGOUT,
+            ).build()
+        every { accountService.loadUserByUsername(any()) } returns account
+        every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
+
+        given()
+            .log()
+            .all()
+            .contentType(ContentType.JSON)
+            .body(LoginRequest(username, password))
+            .post("/auth/login")
+            .then()
+            .log()
+            .all()
+            .statusCode(HttpStatus.OK.value())
     }
 }
 
