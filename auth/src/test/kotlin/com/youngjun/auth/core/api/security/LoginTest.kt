@@ -37,8 +37,9 @@ class LoginTest(
         val username = "username123"
         val password = "password123!"
         val account = AccountBuilder(username = username, password = passwordEncoder.encode(password)).build()
-        every { accountService.loadUserByUsername(any()) } returns account
+        every { accountService.loadUserByUsername(any()) } returns account.logout()
         every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
+        every { accountService.login(any()) } returns account.enabled()
 
         given()
             .log()
@@ -123,6 +124,7 @@ class LoginTest(
             ).build()
         every { accountService.loadUserByUsername(any()) } returns account
         every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
+        every { accountService.login(any()) } returns account.enabled()
 
         given()
             .log()

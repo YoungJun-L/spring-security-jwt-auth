@@ -21,4 +21,6 @@ class AccountService(
     fun register(newAccount: NewAccount): Account = accountWriter.write(newAccount.encodedWith(passwordEncoder))
 
     fun logout(account: Account): Account = accountManager.logout(account)
+
+    fun login(account: Account) = accountManager.login(account)
 }

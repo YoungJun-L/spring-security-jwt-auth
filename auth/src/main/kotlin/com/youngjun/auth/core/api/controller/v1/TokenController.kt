@@ -2,7 +2,7 @@ package com.youngjun.auth.core.api.controller.v1
 
 import com.youngjun.auth.core.api.application.TokenService
 import com.youngjun.auth.core.api.controller.v1.request.ReissueTokenRequest
-import com.youngjun.auth.core.api.controller.v1.response.ReissueTokenResponse
+import com.youngjun.auth.core.api.controller.v1.response.TokenPairResponse
 import com.youngjun.auth.core.support.response.AuthResponse
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -15,8 +15,8 @@ class TokenController(
     @PostMapping("/auth/token")
     fun reissue(
         @RequestBody request: ReissueTokenRequest,
-    ): AuthResponse<ReissueTokenResponse> {
+    ): AuthResponse<TokenPairResponse> {
         val tokenPair = tokenService.reissue(request.toRawRefreshToken())
-        return AuthResponse.success(ReissueTokenResponse.from(tokenPair))
+        return AuthResponse.success(TokenPairResponse.from(tokenPair))
     }
 }

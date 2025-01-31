@@ -78,5 +78,17 @@ class AccountServiceTest(
                     actual.status shouldBe AccountStatus.LOGOUT
                 }
             }
+
+            context("로그인") {
+                test("성공") {
+                    val account = AccountBuilder().build()
+                    accountJpaRepository.save(AccountEntityBuilder(username = account.username).build())
+
+                    val actual = accountService.login(account)
+
+                    actual.id shouldBe account.id
+                    actual.status shouldBe AccountStatus.ENABLED
+                }
+            }
         },
     )

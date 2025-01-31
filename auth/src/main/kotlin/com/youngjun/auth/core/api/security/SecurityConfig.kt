@@ -40,7 +40,7 @@ class SecurityConfig(
                 RequestBodyUsernamePasswordAuthenticationFilter(
                     authenticationManager(),
                     objectMapper,
-                    IssueJwtAuthenticationSuccessHandler(tokenService, objectMapper),
+                    LoginSuccessHandler(accountService, tokenService, objectMapper),
                     authenticationFailureHandler(),
                 ),
                 UsernamePasswordAuthenticationFilter::class.java,

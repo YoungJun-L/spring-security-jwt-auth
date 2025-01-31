@@ -16,4 +16,9 @@ class AccountManager(
             accountRepository.update(it)
             refreshTokenRepository.expire(it)
         }
+
+    fun login(account: Account) =
+        account.enabled().also {
+            accountRepository.update(it)
+        }
 }

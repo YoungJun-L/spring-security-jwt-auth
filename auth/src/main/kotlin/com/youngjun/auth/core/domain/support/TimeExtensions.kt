@@ -4,7 +4,6 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.util.Date
 
 fun LocalDateTime.toEpochSecond(): Long = this.atZone(ZoneId.systemDefault()).toEpochSecond()
@@ -13,7 +12,7 @@ fun LocalDateTime.toInstant(): Instant = this.atZone(ZoneId.systemDefault()).toI
 
 fun Date.toLocalDateTime(): LocalDateTime = LocalDateTime.ofInstant(this.toInstant(), ZoneId.systemDefault())
 
-val EPOCH: LocalDateTime = LocalDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
+val EPOCH: LocalDateTime = LocalDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault())
 
 inline val Int.seconds: Duration get() = Duration.ofSeconds(this.toLong())
 

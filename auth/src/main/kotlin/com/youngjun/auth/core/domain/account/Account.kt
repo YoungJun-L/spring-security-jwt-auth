@@ -37,5 +37,7 @@ data class Account(
         }
     }
 
+    fun enabled(): Account = Account(id, username, password, ENABLED)
+
     fun logout(): Account = Account(id, username, password, LOGOUT)
 }
