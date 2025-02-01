@@ -12,7 +12,7 @@ class RefreshTokenRepository(
     @Transactional
     fun replace(parsedRefreshToken: ParsedRefreshToken) {
         refreshTokenJpaRepository.deleteByUserId(parsedRefreshToken.userId)
-        refreshTokenJpaRepository.save(RefreshTokenEntity(parsedRefreshToken.userId, parsedRefreshToken.value))
+        refreshTokenJpaRepository.save(RefreshToken(parsedRefreshToken.userId, parsedRefreshToken.value))
     }
 
     @Transactional
@@ -22,10 +22,7 @@ class RefreshTokenRepository(
     }
 
     fun read(parsedRefreshToken: ParsedRefreshToken) =
-        refreshTokenJpaRepository
-            .findByUserId(parsedRefreshToken.userId)
-            ?.takeIf { it.token == parsedRefreshToken.value }
-            ?.toRefreshToken()
+        refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)?.takeIf { it.value == parsedRefreshToken.value }
 
     fun read(account: Account) = refreshTokenJpaRepository.findByUserId(account.id)
 }

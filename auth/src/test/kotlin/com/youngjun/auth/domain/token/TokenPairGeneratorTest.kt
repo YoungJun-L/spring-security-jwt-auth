@@ -36,7 +36,7 @@ class TokenPairGeneratorTest(
 
                     val expected = tokenPairGenerator.issue(userId)
 
-                    refreshTokenJpaRepository.findByUserId(userId)!!.token shouldBe expected.refreshToken.value
+                    refreshTokenJpaRepository.findByUserId(userId)!!.value shouldBe expected.refreshToken.value
                 }
             }
 
@@ -57,12 +57,11 @@ class TokenPairGeneratorTest(
                             issuedAt = LocalDateTime.now(),
                             expiresIn = jwtProperties.expirationThreshold - 1.seconds,
                         ).build()
-                    val refreshTokenEntity =
-                        refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(userId, parsedRefreshToken.value).build())
+                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(userId, parsedRefreshToken.value).build())
 
                     val expected = tokenPairGenerator.reissue(parsedRefreshToken)
 
-                    refreshTokenJpaRepository.findByIdOrNull(refreshTokenEntity.id)!!.token shouldBe expected.refreshToken.value
+                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.value shouldBe expected.refreshToken.value
                 }
 
                 test("refreshToken 이 갱신되지 않으면 저장된 토큰의 값이 변경되지 않는다.") {
@@ -73,12 +72,11 @@ class TokenPairGeneratorTest(
                             issuedAt = LocalDateTime.now(),
                             expiresIn = jwtProperties.expirationThreshold + 1.hours,
                         ).build()
-                    val refreshTokenEntity =
-                        refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(userId, parsedRefreshToken.value).build())
+                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(userId, parsedRefreshToken.value).build())
 
                     tokenPairGenerator.reissue(parsedRefreshToken)
 
-                    refreshTokenJpaRepository.findByIdOrNull(refreshTokenEntity.id)!!.token shouldBe parsedRefreshToken.value
+                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.value shouldBe parsedRefreshToken.value
                 }
 
                 test("refreshToken 이 곧 만료되면 refresh token 도 갱신된다.") {
@@ -89,7 +87,7 @@ class TokenPairGeneratorTest(
                             issuedAt = LocalDateTime.now(),
                             expiresIn = jwtProperties.expirationThreshold - 1.seconds,
                         ).build()
-                    refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(userId, parsedRefreshToken.value).build())
+                    refreshTokenJpaRepository.save(RefreshTokenBuilder(userId, parsedRefreshToken.value).build())
 
                     val actual = tokenPairGenerator.reissue(parsedRefreshToken)
 

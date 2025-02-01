@@ -1,6 +1,6 @@
 package com.youngjun.auth.domain.account
 
-import com.youngjun.auth.domain.token.RefreshTokenEntityBuilder
+import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.TokenStatus
 import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
@@ -41,7 +41,7 @@ class AccountManagerTest(
 
                 test("refreshToken 이 만료된다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
-                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(account.id).build())
+                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id).build())
 
                     accountManager.logout(account)
 
