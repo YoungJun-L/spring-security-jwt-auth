@@ -1,4 +1,4 @@
-package com.youngjun.storage.db.core
+package com.youngjun.core.domain
 
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType

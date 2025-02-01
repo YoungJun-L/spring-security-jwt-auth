@@ -39,9 +39,8 @@ class AccountControllerTest : RestDocsTest() {
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(
-                RegisterAccountRequest("username123", "password123!"),
-            ).post("/auth/register")
+            .body(RegisterAccountRequest("username123", "password123!"))
+            .post("/auth/register")
             .then()
             .log()
             .all()

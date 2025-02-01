@@ -33,7 +33,7 @@ class SampleControllerTest : RestDocsTest() {
 
     @Test
     fun sample() {
-        every { sampleService.read(any()) } returns Sample(1L, 1L, "data")
+        every { sampleService.read(any()) } returns Sample(1L, "data")
 
         given()
             .log()
