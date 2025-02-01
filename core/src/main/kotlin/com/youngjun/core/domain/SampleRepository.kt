@@ -7,5 +7,10 @@ import org.springframework.stereotype.Repository
 class SampleRepository(
     private val sampleJpaRepository: SampleJpaRepository,
 ) {
-    fun find(user: User): Sample? = sampleJpaRepository.findByUserId(user.id)
+    fun findBy(
+        user: User,
+        sampleId: Long,
+    ): Sample? = sampleJpaRepository.findByIdAndUserId(sampleId, user.id)
+
+    fun findAllBy(user: User): List<Sample> = sampleJpaRepository.findAllByUserId(user.id)
 }

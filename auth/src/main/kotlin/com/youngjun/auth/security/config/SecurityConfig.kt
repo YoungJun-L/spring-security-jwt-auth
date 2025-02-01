@@ -14,6 +14,7 @@ import com.youngjun.auth.security.provider.JwtAuthenticationProvider
 import com.youngjun.auth.security.token.BearerTokenResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -27,6 +28,7 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @EnableWebSecurity
 @Configuration
@@ -43,6 +45,8 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it
                     .requestMatchers(*NotFilterRequestMatcher.matchers())
+                    .permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/samples"))
                     .permitAll()
                     .anyRequest()
                     .authenticated()

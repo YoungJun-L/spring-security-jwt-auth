@@ -1,7 +1,7 @@
 package com.youngjun.auth.security.filter
 
-import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.security.config.NotFilterRequestMatcher
+import com.youngjun.auth.security.token.JwtAuthenticationToken
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
@@ -21,7 +21,12 @@ class UserCookieExchangeFilter : OncePerRequestFilter() {
             SecurityContextHolder.getContext().authentication
                 ?: throw AuthenticationServiceException("Authentication object should not be null.")
         SecurityContextHolder.clearContext()
-        filterChain.doFilter(UserRequest(request, (authentication.principal as Account).id), response)
+        val userId =
+            when (authentication) {
+                is JwtAuthenticationToken -> authentication.principal.id
+                else -> 0
+            }
+        filterChain.doFilter(UserRequest(request, userId), response)
     }
 
     override fun shouldNotFilter(request: HttpServletRequest) = NotFilterRequestMatcher.matchers().any { it.matches(request) }

@@ -1,11 +1,15 @@
 package com.youngjun.core.support
 
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.youngjun.core.api.config.AnyUserArgumentResolver
 import com.youngjun.core.api.config.UserArgumentResolver
 import io.restassured.http.Cookie
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
@@ -32,7 +36,8 @@ abstract class RestDocsTest {
             MockMvcBuilders
                 .standaloneSetup(controller)
                 .apply<StandaloneMockMvcBuilder>(mockMvcConfigurer())
-                .setCustomArgumentResolvers(UserArgumentResolver())
+                .setCustomArgumentResolvers(UserArgumentResolver(), AnyUserArgumentResolver())
+                .setMessageConverters(MappingJackson2HttpMessageConverter(objectMapper()))
                 .build(),
         )
     }
@@ -49,4 +54,10 @@ abstract class RestDocsTest {
                     .removePort(),
                 Preprocessors.prettyPrint(),
             ).withResponseDefaults(Preprocessors.prettyPrint())
+
+    private fun objectMapper() =
+        jacksonObjectMapper()
+            .findAndRegisterModules()
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
 }

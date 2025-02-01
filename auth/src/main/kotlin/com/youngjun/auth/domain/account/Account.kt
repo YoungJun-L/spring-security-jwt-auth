@@ -45,7 +45,7 @@ class Account(
 
     override fun isAccountNonLocked(): Boolean = status != LOCKED
 
-    override fun isEnabled(): Boolean = status == ENABLED || status == LOGOUT
+    override fun isEnabled(): Boolean = status in arrayOf(ENABLED, LOGOUT)
 
     fun verify() {
         when (status) {
