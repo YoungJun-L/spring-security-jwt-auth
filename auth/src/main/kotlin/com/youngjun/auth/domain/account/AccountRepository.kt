@@ -10,11 +10,9 @@ class AccountRepository(
 ) {
     fun save(account: Account): Account = accountJpaRepository.save(account)
 
-    fun write(newAccount: NewAccount): Account = accountJpaRepository.save(Account(newAccount.username, newAccount.password))
+    fun findBy(username: String): Account? = accountJpaRepository.findByUsername(username)
 
-    fun read(username: String): Account? = accountJpaRepository.findByUsername(username)
+    fun findBy(id: Long): Account? = accountJpaRepository.findByIdOrNull(id)
 
-    fun read(id: Long): Account? = accountJpaRepository.findByIdOrNull(id)
-
-    fun existsByUsername(username: String): Boolean = accountJpaRepository.existsByUsername(username)
+    fun existsBy(username: String): Boolean = accountJpaRepository.existsByUsername(username)
 }

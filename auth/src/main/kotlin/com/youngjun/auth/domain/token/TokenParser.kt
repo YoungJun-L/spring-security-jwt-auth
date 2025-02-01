@@ -13,7 +13,9 @@ class TokenParser(
 
     fun parse(rawRefreshToken: RawRefreshToken): ParsedRefreshToken {
         val parsedRefreshToken = ParsedRefreshToken.of(rawRefreshToken, jwtParser.parse(rawRefreshToken))
-        val refreshToken = refreshTokenRepository.read(parsedRefreshToken) ?: throw AuthException(TOKEN_NOT_FOUND_ERROR)
+        val refreshToken =
+            refreshTokenRepository.findBy(parsedRefreshToken)
+                ?: throw AuthException(TOKEN_NOT_FOUND_ERROR)
         refreshToken.verify()
         return parsedRefreshToken
     }

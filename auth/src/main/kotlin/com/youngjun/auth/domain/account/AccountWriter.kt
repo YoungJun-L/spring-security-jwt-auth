@@ -9,9 +9,9 @@ class AccountWriter(
     private val accountRepository: AccountRepository,
 ) {
     fun write(newAccount: NewAccount): Account {
-        if (accountRepository.existsByUsername(newAccount.username)) {
+        if (accountRepository.existsBy(newAccount.username)) {
             throw AuthException(ACCOUNT_DUPLICATE_ERROR)
         }
-        return accountRepository.write(newAccount)
+        return accountRepository.save(Account(newAccount.username, newAccount.password))
     }
 }

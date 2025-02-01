@@ -9,11 +9,10 @@ import org.springframework.stereotype.Repository
 class RefreshTokenRepository(
     private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
 ) {
-    @Transactional
-    fun replace(parsedRefreshToken: ParsedRefreshToken) {
-        refreshTokenJpaRepository.deleteByUserId(parsedRefreshToken.userId)
+    fun save(parsedRefreshToken: ParsedRefreshToken): RefreshToken =
         refreshTokenJpaRepository.save(RefreshToken(parsedRefreshToken.userId, parsedRefreshToken.value))
-    }
+
+    fun deleteBy(userId: Long) = refreshTokenJpaRepository.deleteByUserId(userId)
 
     @Transactional
     fun update(parsedRefreshToken: ParsedRefreshToken) {
@@ -21,8 +20,8 @@ class RefreshTokenRepository(
         refreshToken.updateValue(parsedRefreshToken.value)
     }
 
-    fun read(parsedRefreshToken: ParsedRefreshToken) =
+    fun findBy(parsedRefreshToken: ParsedRefreshToken): RefreshToken? =
         refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)?.takeIf { it.value == parsedRefreshToken.value }
 
-    fun read(account: Account) = refreshTokenJpaRepository.findByUserId(account.id)
+    fun findBy(account: Account): RefreshToken? = refreshTokenJpaRepository.findByUserId(account.id)
 }

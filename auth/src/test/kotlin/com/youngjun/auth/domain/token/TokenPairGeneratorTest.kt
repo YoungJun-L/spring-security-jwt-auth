@@ -26,17 +26,9 @@ class TokenPairGeneratorTest(
                 test("성공") {
                     val userId = 1L
 
-                    val actual = tokenPairGenerator.issue(userId)
+                    val actual = tokenPairGenerator.generate(userId)
 
                     actual.userId shouldBe userId
-                }
-
-                test("이전 refreshToken 은 교체된다.") {
-                    val userId = 1L
-
-                    val expected = tokenPairGenerator.issue(userId)
-
-                    refreshTokenJpaRepository.findByUserId(userId)!!.value shouldBe expected.refreshToken.value
                 }
             }
 

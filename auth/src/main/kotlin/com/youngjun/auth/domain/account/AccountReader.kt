@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component
 class AccountReader(
     private val accountRepository: AccountRepository,
 ) {
-    fun read(username: String): Account = accountRepository.read(username) ?: throw UsernameNotFoundException("Cannot find user")
+    fun read(username: String): Account = accountRepository.findBy(username) ?: throw UsernameNotFoundException("Cannot find user")
 
     fun readEnabled(id: Long): Account {
-        val account = accountRepository.read(id) ?: throw AuthException(UNAUTHORIZED_ERROR)
+        val account = accountRepository.findBy(id) ?: throw AuthException(UNAUTHORIZED_ERROR)
         account.verify()
         return account
     }

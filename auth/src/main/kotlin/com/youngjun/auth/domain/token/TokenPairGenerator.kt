@@ -7,14 +7,8 @@ class TokenPairGenerator(
     private val jwtGenerator: JwtGenerator,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-    fun issue(userId: Long): TokenPair =
-        TokenPair(
-            userId,
-            jwtGenerator.generateAccessToken(userId),
-            jwtGenerator.generateRefreshToken(userId),
-        ).also {
-            refreshTokenRepository.replace(it.refreshToken)
-        }
+    fun generate(userId: Long): TokenPair =
+        TokenPair(userId, jwtGenerator.generateAccessToken(userId), jwtGenerator.generateRefreshToken(userId))
 
     fun reissue(parsedRefreshToken: ParsedRefreshToken): TokenPair =
         TokenPair(

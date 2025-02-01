@@ -13,7 +13,7 @@ class AccountManager(
     fun logout(account: Account): Account {
         account.logout()
         accountRepository.save(account)
-        refreshTokenRepository.read(account)?.expire()
+        refreshTokenRepository.findBy(account)?.expire()
         return account
     }
 
