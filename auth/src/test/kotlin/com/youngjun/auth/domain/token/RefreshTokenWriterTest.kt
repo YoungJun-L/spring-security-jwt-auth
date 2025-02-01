@@ -34,5 +34,24 @@ class RefreshTokenWriterTest(
                     refreshTokenJpaRepository.findByIdOrNull(refreshToken.id) shouldBe null
                 }
             }
+
+            context("값 변경") {
+                test("성공") {
+                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder().build())
+                    val parsedRefreshToken = ParsedRefreshTokenBuilder(refreshToken.userId).build()
+
+                    refreshTokenWriter.update(parsedRefreshToken)
+
+                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.value shouldBe parsedRefreshToken.value
+                }
+
+                test("refreshToken 이 비어있으면 저장된 토큰 값이 변경되지 않는다.") {
+                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder().build())
+
+                    refreshTokenWriter.update(ParsedRefreshToken.Empty)
+
+                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.value shouldBe refreshToken.value
+                }
+            }
         },
     )

@@ -2,7 +2,6 @@ package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -14,11 +13,7 @@ class RefreshTokenRepository(
 
     fun deleteBy(userId: Long) = refreshTokenJpaRepository.deleteByUserId(userId)
 
-    @Transactional
-    fun update(parsedRefreshToken: ParsedRefreshToken) {
-        val refreshToken = refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)!!
-        refreshToken.updateValue(parsedRefreshToken.value)
-    }
+    fun findBy(userId: Long): RefreshToken? = refreshTokenJpaRepository.findByUserId(userId)
 
     fun findBy(parsedRefreshToken: ParsedRefreshToken): RefreshToken? =
         refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)?.takeIf { it.value == parsedRefreshToken.value }

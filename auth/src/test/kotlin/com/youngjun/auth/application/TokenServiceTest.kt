@@ -60,7 +60,8 @@ class TokenServiceTest(
             context("토큰 재발급") {
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
-                    val rawRefreshToken = RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey).build())
+                    val rawRefreshToken =
+                        RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
                     refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
 
                     val actual = tokenService.reissue(rawRefreshToken)

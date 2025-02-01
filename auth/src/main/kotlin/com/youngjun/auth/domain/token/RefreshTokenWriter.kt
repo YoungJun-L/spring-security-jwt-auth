@@ -12,4 +12,12 @@ class RefreshTokenWriter(
         refreshTokenRepository.deleteBy(parsedRefreshToken.userId)
         return refreshTokenRepository.save(parsedRefreshToken)
     }
+
+    @Transactional
+    fun update(parsedRefreshToken: ParsedRefreshToken) {
+        if (!parsedRefreshToken.exists()) {
+            return
+        }
+        refreshTokenRepository.findBy(parsedRefreshToken.userId)?.updateValue(parsedRefreshToken.value)
+    }
 }

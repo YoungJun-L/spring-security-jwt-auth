@@ -9,7 +9,7 @@ import java.util.Date
 import javax.crypto.SecretKey
 
 data class RefreshTokenBuilder(
-    val userId: Long = 1L,
+    val userId: Long = 123456789,
     val value: String = JwtBuilder().build(),
     val status: TokenStatus = TokenStatus.ENABLED,
 ) {
@@ -22,7 +22,7 @@ data class RefreshTokenBuilder(
 }
 
 data class JwtBuilder(
-    val subject: String = "1",
+    val subject: String = "488387734",
     val issuedAt: LocalDateTime = LocalDateTime.now(),
     val expiresIn: Duration = 12.hours,
     val extraClaims: Map<String, Any> = emptyMap(),
@@ -43,7 +43,7 @@ data class JwtBuilder(
 }
 
 data class TokenPairBuilder(
-    val userId: Long = 1,
+    val userId: Long = 425002570,
     val accessToken: ParsedAccessToken = ParsedAccessTokenBuilder().build(),
     val refreshToken: ParsedRefreshToken = ParsedRefreshTokenBuilder().build(),
 ) {
@@ -56,7 +56,7 @@ data class TokenPairBuilder(
 }
 
 data class ParsedAccessTokenBuilder(
-    val userId: Long = 1,
+    val userId: Long = 4046540831,
     val issuedAt: LocalDateTime = LocalDateTime.now(),
     val expiresIn: Duration = 12.hours,
     val secretKey: SecretKey =
@@ -72,7 +72,7 @@ data class ParsedAccessTokenBuilder(
 }
 
 data class ParsedRefreshTokenBuilder(
-    val userId: Long = 1,
+    val userId: Long = 9594670051,
     val issuedAt: LocalDateTime = LocalDateTime.now(),
     val expiresIn: Duration = 12.hours,
     val secretKey: SecretKey =
@@ -88,7 +88,7 @@ data class ParsedRefreshTokenBuilder(
 }
 
 data class PayloadBuilder(
-    val userId: Long = 1,
+    val userId: Long = 6208931181,
     val expiration: LocalDateTime = LocalDateTime.now(),
 ) {
     fun build(): Payload =

@@ -22,7 +22,7 @@ class TokenService(
     fun reissue(rawRefreshToken: RawRefreshToken): TokenPair {
         val parsedRefreshToken = tokenParser.parse(rawRefreshToken)
         accountReader.readEnabled(parsedRefreshToken.userId)
-        return tokenPairGenerator.reissue(parsedRefreshToken)
+        return tokenPairGenerator.generateOnExpiration(parsedRefreshToken).also { refreshTokenWriter.update(it.refreshToken) }
     }
 
     fun parse(rawAccessToken: RawAccessToken): Account = accountReader.readEnabled(tokenParser.parse(rawAccessToken).userId)
