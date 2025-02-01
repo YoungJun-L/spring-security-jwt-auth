@@ -25,9 +25,7 @@ class JwtParserTest(
                 test("성공") {
                     val userId = 1L
                     val rawAccessToken =
-                        RawAccessToken(
-                            JwtBuilder(secretKey = jwtProperties.accessSecretKey, subject = userId.toString()).build(),
-                        )
+                        RawAccessToken(JwtBuilder(secretKey = jwtProperties.accessSecretKey, subject = userId.toString()).build())
 
                     val actual = jwtParser.parse(rawAccessToken)
 
@@ -37,12 +35,7 @@ class JwtParserTest(
                 test("accessToken 의 만료 시간이 지났으면 실패한다.") {
                     shouldThrow<AuthException> {
                         jwtParser.parse(
-                            RawAccessToken(
-                                JwtBuilder(
-                                    secretKey = jwtProperties.accessSecretKey,
-                                    expiresIn = Duration.ZERO,
-                                ).build(),
-                            ),
+                            RawAccessToken(JwtBuilder(secretKey = jwtProperties.accessSecretKey, expiresIn = Duration.ZERO).build()),
                         )
                     }.errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
@@ -57,9 +50,7 @@ class JwtParserTest(
                 test("성공") {
                     val userId = 1L
                     val rawRefreshToken =
-                        RawRefreshToken(
-                            JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build(),
-                        )
+                        RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
 
                     val actual = jwtParser.parse(rawRefreshToken)
 
@@ -69,12 +60,7 @@ class JwtParserTest(
                 test("refreshToken 의 만료 시간이 지났으면 실패한다.") {
                     shouldThrow<AuthException> {
                         jwtParser.parse(
-                            RawRefreshToken(
-                                JwtBuilder(
-                                    secretKey = jwtProperties.refreshSecretKey,
-                                    expiresIn = Duration.ZERO,
-                                ).build(),
-                            ),
+                            RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, expiresIn = Duration.ZERO).build()),
                         )
                     }.errorType shouldBe TOKEN_EXPIRED_ERROR
                 }

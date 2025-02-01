@@ -1,11 +1,11 @@
 package com.youngjun.auth.security
 
-import com.youngjun.auth.api.controller.v1.request.LoginRequest
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.token.TokenPairBuilder
+import com.youngjun.auth.security.filter.LoginRequest
 import com.youngjun.auth.support.SecurityContextTest
 import com.youngjun.auth.support.description
 import com.youngjun.auth.support.error.ErrorCode
@@ -36,10 +36,10 @@ class LoginTest(
     fun `로그인 성공`() {
         val username = "username123"
         val password = "password123!"
-        val account = AccountBuilder(username = username, password = passwordEncoder.encode(password)).build()
-        every { accountService.loadUserByUsername(any()) } returns account.logout()
+        val account = AccountBuilder(username, passwordEncoder.encode(password)).build()
+        every { accountService.loadUserByUsername(any()) } returns account
         every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
-        every { accountService.login(any()) } returns account.enabled()
+        every { accountService.login(any()) } returns account.apply { account.enable() }
 
         given()
             .log()
@@ -116,15 +116,10 @@ class LoginTest(
     fun `로그아웃된 유저이면 성공한다`() {
         val username = "username123"
         val password = "password123!"
-        val account =
-            AccountBuilder(
-                username = username,
-                password = passwordEncoder.encode(password),
-                status = AccountStatus.LOGOUT,
-            ).build()
+        val account = AccountBuilder(username, passwordEncoder.encode(password), AccountStatus.LOGOUT).build()
         every { accountService.loadUserByUsername(any()) } returns account
         every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
-        every { accountService.login(any()) } returns account.enabled()
+        every { accountService.login(any()) } returns account.apply { enable() }
 
         given()
             .log()

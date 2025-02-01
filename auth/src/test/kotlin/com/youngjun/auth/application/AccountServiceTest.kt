@@ -1,7 +1,6 @@
 package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
-import com.youngjun.auth.domain.account.AccountEntityBuilder
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.NewAccountBuilder
 import com.youngjun.auth.infra.db.AccountJpaRepository
@@ -28,12 +27,11 @@ class AccountServiceTest(
 
             context("유저 조회") {
                 test("성공") {
-                    val username = "username123"
-                    accountJpaRepository.save(AccountEntityBuilder(username = username).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
 
-                    val actual = accountService.loadUserByUsername(username)
+                    val actual = accountService.loadUserByUsername(account.username)
 
-                    actual.username shouldBe username
+                    actual.username shouldBe account.username
                 }
 
                 test("회원이 존재하지 않으면 실패한다.") {
@@ -59,18 +57,16 @@ class AccountServiceTest(
                 }
 
                 test("동일한 아이디로 가입하면 실패한다.") {
-                    val username = "username123"
-                    accountJpaRepository.save(AccountEntityBuilder(username = username).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
 
-                    shouldThrow<AuthException> { accountService.register(NewAccountBuilder(username = username).build()) }
+                    shouldThrow<AuthException> { accountService.register(NewAccountBuilder(username = account.username).build()) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }
 
             context("로그아웃") {
                 test("성공") {
-                    val account = AccountBuilder().build()
-                    accountJpaRepository.save(AccountEntityBuilder(username = account.username).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
 
                     val actual = accountService.logout(account)
 
@@ -81,8 +77,7 @@ class AccountServiceTest(
 
             context("로그인") {
                 test("성공") {
-                    val account = AccountBuilder().build()
-                    accountJpaRepository.save(AccountEntityBuilder(username = account.username).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
 
                     val actual = accountService.login(account)
 

@@ -4,20 +4,39 @@ import com.youngjun.auth.domain.account.AccountStatus.DISABLED
 import com.youngjun.auth.domain.account.AccountStatus.ENABLED
 import com.youngjun.auth.domain.account.AccountStatus.LOCKED
 import com.youngjun.auth.domain.account.AccountStatus.LOGOUT
+import com.youngjun.auth.domain.support.BaseEntity
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT_ERROR
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Table
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails
 
-data class Account(
-    val id: Long,
-    private val username: String,
-    private val password: String,
-    val status: AccountStatus,
-) : UserDetails {
+@Table(name = "users")
+@Entity
+class Account(
+    username: String,
+    password: String,
+    status: AccountStatus = ENABLED,
+) : BaseEntity(),
+    UserDetails {
+    @Column
+    private var username = username
+
+    @Column
+    private var password = password
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    var status = status
+        private set
+
     override fun getUsername(): String = username
 
     override fun getPassword(): String = password
@@ -37,7 +56,11 @@ data class Account(
         }
     }
 
-    fun enabled(): Account = Account(id, username, password, ENABLED)
+    fun enable() {
+        status = ENABLED
+    }
 
-    fun logout(): Account = Account(id, username, password, LOGOUT)
+    fun logout() {
+        status = LOGOUT
+    }
 }

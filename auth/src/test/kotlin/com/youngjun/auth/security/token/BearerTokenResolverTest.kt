@@ -1,6 +1,6 @@
 package com.youngjun.auth.security.token
 
-import com.youngjun.auth.security.support.TypedAuthenticationException
+import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.SecurityTest
 import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID_ERROR
 import io.kotest.assertions.throwables.shouldThrow
@@ -24,6 +24,7 @@ class BearerTokenResolverTest :
                     request.addHeader(AUTHORIZATION, "Bearer a.b.c")
 
                     val actual = bearerTokenResolver.resolve(request)
+
                     actual shouldBe "a.b.c"
                 }
 
@@ -31,6 +32,7 @@ class BearerTokenResolverTest :
                     request.addHeader(AUTHORIZATION, "No-Bearer a.b.c")
 
                     val actual = bearerTokenResolver.resolve(request)
+
                     actual shouldBe ""
                 }
             }

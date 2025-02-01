@@ -1,4 +1,4 @@
-package com.youngjun.auth.security.support
+package com.youngjun.auth.security.support.error
 
 import com.youngjun.auth.support.error.ErrorType
 import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED_ERROR

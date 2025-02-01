@@ -29,7 +29,7 @@ class LogoutTest(
     fun `로그아웃 성공`() {
         val account = AccountBuilder().build()
         every { tokenService.parse(any()) } returns account
-        every { accountService.logout(any()) } returns account.logout()
+        every { accountService.logout(any()) } returns account.apply { logout() }
 
         given()
             .log()

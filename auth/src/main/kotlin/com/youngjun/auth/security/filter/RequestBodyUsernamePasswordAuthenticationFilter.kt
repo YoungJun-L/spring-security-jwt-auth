@@ -2,8 +2,7 @@ package com.youngjun.auth.security.filter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.youngjun.auth.api.controller.v1.request.LoginRequest
-import com.youngjun.auth.security.support.TypedAuthenticationException
+import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.error.ErrorType
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -50,10 +49,6 @@ class RequestBodyUsernamePasswordAuthenticationFilter(
     }
 
     companion object {
-        private val LOGIN_REQUEST_MATCHER: AntPathRequestMatcher =
-            AntPathRequestMatcher.antMatcher(
-                HttpMethod.POST,
-                "/auth/login",
-            )
+        private val LOGIN_REQUEST_MATCHER: AntPathRequestMatcher = AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/login")
     }
 }

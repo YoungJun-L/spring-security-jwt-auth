@@ -1,6 +1,5 @@
 package com.youngjun.auth.security.filter
 
-import com.youngjun.auth.api.controller.v1.response.LogoutResponse
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.security.handler.JsonResponseWriter
@@ -29,8 +28,9 @@ class LogoutFilter(
         val authentication =
             SecurityContextHolder.getContext().authentication
                 ?: throw AuthenticationServiceException("Authentication object should not be null.")
-        val account = accountService.logout(authentication.principal as Account)
-        jsonResponseWriter.write(response, HttpStatus.OK, AuthResponse.success(LogoutResponse.from(account)))
+        val account = authentication.principal as Account
+        accountService.logout(account)
+        jsonResponseWriter.write(response, HttpStatus.OK, AuthResponse.success(LogoutResponse(account.id)))
         SecurityContextHolder.clearContext()
     }
 

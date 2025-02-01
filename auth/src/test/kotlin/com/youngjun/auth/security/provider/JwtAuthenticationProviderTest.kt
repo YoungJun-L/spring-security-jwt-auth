@@ -3,7 +3,7 @@ package com.youngjun.auth.security.provider
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.token.JwtBuilder
-import com.youngjun.auth.security.support.TypedAuthenticationException
+import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.security.token.BearerTokenAuthenticationToken
 import com.youngjun.auth.support.SecurityTest
 import com.youngjun.auth.support.error.AuthException

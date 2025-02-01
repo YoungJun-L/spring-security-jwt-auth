@@ -17,19 +17,13 @@ class JwtGenerator(
     fun generateAccessToken(userId: Long): ParsedAccessToken {
         val now = LocalDateTime.now(clock)
         val expiration = now + jwtProperties.accessTokenExpiresIn
-        return ParsedAccessToken(
-            buildJwt(userId, now, expiration, jwtProperties.accessSecretKey),
-            Payload(userId, expiration),
-        )
+        return ParsedAccessToken(buildJwt(userId, now, expiration, jwtProperties.accessSecretKey), Payload(userId, expiration))
     }
 
     fun generateRefreshToken(userId: Long): ParsedRefreshToken {
         val now = LocalDateTime.now(clock)
         val expiration = now + jwtProperties.refreshTokenExpiresIn
-        return ParsedRefreshToken(
-            buildJwt(userId, now, expiration, jwtProperties.refreshSecretKey),
-            Payload(userId, expiration),
-        )
+        return ParsedRefreshToken(buildJwt(userId, now, expiration, jwtProperties.refreshSecretKey), Payload(userId, expiration))
     }
 
     fun generateRefreshTokenOnExpiration(
@@ -42,10 +36,7 @@ class JwtGenerator(
         val now = LocalDateTime.now(clock)
         return if (isExpiringSoon(now)) {
             val expiration = now + jwtProperties.refreshTokenExpiresIn
-            ParsedRefreshToken(
-                buildJwt(userId, now, expiration, jwtProperties.refreshSecretKey),
-                Payload(userId, expiration),
-            )
+            ParsedRefreshToken(buildJwt(userId, now, expiration, jwtProperties.refreshSecretKey), Payload(userId, expiration))
         } else {
             ParsedRefreshToken.Empty
         }

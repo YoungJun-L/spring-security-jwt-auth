@@ -28,9 +28,7 @@ class TokenParserTest(
                 test("성공") {
                     val userId = 1L
                     val rawAccessToken =
-                        RawAccessToken(
-                            JwtBuilder(secretKey = jwtProperties.accessSecretKey, subject = userId.toString()).build(),
-                        )
+                        RawAccessToken(JwtBuilder(secretKey = jwtProperties.accessSecretKey, subject = userId.toString()).build())
 
                     val actual = tokenParser.parse(rawAccessToken)
 
@@ -40,9 +38,7 @@ class TokenParserTest(
                 test("accessToken 의 만료 시간이 지났으면 실패한다.") {
                     shouldThrow<AuthException> {
                         tokenParser.parse(
-                            RawAccessToken(
-                                JwtBuilder(secretKey = jwtProperties.accessSecretKey, expiresIn = Duration.ZERO).build(),
-                            ),
+                            RawAccessToken(JwtBuilder(secretKey = jwtProperties.accessSecretKey, expiresIn = Duration.ZERO).build()),
                         )
                     }.errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
@@ -57,9 +53,7 @@ class TokenParserTest(
                 test("성공") {
                     val userId = 1L
                     val rawRefreshToken =
-                        RawRefreshToken(
-                            JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build(),
-                        )
+                        RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
                     refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(userId, rawRefreshToken.value).build())
 
                     val actual = tokenParser.parse(rawRefreshToken)
@@ -70,9 +64,7 @@ class TokenParserTest(
                 test("refreshToken 의 만료 시간이 지났으면 실패한다.") {
                     shouldThrow<AuthException> {
                         tokenParser.parse(
-                            RawRefreshToken(
-                                JwtBuilder(secretKey = jwtProperties.refreshSecretKey, expiresIn = Duration.ZERO).build(),
-                            ),
+                            RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, expiresIn = Duration.ZERO).build()),
                         )
                     }.errorType shouldBe TOKEN_EXPIRED_ERROR
                 }
@@ -85,12 +77,8 @@ class TokenParserTest(
                 test("refreshToken 이 만료되었으면 실패한다.") {
                     val userId = 1L
                     val rawRefreshToken =
-                        RawRefreshToken(
-                            JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build(),
-                        )
-                    refreshTokenJpaRepository.save(
-                        RefreshTokenEntityBuilder(userId, rawRefreshToken.value, TokenStatus.EXPIRED).build(),
-                    )
+                        RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
+                    refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(userId, rawRefreshToken.value, TokenStatus.EXPIRED).build())
 
                     shouldThrow<AuthException> { tokenParser.parse(rawRefreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED_ERROR

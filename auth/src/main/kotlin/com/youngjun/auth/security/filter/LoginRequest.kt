@@ -1,4 +1,4 @@
-package com.youngjun.auth.api.controller.v1.request
+package com.youngjun.auth.security.filter
 
 data class LoginRequest(
     val username: String,

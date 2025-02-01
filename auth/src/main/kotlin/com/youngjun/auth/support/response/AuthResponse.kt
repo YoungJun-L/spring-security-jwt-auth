@@ -16,11 +16,6 @@ data class AuthResponse<T> private constructor(
         fun error(
             error: ErrorType,
             errorData: Any? = null,
-        ): AuthResponse<Any> =
-            AuthResponse(
-                ResultType.ERROR,
-                null,
-                ErrorMessage(error, errorData),
-            )
+        ): AuthResponse<Any> = AuthResponse(ResultType.ERROR, null, ErrorMessage(error, errorData))
     }
 }

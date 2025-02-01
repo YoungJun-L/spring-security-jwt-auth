@@ -1,7 +1,7 @@
 package com.youngjun.auth.security.filter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.youngjun.auth.security.support.TypedAuthenticationException
+import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.SecurityTest
 import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST_ERROR
 import io.kotest.assertions.throwables.shouldThrow
@@ -45,23 +45,11 @@ class RequestBodyUsernamePasswordAuthenticationFilterTest :
                     val username = "username123"
                     val password = "password123!"
                     request.contentType = MediaType.APPLICATION_JSON_VALUE
-                    request.setContent(
-                        objectMapper.writeValueAsBytes(
-                            mapOf(
-                                "username" to username,
-                                "password" to password,
-                            ),
-                        ),
-                    )
+                    request.setContent(objectMapper.writeValueAsBytes(mapOf("username" to username, "password" to password)))
                     every { authenticationManager.authenticate(any()) } returns
-                        UsernamePasswordAuthenticationToken.authenticated(
-                            username,
-                            password,
-                            AuthorityUtils.NO_AUTHORITIES,
-                        )
+                        UsernamePasswordAuthenticationToken.authenticated(username, password, AuthorityUtils.NO_AUTHORITIES)
 
-                    val actual =
-                        requestBodyUsernamePasswordAuthenticationFilter.attemptAuthentication(request, response)
+                    val actual = requestBodyUsernamePasswordAuthenticationFilter.attemptAuthentication(request, response)
 
                     actual.isAuthenticated shouldBe true
                 }

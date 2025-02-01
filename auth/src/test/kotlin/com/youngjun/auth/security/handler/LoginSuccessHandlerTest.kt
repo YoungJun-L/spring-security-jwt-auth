@@ -2,7 +2,6 @@ package com.youngjun.auth.security.handler
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.youngjun.auth.api.controller.v1.response.LoginResponse
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.AccountBuilder
@@ -31,8 +30,7 @@ class LoginSuccessHandlerTest :
             val accountService = mockk<AccountService>()
             val tokenService = mockk<TokenService>()
             val objectMapper = jacksonObjectMapper()
-            val loginSuccessHandler =
-                LoginSuccessHandler(accountService, tokenService, JsonResponseWriter(objectMapper))
+            val loginSuccessHandler = LoginSuccessHandler(accountService, tokenService, JsonResponseWriter(objectMapper))
 
             afterTest { SecurityContextHolder.clearContext() }
 
@@ -42,13 +40,8 @@ class LoginSuccessHandlerTest :
 
                 test("성공") {
                     val account = AccountBuilder().build()
-                    val authentication =
-                        UsernamePasswordAuthenticationToken(
-                            account,
-                            null,
-                            AuthorityUtils.NO_AUTHORITIES,
-                        )
-                    every { accountService.login(any()) } returns account.enabled()
+                    val authentication = UsernamePasswordAuthenticationToken(account, null, AuthorityUtils.NO_AUTHORITIES)
+                    every { accountService.login(any()) } returns account.apply { enable() }
                     every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
 
                     loginSuccessHandler.onAuthenticationSuccess(request, response, authentication)
@@ -56,15 +49,11 @@ class LoginSuccessHandlerTest :
                     response.status shouldBe HttpStatus.OK.value()
                     objectMapper.readValue<AuthResponse<LoginResponse>>(response.contentAsByteArray).status shouldBe ResultType.SUCCESS
                 }
+
                 test("성공하면 인증 정보는 비워진다.") {
                     val account = AccountBuilder().build()
-                    val authentication =
-                        UsernamePasswordAuthenticationToken(
-                            account,
-                            null,
-                            AuthorityUtils.NO_AUTHORITIES,
-                        )
-                    every { accountService.login(any()) } returns account.enabled()
+                    val authentication = UsernamePasswordAuthenticationToken(account, null, AuthorityUtils.NO_AUTHORITIES)
+                    every { accountService.login(any()) } returns account.apply { enable() }
                     every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
 
                     loginSuccessHandler.onAuthenticationSuccess(request, response, authentication)

@@ -1,6 +1,6 @@
 package com.youngjun.auth.security.token
 
-import com.youngjun.auth.security.support.TypedAuthenticationException
+import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID_ERROR
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
@@ -21,7 +21,6 @@ class BearerTokenResolver {
         private const val AUTHENTICATION_SCHEME_BEARER = "Bearer"
         private const val GROUP_NAME = "value"
 
-        private val authorizationRegex =
-            Regex("^$AUTHENTICATION_SCHEME_BEARER (?<$GROUP_NAME>[\\w-]+\\.[\\w-]+\\.[\\w-]+)$")
+        private val authorizationRegex = Regex("^$AUTHENTICATION_SCHEME_BEARER (?<$GROUP_NAME>[\\w-]+\\.[\\w-]+\\.[\\w-]+)$")
     }
 }

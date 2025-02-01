@@ -2,7 +2,7 @@ package com.youngjun.auth.security.provider
 
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.token.RawAccessToken
-import com.youngjun.auth.security.support.TypedAuthenticationException
+import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.security.token.BearerTokenAuthenticationToken
 import com.youngjun.auth.security.token.JwtAuthenticationToken
 import com.youngjun.auth.support.error.AuthException

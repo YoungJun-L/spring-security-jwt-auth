@@ -17,8 +17,8 @@ class RefreshTokenRepository(
 
     @Transactional
     fun update(parsedRefreshToken: ParsedRefreshToken) {
-        val refreshTokenEntity = refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)!!
-        refreshTokenEntity.token = parsedRefreshToken.value
+        val refreshToken = refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)!!
+        refreshToken.updateValue(parsedRefreshToken.value)
     }
 
     fun read(parsedRefreshToken: ParsedRefreshToken) =
@@ -27,9 +27,5 @@ class RefreshTokenRepository(
             ?.takeIf { it.token == parsedRefreshToken.value }
             ?.toRefreshToken()
 
-    @Transactional
-    fun expire(account: Account) {
-        val refreshTokenEntity = refreshTokenJpaRepository.findByUserId(account.id) ?: return
-        refreshTokenEntity.status = TokenStatus.EXPIRED
-    }
+    fun read(account: Account) = refreshTokenJpaRepository.findByUserId(account.id)
 }

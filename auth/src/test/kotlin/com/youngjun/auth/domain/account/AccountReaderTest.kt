@@ -23,12 +23,11 @@ class AccountReaderTest(
 
             context("회원 조회") {
                 test("성공") {
-                    val username = "username123"
-                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder(username = username).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
 
-                    val actual = accountReader.read(username)
+                    val actual = accountReader.read(account.username)
 
-                    actual.id shouldBe accountEntity.id
+                    actual.id shouldBe account.id
                 }
 
                 test("회원이 존재하지 않으면 실패한다.") {
@@ -38,12 +37,11 @@ class AccountReaderTest(
 
             context("이용 가능한 회원 조회") {
                 test("성공") {
-                    val accountEntity =
-                        accountJpaRepository.save(AccountEntityBuilder(status = AccountStatus.ENABLED).build())
+                    val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.ENABLED).build())
 
-                    val actual = accountReader.readEnabled(accountEntity.id)
+                    val actual = accountReader.readEnabled(account.id)
 
-                    actual.id shouldBe accountEntity.id
+                    actual.id shouldBe account.id
                 }
 
                 test("회원이 존재하지 않으면 실패한다.") {
@@ -52,10 +50,9 @@ class AccountReaderTest(
                 }
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
-                    val accountEntity =
-                        accountJpaRepository.save(AccountEntityBuilder(status = AccountStatus.DISABLED).build())
+                    val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.DISABLED).build())
 
-                    shouldThrow<AuthException> { accountReader.readEnabled(accountEntity.id) }
+                    shouldThrow<AuthException> { accountReader.readEnabled(account.id) }
                         .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
             }

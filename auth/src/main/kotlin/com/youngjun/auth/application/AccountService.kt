@@ -22,5 +22,5 @@ class AccountService(
 
     fun logout(account: Account): Account = accountManager.logout(account)
 
-    fun login(account: Account) = accountManager.login(account)
+    fun login(account: Account): Account = accountManager.login(account)
 }

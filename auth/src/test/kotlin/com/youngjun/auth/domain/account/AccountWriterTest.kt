@@ -29,10 +29,9 @@ class AccountWriterTest(
                 }
 
                 test("동일한 아이디로 저장하면 실패한다.") {
-                    val username = "username123"
-                    accountJpaRepository.save(AccountEntityBuilder(username = username).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
 
-                    shouldThrow<AuthException> { accountWriter.write(NewAccountBuilder(username = username).build()) }
+                    shouldThrow<AuthException> { accountWriter.write(NewAccountBuilder(username = account.username).build()) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }

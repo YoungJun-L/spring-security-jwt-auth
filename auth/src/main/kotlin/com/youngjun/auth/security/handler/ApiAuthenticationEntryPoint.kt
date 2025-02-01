@@ -1,6 +1,6 @@
 package com.youngjun.auth.security.handler
 
-import com.youngjun.auth.security.support.TypedAuthenticationException
+import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.error.ErrorType
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS_ERROR
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR

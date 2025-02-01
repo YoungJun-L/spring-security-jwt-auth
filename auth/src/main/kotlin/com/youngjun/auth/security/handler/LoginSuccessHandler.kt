@@ -1,6 +1,5 @@
 package com.youngjun.auth.security.handler
 
-import com.youngjun.auth.api.controller.v1.response.LoginResponse
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.Account
@@ -24,11 +23,7 @@ class LoginSuccessHandler(
     ) {
         val account = authentication.principal as Account
         accountService.login(account)
-        jsonResponseWriter.write(
-            response,
-            HttpStatus.OK,
-            AuthResponse.success(LoginResponse.from(tokenService.issue(account.id))),
-        )
+        jsonResponseWriter.write(response, HttpStatus.OK, AuthResponse.success(LoginResponse.from(tokenService.issue(account.id))))
         SecurityContextHolder.clearContext()
     }
 }

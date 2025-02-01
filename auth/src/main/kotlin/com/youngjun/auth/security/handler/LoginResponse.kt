@@ -1,5 +1,6 @@
-package com.youngjun.auth.api.controller.v1.response
+package com.youngjun.auth.security.handler
 
+import com.youngjun.auth.api.controller.v1.response.TokenPairResponse
 import com.youngjun.auth.domain.token.TokenPair
 
 data class LoginResponse(

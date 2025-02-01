@@ -17,23 +17,27 @@ class AccountTest :
             context("회원 상태 검증") {
                 test("이용 가능") {
                     val account = AccountBuilder(status = AccountStatus.ENABLED).build()
+
                     shouldNotThrow<AuthException> { account.verify() }
                 }
 
                 test("계정 잠김") {
                     val account = AccountBuilder(status = AccountStatus.LOCKED).build()
+
                     shouldThrow<AuthException> { account.verify() }
                         .errorType shouldBe ACCOUNT_LOCKED_ERROR
                 }
 
                 test("이용 제한") {
                     val account = AccountBuilder(status = AccountStatus.DISABLED).build()
+
                     shouldThrow<AuthException> { account.verify() }
                         .errorType shouldBe ACCOUNT_DISABLED_ERROR
                 }
 
                 test("로그아웃") {
                     val account = AccountBuilder(status = AccountStatus.LOGOUT).build()
+
                     shouldThrow<AuthException> { account.verify() }
                         .errorType shouldBe ACCOUNT_LOGOUT_ERROR
                 }

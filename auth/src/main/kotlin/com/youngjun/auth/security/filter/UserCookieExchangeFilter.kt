@@ -20,9 +20,8 @@ class UserCookieExchangeFilter : OncePerRequestFilter() {
         val authentication =
             SecurityContextHolder.getContext().authentication
                 ?: throw AuthenticationServiceException("Authentication object should not be null.")
-        val userRequest = UserRequest(request, (authentication.principal as Account).id)
         SecurityContextHolder.clearContext()
-        filterChain.doFilter(userRequest, response)
+        filterChain.doFilter(UserRequest(request, (authentication.principal as Account).id), response)
     }
 
     override fun shouldNotFilter(request: HttpServletRequest) = NotFilterRequestMatcher.matchers().any { it.matches(request) }
@@ -31,11 +30,6 @@ class UserCookieExchangeFilter : OncePerRequestFilter() {
         private val request: HttpServletRequest,
         private val userId: Long,
     ) : HttpServletRequestWrapper(request) {
-        override fun getCookies(): Array<Cookie> =
-            (request.cookies ?: emptyArray<Cookie>()) +
-                Cookie(
-                    "USER_ID",
-                    userId.toString(),
-                )
+        override fun getCookies(): Array<Cookie> = (request.cookies ?: emptyArray<Cookie>()) + Cookie("USER_ID", userId.toString())
     }
 }

@@ -2,7 +2,6 @@ package com.youngjun.auth.security.filter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.youngjun.auth.api.controller.v1.response.LogoutResponse
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.security.handler.JsonResponseWriter
@@ -46,7 +45,7 @@ class LogoutFilterTest :
                 test("성공") {
                     val account = AccountBuilder().build()
                     SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
-                    every { accountService.logout(any()) } returns account.logout()
+                    every { accountService.logout(any()) } returns account.apply { logout() }
 
                     logoutFilter.doFilter(request, response, filterChain)
 
@@ -57,7 +56,7 @@ class LogoutFilterTest :
                 test("성공하면 인증 정보는 비워진다.") {
                     val account = AccountBuilder().build()
                     SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
-                    every { accountService.logout(any()) } returns account.logout()
+                    every { accountService.logout(any()) } returns account.apply { logout() }
 
                     logoutFilter.doFilter(request, response, filterChain)
 

@@ -23,8 +23,7 @@ class AccountManagerTest(
 
             context("로그아웃") {
                 test("성공") {
-                    val account = AccountBuilder().build()
-                    accountJpaRepository.save(AccountEntityBuilder(username = account.username).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
 
                     val actual = accountManager.logout(account)
 
@@ -33,33 +32,26 @@ class AccountManagerTest(
                 }
 
                 test("저장된 계정 상태가 LOGOUT 으로 변경된다.") {
-                    val account = AccountBuilder().build()
-                    val accountEntity = accountJpaRepository.save(AccountEntityBuilder(username = account.username).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
 
                     accountManager.logout(account)
 
-                    accountJpaRepository.findByIdOrNull(accountEntity.id)!!.status shouldBe AccountStatus.LOGOUT
+                    accountJpaRepository.findByIdOrNull(account.id)!!.status shouldBe AccountStatus.LOGOUT
                 }
 
                 test("refreshToken 이 만료된다.") {
-                    val account = AccountBuilder().build()
-                    accountJpaRepository.save(AccountEntityBuilder(username = account.username).build())
-                    val refreshTokenEntity = refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(account.id).build())
+                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenEntityBuilder(account.id).build())
 
                     accountManager.logout(account)
 
-                    refreshTokenJpaRepository.findByIdOrNull(refreshTokenEntity.id)!!.status shouldBe TokenStatus.EXPIRED
+                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.status shouldBe TokenStatus.EXPIRED
                 }
             }
+
             context("로그인") {
                 test("성공") {
-                    val account = AccountBuilder(status = AccountStatus.LOGOUT).build()
-                    accountJpaRepository.save(
-                        AccountEntityBuilder(
-                            username = account.username,
-                            status = account.status,
-                        ).build(),
-                    )
+                    val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.LOGOUT).build())
 
                     val actual = accountManager.login(account)
 
@@ -68,18 +60,11 @@ class AccountManagerTest(
                 }
 
                 test("저장된 계정 상태가 ENABLED 으로 변경된다.") {
-                    val account = AccountBuilder(status = AccountStatus.LOGOUT).build()
-                    val accountEntity =
-                        accountJpaRepository.save(
-                            AccountEntityBuilder(
-                                username = account.username,
-                                status = account.status,
-                            ).build(),
-                        )
+                    val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.LOGOUT).build())
 
                     accountManager.login(account)
 
-                    accountJpaRepository.findByIdOrNull(accountEntity.id)!!.status shouldBe AccountStatus.ENABLED
+                    accountJpaRepository.findByIdOrNull(account.id)!!.status shouldBe AccountStatus.ENABLED
                 }
             }
         },
