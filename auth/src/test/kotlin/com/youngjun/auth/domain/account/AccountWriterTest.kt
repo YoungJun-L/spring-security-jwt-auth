@@ -19,7 +19,7 @@ class AccountWriterTest(
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("저장") {
+            context("새 계정 저장") {
                 test("성공") {
                     val newAccount = NewAccountBuilder().build()
 
@@ -33,6 +33,16 @@ class AccountWriterTest(
 
                     shouldThrow<AuthException> { accountWriter.write(NewAccountBuilder(username = account.username).build()) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
+                }
+            }
+
+            context("기존 계정 저장") {
+                test("성공") {
+                    val account = accountJpaRepository.save(AccountBuilder().build())
+
+                    val actual = accountWriter.write(account)
+
+                    actual.username shouldBe account.username
                 }
             }
         },

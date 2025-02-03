@@ -1,5 +1,6 @@
 package com.youngjun.auth.domain.token
 
+import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.support.DomainTest
 import io.kotest.core.spec.IsolationMode
@@ -40,6 +41,17 @@ class RefreshTokenWriterTest(
                     refreshTokenWriter.replaceIfNotEmpty(ParsedRefreshToken.Empty)
 
                     refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.value shouldBe refreshToken.value
+                }
+            }
+
+            context("refreshToken 만료") {
+                test("성공") {
+                    val account = AccountBuilder().build()
+                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id).build())
+
+                    refreshTokenWriter.expire(account)
+
+                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.status shouldBe TokenStatus.EXPIRED
                 }
             }
         },

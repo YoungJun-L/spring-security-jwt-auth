@@ -14,4 +14,6 @@ class AccountWriter(
         }
         return accountRepository.save(Account(newAccount.username, newAccount.password))
     }
+
+    fun write(account: Account): Account = accountRepository.save(account)
 }
