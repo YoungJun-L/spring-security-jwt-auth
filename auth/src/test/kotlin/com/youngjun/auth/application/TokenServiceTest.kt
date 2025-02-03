@@ -18,6 +18,7 @@ import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED_ERROR
 import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID_ERROR
 import com.youngjun.auth.support.error.ErrorType.TOKEN_NOT_FOUND_ERROR
+import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED_ERROR
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -152,6 +153,16 @@ class TokenServiceTest(
                     shouldThrow<AuthException> {
                         tokenService.reissue(RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey).build()))
                     }.errorType shouldBe TOKEN_NOT_FOUND_ERROR
+                }
+
+                test("refreshToken 은 있으나 유저가 존재하지 않으면 실패한다.") {
+                    val account = AccountBuilder().build()
+                    val rawRefreshToken =
+                        RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
+                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+
+                    shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
+                        .errorType shouldBe UNAUTHORIZED_ERROR
                 }
             }
 
