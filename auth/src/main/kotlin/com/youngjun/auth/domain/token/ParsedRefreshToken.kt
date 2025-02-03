@@ -9,7 +9,7 @@ data class ParsedRefreshToken(
     val userId: Long get() = payload.userId
     val expiration: LocalDateTime get() = payload.expiration
 
-    fun exists(): Boolean = this != Empty
+    fun isNotEmpty(): Boolean = this != Empty
 
     companion object {
         val Empty: ParsedRefreshToken = ParsedRefreshToken("", Payload.Empty)

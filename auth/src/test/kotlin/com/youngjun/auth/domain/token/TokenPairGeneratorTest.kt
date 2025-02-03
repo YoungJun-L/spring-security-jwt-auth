@@ -48,7 +48,7 @@ class TokenPairGeneratorTest(
 
                     val actual = tokenPairGenerator.generateOnExpiration(parsedRefreshToken)
 
-                    actual.refreshToken.exists() shouldBe true
+                    actual.refreshToken.isNotEmpty() shouldBe true
                 }
 
                 test("refreshToken 이 아직 만료되지 않았으면 refresh token 은 갱신되지 않는다.") {
@@ -61,7 +61,7 @@ class TokenPairGeneratorTest(
                             ).build(),
                         )
 
-                    actual.refreshToken.exists() shouldBe false
+                    actual.refreshToken.isNotEmpty() shouldBe false
                 }
             }
         },

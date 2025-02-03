@@ -8,16 +8,11 @@ class RefreshTokenWriter(
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
     @Transactional
-    fun replace(parsedRefreshToken: ParsedRefreshToken): RefreshToken {
-        refreshTokenRepository.deleteBy(parsedRefreshToken.userId)
-        return refreshTokenRepository.save(parsedRefreshToken)
-    }
-
-    @Transactional
-    fun update(parsedRefreshToken: ParsedRefreshToken) {
-        if (!parsedRefreshToken.exists()) {
+    fun replaceIfNotEmpty(parsedRefreshToken: ParsedRefreshToken) {
+        if (!parsedRefreshToken.isNotEmpty()) {
             return
         }
-        refreshTokenRepository.findBy(parsedRefreshToken.userId)?.updateValue(parsedRefreshToken.value)
+        refreshTokenRepository.deleteBy(parsedRefreshToken.userId)
+        refreshTokenRepository.save(parsedRefreshToken)
     }
 }

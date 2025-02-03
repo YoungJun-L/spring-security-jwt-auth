@@ -85,7 +85,7 @@ class TokenServiceTest(
 
                     val actual = tokenService.reissue(rawRefreshToken)
 
-                    actual.refreshToken.exists() shouldBe false
+                    actual.refreshToken.isNotEmpty() shouldBe false
                 }
 
                 test("refreshToken 이 곧 만료되면 refresh token 도 갱신된다.") {
@@ -103,7 +103,7 @@ class TokenServiceTest(
 
                     val actual = tokenService.reissue(rawRefreshToken)
 
-                    actual.refreshToken.exists() shouldBe true
+                    actual.refreshToken.isNotEmpty() shouldBe true
                     actual.refreshToken.value shouldNotBe rawRefreshToken.value
                 }
 

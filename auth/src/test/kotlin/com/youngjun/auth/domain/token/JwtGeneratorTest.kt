@@ -87,7 +87,7 @@ class JwtGeneratorTest(
                             now + jwtProperties.expirationThreshold,
                         )
 
-                    actual.exists() shouldBe true
+                    actual.isNotEmpty() shouldBe true
                     refreshTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "$userId"
                 }
 
@@ -114,7 +114,7 @@ class JwtGeneratorTest(
                             now + jwtProperties.expirationThreshold + 1.seconds,
                         )
 
-                    actual.exists() shouldBe false
+                    actual.isNotEmpty() shouldBe false
                 }
             }
         },

@@ -13,8 +13,6 @@ class RefreshTokenRepository(
 
     fun deleteBy(userId: Long) = refreshTokenJpaRepository.deleteByUserId(userId)
 
-    fun findBy(userId: Long): RefreshToken? = refreshTokenJpaRepository.findByUserId(userId)
-
     fun findBy(parsedRefreshToken: ParsedRefreshToken): RefreshToken? =
         refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)?.takeIf { it.value == parsedRefreshToken.value }
 

@@ -21,34 +21,23 @@ class RefreshTokenWriterTest(
                 test("성공") {
                     val parsedRefreshToken = ParsedRefreshTokenBuilder().build()
 
-                    val actual = refreshTokenWriter.replace(parsedRefreshToken)
+                    refreshTokenWriter.replaceIfNotEmpty(parsedRefreshToken)
 
-                    refreshTokenJpaRepository.findByIdOrNull(actual.id)!!.value shouldBe parsedRefreshToken.value
+                    refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)!!.value shouldBe parsedRefreshToken.value
                 }
 
-                test("이전 refresh token 은 제거된다.") {
+                test("refreshToken 이 비어있지 않으면 이전 refresh token 은 제거된다.") {
                     val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder().build())
 
-                    refreshTokenWriter.replace(ParsedRefreshTokenBuilder(refreshToken.userId).build())
+                    refreshTokenWriter.replaceIfNotEmpty(ParsedRefreshTokenBuilder(refreshToken.userId).build())
 
                     refreshTokenJpaRepository.findByIdOrNull(refreshToken.id) shouldBe null
                 }
-            }
 
-            context("값 변경") {
-                test("성공") {
-                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder().build())
-                    val parsedRefreshToken = ParsedRefreshTokenBuilder(refreshToken.userId).build()
-
-                    refreshTokenWriter.update(parsedRefreshToken)
-
-                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.value shouldBe parsedRefreshToken.value
-                }
-
-                test("refreshToken 이 비어있으면 저장된 토큰 값이 변경되지 않는다.") {
+                test("refreshToken 이 비어있으면 이전 토큰은 제거되지 않는다.") {
                     val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder().build())
 
-                    refreshTokenWriter.update(ParsedRefreshToken.Empty)
+                    refreshTokenWriter.replaceIfNotEmpty(ParsedRefreshToken.Empty)
 
                     refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.value shouldBe refreshToken.value
                 }
