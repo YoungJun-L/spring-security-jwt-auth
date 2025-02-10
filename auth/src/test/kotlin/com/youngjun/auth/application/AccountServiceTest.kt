@@ -99,5 +99,16 @@ class AccountServiceTest(
                     actual.status shouldBe AccountStatus.ENABLED
                 }
             }
+
+            context("비밀번호 변경") {
+                test("성공") {
+                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val newPassword = "newPassword"
+
+                    val actual = accountService.changePassword(account, newPassword)
+
+                    passwordEncoder.matches(newPassword, actual.password) shouldBe true
+                }
+            }
         },
     )

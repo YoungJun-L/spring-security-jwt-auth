@@ -20,7 +20,6 @@ class UserCookieExchangeFilter : OncePerRequestFilter() {
         val authentication =
             SecurityContextHolder.getContext().authentication
                 ?: throw AuthenticationServiceException("Authentication object should not be null.")
-        SecurityContextHolder.clearContext()
         val userId =
             when (authentication) {
                 is JwtAuthenticationToken -> authentication.principal.id

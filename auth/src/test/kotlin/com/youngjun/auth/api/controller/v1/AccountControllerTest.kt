@@ -1,8 +1,10 @@
 package com.youngjun.auth.api.controller.v1
 
+import com.youngjun.auth.api.controller.v1.request.ChangePasswordRequest
 import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.security.token.JwtAuthenticationToken
 import com.youngjun.auth.support.RestDocsTest
 import com.youngjun.auth.support.description
 import com.youngjun.auth.support.ignored
@@ -20,6 +22,7 @@ import org.springframework.restdocs.payload.JsonFieldType.OBJECT
 import org.springframework.restdocs.payload.JsonFieldType.STRING
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import org.springframework.security.core.context.SecurityContextHolder
 
 class AccountControllerTest : RestDocsTest() {
     private lateinit var accountService: AccountService
@@ -49,6 +52,37 @@ class AccountControllerTest : RestDocsTest() {
                     "register",
                     requestFields(
                         "username" type STRING description "username, 최소 8자 이상 최대 50자 미만의 1개 이상 영문자, 1개 이상 숫자 조합",
+                        "password" type STRING description "password, 최소 10자 이상 최대 50자 미만의 1개 이상 영문자, 1개 이상 특수문자, 1개 이상 숫자 조합",
+                    ),
+                    responseFields(
+                        "status" type STRING description "status",
+                        "data" type OBJECT description "data",
+                        "data.userId" type NUMBER description "userId",
+                        "error" type NULL ignored true,
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun `비밀번호 변경 성공`() {
+        val account = AccountBuilder().build()
+        SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
+        every { accountService.changePassword(any(), any()) } returns account
+
+        given()
+            .log()
+            .all()
+            .contentType(ContentType.JSON)
+            .body(ChangePasswordRequest("password123!"))
+            .put("/account/password")
+            .then()
+            .log()
+            .all()
+            .apply(
+                document(
+                    "change-password",
+                    requestFields(
                         "password" type STRING description "password, 최소 10자 이상 최대 50자 미만의 1개 이상 영문자, 1개 이상 특수문자, 1개 이상 숫자 조합",
                     ),
                     responseFields(

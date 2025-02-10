@@ -29,7 +29,14 @@ class AccountService(
 
     fun login(account: Account): Account {
         account.enable()
-        accountWriter.write(account)
-        return account
+        return accountWriter.write(account)
+    }
+
+    fun changePassword(
+        account: Account,
+        password: String,
+    ): Account {
+        account.changePassword(passwordEncoder.encode(password))
+        return accountWriter.write(account)
     }
 }

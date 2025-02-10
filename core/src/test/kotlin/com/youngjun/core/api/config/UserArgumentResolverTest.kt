@@ -2,7 +2,7 @@ package com.youngjun.core.api.config
 
 import com.youngjun.core.domain.User
 import com.youngjun.core.support.error.CoreException
-import com.youngjun.core.support.error.ErrorType.FORBIDDEN_ERROR
+import com.youngjun.core.support.error.ErrorType.DEFAULT_ERROR
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -76,7 +76,7 @@ class UserArgumentResolverTest :
                             mavContainer = null,
                             binderFactory = null,
                         )
-                    }.errorType shouldBe FORBIDDEN_ERROR
+                    }.errorType shouldBe DEFAULT_ERROR
                 }
             }
         },

@@ -2,7 +2,7 @@ package com.youngjun.core.api.config
 
 import com.youngjun.core.domain.User
 import com.youngjun.core.support.error.CoreException
-import com.youngjun.core.support.error.ErrorType.FORBIDDEN_ERROR
+import com.youngjun.core.support.error.ErrorType.DEFAULT_ERROR
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
@@ -31,7 +31,7 @@ class UserArgumentResolver : HandlerMethodArgumentResolver {
                     .toLong(),
             )
         } catch (ex: Exception) {
-            throw CoreException(FORBIDDEN_ERROR)
+            throw CoreException(DEFAULT_ERROR)
         }
     }
 }

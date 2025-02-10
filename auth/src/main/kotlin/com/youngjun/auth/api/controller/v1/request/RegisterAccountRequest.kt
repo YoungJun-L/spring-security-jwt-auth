@@ -6,11 +6,12 @@ data class RegisterAccountRequest(
     val username: String,
     val password: String,
 ) {
-    fun toNewAccount(): NewAccount {
+    init {
         require(usernameRegex.matches(username)) { "Username validation error" }
         require(passwordRegex.matches(password)) { "Password validation error" }
-        return NewAccount(username, password)
     }
+
+    fun toNewAccount(): NewAccount = NewAccount(username, password)
 
     companion object {
         private val usernameRegex = Regex("^(?=.*[a-zA-Z])(?=.*\\d)\\w{8,49}$")

@@ -9,6 +9,7 @@ import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @DomainTest
 class AccountTest :
@@ -60,6 +61,18 @@ class AccountTest :
                     account.logout()
 
                     account.status shouldBe AccountStatus.LOGOUT
+                }
+            }
+
+            context("비밀번호 변경") {
+                test("성공") {
+                    val account = AccountBuilder().build()
+                    val passwordEncoder = BCryptPasswordEncoder()
+                    val newPassword = "newPassword"
+
+                    account.changePassword(passwordEncoder.encode(newPassword))
+
+                    passwordEncoder.matches(newPassword, account.password) shouldBe true
                 }
             }
         },

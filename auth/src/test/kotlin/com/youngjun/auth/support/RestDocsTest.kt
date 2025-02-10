@@ -2,6 +2,7 @@ package com.youngjun.auth.support
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.youngjun.auth.api.config.AccountArgumentResolver
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
@@ -31,6 +32,7 @@ abstract class RestDocsTest {
             MockMvcBuilders
                 .standaloneSetup(controller)
                 .apply<StandaloneMockMvcBuilder>(mockMvcConfigurer())
+                .setCustomArgumentResolvers(AccountArgumentResolver())
                 .setMessageConverters(MappingJackson2HttpMessageConverter(objectMapper()))
                 .build(),
         )

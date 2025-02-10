@@ -9,9 +9,7 @@ class RegisterAccountRequestTest :
         {
             context("검증") {
                 test("성공") {
-                    shouldNotThrow<IllegalArgumentException> {
-                        RegisterAccountRequest("username123", "password123!").toNewAccount()
-                    }
+                    shouldNotThrow<IllegalArgumentException> { RegisterAccountRequest("username123", "password123!") }
                 }
             }
 
@@ -29,9 +27,7 @@ class RegisterAccountRequestTest :
                     test("\"$invalidUsername\"") {
                         val validPassword = "password123!"
 
-                        shouldThrow<IllegalArgumentException> {
-                            RegisterAccountRequest(invalidUsername, validPassword).toNewAccount()
-                        }
+                        shouldThrow<IllegalArgumentException> { RegisterAccountRequest(invalidUsername, validPassword) }
                     }
                 }
             }
@@ -51,9 +47,7 @@ class RegisterAccountRequestTest :
                     test("\"$invalidPassword\"") {
                         val validUsername = "username123"
 
-                        shouldThrow<IllegalArgumentException> {
-                            RegisterAccountRequest(validUsername, invalidPassword).toNewAccount()
-                        }
+                        shouldThrow<IllegalArgumentException> { RegisterAccountRequest(validUsername, invalidPassword) }
                     }
                 }
             }

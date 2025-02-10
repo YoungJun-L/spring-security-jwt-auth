@@ -20,7 +20,7 @@ class JsonResponseWriterTest :
             val objectMapper = jacksonObjectMapper()
             val jsonResponseWriter = JsonResponseWriter(objectMapper)
 
-            context("로그인") {
+            context("응답") {
                 val response = MockHttpServletResponse()
 
                 test("성공") {

@@ -63,4 +63,8 @@ class Account(
     fun logout() {
         status = LOGOUT
     }
+
+    fun changePassword(encodedPassword: String) {
+        password = encodedPassword
+    }
 }

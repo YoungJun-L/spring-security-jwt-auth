@@ -48,14 +48,6 @@ class UserCookieExchangeFilterTest :
                     val actual = (filterChain.request as HttpServletRequest).cookies.first { it.name == "USER_ID" }.value
                     actual shouldBe "0"
                 }
-
-                test("성공하면 인증 정보는 비워진다.") {
-                    SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(AccountBuilder().build())
-
-                    userCookieExchangeFilter.doFilter(request, response, filterChain)
-
-                    SecurityContextHolder.getContext().authentication shouldBe null
-                }
             }
         },
     )
