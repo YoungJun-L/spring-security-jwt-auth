@@ -42,5 +42,25 @@ class AccountTest :
                         .errorType shouldBe ACCOUNT_LOGOUT_ERROR
                 }
             }
+
+            context("계정 활성화") {
+                test("성공") {
+                    val account = AccountBuilder(status = AccountStatus.DISABLED).build()
+
+                    account.enable()
+
+                    account.status shouldBe AccountStatus.ENABLED
+                }
+            }
+
+            context("로그아웃") {
+                test("성공") {
+                    val account = AccountBuilder(status = AccountStatus.ENABLED).build()
+
+                    account.logout()
+
+                    account.status shouldBe AccountStatus.LOGOUT
+                }
+            }
         },
     )
