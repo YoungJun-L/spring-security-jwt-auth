@@ -2,7 +2,6 @@ package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
-import com.youngjun.auth.domain.account.NewAccountBuilder
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.TokenStatus
 import com.youngjun.auth.infra.db.AccountJpaRepository
@@ -46,25 +45,28 @@ class AccountServiceTest(
 
             context("회원 가입") {
                 test("성공") {
-                    val newAccount = NewAccountBuilder().build()
+                    val username = "username123"
+                    val password = "password123!"
 
-                    val actual = accountService.register(newAccount)
+                    val actual = accountService.register(username, password)
 
-                    actual.username shouldBe newAccount.username
+                    actual.username shouldBe username
                 }
 
                 test("비밀번호는 인코딩된다.") {
-                    val newAccount = NewAccountBuilder().build()
+                    val username = "username123"
+                    val password = "password123!"
 
-                    val actual = accountService.register(newAccount)
+                    val actual = accountService.register(username, password)
 
-                    passwordEncoder.matches(newAccount.password, actual.password) shouldBe true
+                    passwordEncoder.matches(password, actual.password) shouldBe true
                 }
 
                 test("동일한 아이디로 가입하면 실패한다.") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val username = "username123"
+                    accountJpaRepository.save(AccountBuilder(username = username).build())
 
-                    shouldThrow<AuthException> { accountService.register(NewAccountBuilder(username = account.username).build()) }
+                    shouldThrow<AuthException> { accountService.register(username, "password123!") }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }

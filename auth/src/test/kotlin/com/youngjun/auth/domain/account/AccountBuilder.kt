@@ -12,14 +12,3 @@ data class AccountBuilder(
             status = status,
         )
 }
-
-data class NewAccountBuilder(
-    val username: String = "username123",
-    val password: String = "password123!",
-) {
-    fun build(): NewAccount =
-        NewAccount(
-            username = username,
-            password = password,
-        )
-}

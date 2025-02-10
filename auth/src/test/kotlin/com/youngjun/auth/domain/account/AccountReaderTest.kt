@@ -4,7 +4,9 @@ import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.support.DomainTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
 import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED_ERROR
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -54,6 +56,20 @@ class AccountReaderTest(
 
                     shouldThrow<AuthException> { accountReader.readEnabled(account.id) }
                         .errorType shouldBe ACCOUNT_DISABLED_ERROR
+                }
+            }
+
+            context("중복 아이디 검증") {
+                test("성공") {
+                    shouldNotThrow<AuthException> { accountReader.validateUniqueUsername("username123") }
+                }
+
+                test("중복 아이디가 존재하면 실패한다.") {
+                    val username = "username123"
+                    accountJpaRepository.save(AccountBuilder(username = username).build())
+
+                    shouldThrow<AuthException> { accountReader.validateUniqueUsername(username) }
+                        .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }
         },

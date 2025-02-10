@@ -36,7 +36,7 @@ class AccountControllerTest : RestDocsTest() {
 
     @Test
     fun `회원가입 성공`() {
-        every { accountService.register(any()) } returns AccountBuilder().build()
+        every { accountService.register(any(), any()) } returns AccountBuilder().build()
 
         given()
             .log()

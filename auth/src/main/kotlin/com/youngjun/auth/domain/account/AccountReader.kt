@@ -1,6 +1,7 @@
 package com.youngjun.auth.domain.account
 
 import com.youngjun.auth.support.error.AuthException
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
 import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED_ERROR
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
@@ -15,5 +16,11 @@ class AccountReader(
         val account = accountRepository.findBy(id) ?: throw AuthException(UNAUTHORIZED_ERROR)
         account.verify()
         return account
+    }
+
+    fun validateUniqueUsername(username: String) {
+        if (accountRepository.existsBy(username)) {
+            throw AuthException(ACCOUNT_DUPLICATE_ERROR)
+        }
     }
 }
