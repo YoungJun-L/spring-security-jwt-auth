@@ -51,8 +51,8 @@ class AccountControllerTest : RestDocsTest() {
                 document(
                     "register",
                     requestFields(
-                        "username" type STRING description "username, 최소 8자 이상 최대 50자 미만의 1개 이상 영문자, 1개 이상 숫자 조합",
-                        "password" type STRING description "password, 최소 10자 이상 최대 50자 미만의 1개 이상 영문자, 1개 이상 특수문자, 1개 이상 숫자 조합",
+                        "username" type STRING description "username, 최소 8자 이상 최대 50자 미만",
+                        "password" type STRING description "password, 최소 8자 이상 최대 65자 미만",
                     ),
                     responseFields(
                         "status" type STRING description "status",
@@ -83,7 +83,7 @@ class AccountControllerTest : RestDocsTest() {
                 document(
                     "change-password",
                     requestFields(
-                        "password" type STRING description "password, 최소 10자 이상 최대 50자 미만의 1개 이상 영문자, 1개 이상 특수문자, 1개 이상 숫자 조합",
+                        "password" type STRING description "password, 최소 8자 이상 최대 65자 미만",
                     ),
                     responseFields(
                         "status" type STRING description "status",

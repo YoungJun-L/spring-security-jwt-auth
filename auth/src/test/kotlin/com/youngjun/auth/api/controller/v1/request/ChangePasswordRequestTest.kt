@@ -13,18 +13,8 @@ class ChangePasswordRequestTest :
                 }
             }
 
-            context("비밀번호 검증") {
-                arrayOf(
-                    "",
-                    " ",
-                    "abcdef123",
-                    "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghij",
-                    "abcdefgh",
-                    "01234567",
-                    "!@#$%^&*",
-                    "abcdef 123 !",
-                    "ㄱㄴㄷㄹㅁ123123!!@@",
-                ).forEach { invalidPassword ->
+            context("비밀번호 길이 검증") {
+                arrayOf("a".repeat(7), "a".repeat(65)).forEach { invalidPassword ->
                     test("\"$invalidPassword\"") { shouldThrow<IllegalArgumentException> { ChangePasswordRequest(invalidPassword) } }
                 }
             }

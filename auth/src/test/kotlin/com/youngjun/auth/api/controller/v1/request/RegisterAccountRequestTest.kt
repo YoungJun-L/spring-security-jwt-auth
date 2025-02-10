@@ -13,17 +13,8 @@ class RegisterAccountRequestTest :
                 }
             }
 
-            context("아이디 검증") {
-                arrayOf(
-                    "",
-                    " ",
-                    "abcd123",
-                    "0123456789abcdefghijabcdefghijabcdefghijabcdefghij",
-                    "abcdefgh",
-                    "01234567",
-                    "abcdef 123",
-                    "ㄱㄴㄷㄹㅁ123123",
-                ).forEach { invalidUsername ->
+            context("아이디 길이 검증") {
+                arrayOf("a".repeat(7), "a".repeat(50)).forEach { invalidUsername ->
                     test("\"$invalidUsername\"") {
                         val validPassword = "password123!"
 
@@ -32,18 +23,8 @@ class RegisterAccountRequestTest :
                 }
             }
 
-            context("비밀번호 검증") {
-                arrayOf(
-                    "",
-                    " ",
-                    "abcdef123",
-                    "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghij",
-                    "abcdefgh",
-                    "01234567",
-                    "!@#$%^&*",
-                    "abcdef 123 !",
-                    "ㄱㄴㄷㄹㅁ123123!!@@",
-                ).forEach { invalidPassword ->
+            context("비밀번호 길이 검증") {
+                arrayOf("a".repeat(7), "a".repeat(65)).forEach { invalidPassword ->
                     test("\"$invalidPassword\"") {
                         val validUsername = "username123"
 

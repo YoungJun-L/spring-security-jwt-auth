@@ -5,12 +5,7 @@ data class RegisterAccountRequest(
     val password: String,
 ) {
     init {
-        require(usernameRegex.matches(username)) { "Username validation error" }
-        require(passwordRegex.matches(password)) { "Password validation error" }
-    }
-
-    companion object {
-        private val usernameRegex = Regex("^(?=.*[a-zA-Z])(?=.*\\d)\\w{8,49}$")
-        private val passwordRegex = Regex("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#\$%^*()+=-])[\\w!@#\$%^*()+=-]{10,49}$")
+        require(username.length in 8..<50) { "Username validation error" }
+        require(password.length in 8..<65) { "Password validation error" }
     }
 }
