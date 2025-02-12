@@ -42,7 +42,7 @@ class AccountControllerTest : RestDocsTest() {
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(RegisterAccountRequest("username123", "password123!"))
+            .body(RegisterAccountRequest("example@youngjun.com", "password123!"))
             .post("/auth/register")
             .then()
             .log()
@@ -51,7 +51,7 @@ class AccountControllerTest : RestDocsTest() {
                 document(
                     "register",
                     requestFields(
-                        "username" type STRING description "username, 최소 8자 이상 최대 50자 미만",
+                        "email" type STRING description "email, 이메일 형식",
                         "password" type STRING description "password, 최소 8자 이상 최대 65자 미만",
                     ),
                     responseFields(

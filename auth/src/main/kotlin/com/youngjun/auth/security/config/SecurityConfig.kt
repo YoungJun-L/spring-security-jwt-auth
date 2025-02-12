@@ -3,9 +3,9 @@ package com.youngjun.auth.security.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.TokenService
+import com.youngjun.auth.security.filter.JsonLoginAuthenticationFilter
 import com.youngjun.auth.security.filter.JwtAuthenticationFilter
 import com.youngjun.auth.security.filter.LogoutFilter
-import com.youngjun.auth.security.filter.RequestBodyUsernamePasswordAuthenticationFilter
 import com.youngjun.auth.security.filter.UserCookieExchangeFilter
 import com.youngjun.auth.security.handler.ApiAuthenticationEntryPoint
 import com.youngjun.auth.security.handler.JsonResponseWriter
@@ -51,7 +51,7 @@ class SecurityConfig(
                     .anyRequest()
                     .authenticated()
             }.addFilterAt(
-                RequestBodyUsernamePasswordAuthenticationFilter(
+                JsonLoginAuthenticationFilter(
                     authenticationManager(),
                     objectMapper,
                     LoginSuccessHandler(accountService, tokenService, jsonResponseWriter),

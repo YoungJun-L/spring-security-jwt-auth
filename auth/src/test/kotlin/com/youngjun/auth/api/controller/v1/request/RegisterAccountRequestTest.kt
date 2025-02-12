@@ -9,26 +9,16 @@ class RegisterAccountRequestTest :
         {
             context("검증") {
                 test("성공") {
-                    shouldNotThrow<IllegalArgumentException> { RegisterAccountRequest("username123", "password123!") }
-                }
-            }
-
-            context("아이디 길이 검증") {
-                arrayOf("a".repeat(7), "a".repeat(50)).forEach { invalidUsername ->
-                    test("\"$invalidUsername\"") {
-                        val validPassword = "password123!"
-
-                        shouldThrow<IllegalArgumentException> { RegisterAccountRequest(invalidUsername, validPassword) }
-                    }
+                    shouldNotThrow<IllegalArgumentException> { RegisterAccountRequest("example@youngjun.com", "password123!") }
                 }
             }
 
             context("비밀번호 길이 검증") {
                 arrayOf("a".repeat(7), "a".repeat(65)).forEach { invalidPassword ->
                     test("\"$invalidPassword\"") {
-                        val validUsername = "username123"
+                        val validEmail = "example@youngjun.com"
 
-                        shouldThrow<IllegalArgumentException> { RegisterAccountRequest(validUsername, invalidPassword) }
+                        shouldThrow<IllegalArgumentException> { RegisterAccountRequest(validEmail, invalidPassword) }
                     }
                 }
             }

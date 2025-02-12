@@ -1,6 +1,7 @@
 package com.youngjun.auth.security.filter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.youngjun.auth.domain.account.EmailBuilder
 import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.SecurityTest
 import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST_ERROR
@@ -20,7 +21,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 
 @SecurityTest
-class RequestBodyUsernamePasswordAuthenticationFilterTest :
+class JsonLoginAuthenticationFilterTest :
     FunSpec(
         {
             isolationMode = IsolationMode.InstancePerLeaf
@@ -29,8 +30,8 @@ class RequestBodyUsernamePasswordAuthenticationFilterTest :
             val objectMapper = jacksonObjectMapper()
             val authenticationSuccessHandler = mockk<AuthenticationSuccessHandler>()
             val authenticationFailureHandler = mockk<AuthenticationFailureHandler>()
-            val requestBodyUsernamePasswordAuthenticationFilter =
-                RequestBodyUsernamePasswordAuthenticationFilter(
+            val jsonLoginAuthenticationFilter =
+                JsonLoginAuthenticationFilter(
                     authenticationManager,
                     objectMapper,
                     authenticationSuccessHandler,
@@ -42,14 +43,14 @@ class RequestBodyUsernamePasswordAuthenticationFilterTest :
                 val response = MockHttpServletResponse()
 
                 test("성공") {
-                    val username = "username123"
+                    val email = EmailBuilder().build()
                     val password = "password123!"
                     request.contentType = MediaType.APPLICATION_JSON_VALUE
-                    request.setContent(objectMapper.writeValueAsBytes(mapOf("username" to username, "password" to password)))
+                    request.setContent(objectMapper.writeValueAsBytes(mapOf("email" to email.value, "password" to password)))
                     every { authenticationManager.authenticate(any()) } returns
-                        UsernamePasswordAuthenticationToken.authenticated(username, password, AuthorityUtils.NO_AUTHORITIES)
+                        UsernamePasswordAuthenticationToken.authenticated(email, password, AuthorityUtils.NO_AUTHORITIES)
 
-                    val actual = requestBodyUsernamePasswordAuthenticationFilter.attemptAuthentication(request, response)
+                    val actual = jsonLoginAuthenticationFilter.attemptAuthentication(request, response)
 
                     actual.isAuthenticated shouldBe true
                 }
@@ -59,7 +60,7 @@ class RequestBodyUsernamePasswordAuthenticationFilterTest :
                     request.setContent("".toByteArray())
 
                     shouldThrow<TypedAuthenticationException> {
-                        requestBodyUsernamePasswordAuthenticationFilter.attemptAuthentication(request, response)
+                        jsonLoginAuthenticationFilter.attemptAuthentication(request, response)
                     }.errorType shouldBe BAD_REQUEST_ERROR
                 }
             }

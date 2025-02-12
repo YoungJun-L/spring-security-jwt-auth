@@ -3,6 +3,7 @@ package com.youngjun.auth.application
 import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.domain.account.AccountReader
 import com.youngjun.auth.domain.account.AccountWriter
+import com.youngjun.auth.domain.account.Email
 import com.youngjun.auth.domain.token.RefreshTokenWriter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -15,14 +16,14 @@ class AccountService(
     private val passwordEncoder: PasswordEncoder,
     private val refreshTokenWriter: RefreshTokenWriter,
 ) : UserDetailsService {
-    override fun loadUserByUsername(username: String): Account = accountReader.read(username)
+    override fun loadUserByUsername(email: String): Account = accountReader.read(Email(email))
 
     fun register(
-        username: String,
+        email: Email,
         password: String,
     ): Account {
-        accountReader.validateUniqueUsername(username)
-        return accountWriter.write(Account(username, passwordEncoder.encode(password)))
+        accountReader.validateUniqueEmail(email)
+        return accountWriter.write(Account(email, passwordEncoder.encode(password)))
     }
 
     fun logout(account: Account): Account {

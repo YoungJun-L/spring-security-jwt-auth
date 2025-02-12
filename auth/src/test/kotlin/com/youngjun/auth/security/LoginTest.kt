@@ -4,6 +4,8 @@ import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
+import com.youngjun.auth.domain.account.Email
+import com.youngjun.auth.domain.account.EmailBuilder
 import com.youngjun.auth.domain.token.TokenPairBuilder
 import com.youngjun.auth.security.filter.LoginRequest
 import com.youngjun.auth.support.SecurityContextTest
@@ -34,9 +36,9 @@ class LoginTest(
 ) : SecurityContextTest() {
     @Test
     fun `로그인 성공`() {
-        val username = "username123"
+        val email = EmailBuilder().build()
         val password = "password123!"
-        val account = AccountBuilder(username, passwordEncoder.encode(password)).build()
+        val account = AccountBuilder(email, passwordEncoder.encode(password)).build()
         every { accountService.loadUserByUsername(any()) } returns account
         every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
         every { accountService.login(any()) } returns account.apply { account.enable() }
@@ -45,7 +47,7 @@ class LoginTest(
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(LoginRequest(username, password))
+            .body(LoginRequest(email.value, password))
             .post("/auth/login")
             .then()
             .log()
@@ -54,7 +56,7 @@ class LoginTest(
                 document(
                     "login",
                     requestFields(
-                        "username" type STRING description "username",
+                        "email" type STRING description "email",
                         "password" type STRING description "password",
                     ),
                     responseFields(
@@ -76,47 +78,44 @@ class LoginTest(
     fun `존재하지 않는 회원이면 실패한다`() {
         every { accountService.loadUserByUsername(any()) } throws UsernameNotFoundException("")
 
-        val actual = login("username123", "password123!")
+        val actual = login(EmailBuilder().build(), "password123!")
 
         actual["code"] shouldBe ErrorCode.E4011.name
     }
 
     @Test
     fun `비밀번호가 다르면 실패한다`() {
-        val username = "username123"
+        val email = EmailBuilder().build()
         val password = "password123!"
         every { accountService.loadUserByUsername(any()) } returns
-            AccountBuilder(
-                username = username,
-                password = passwordEncoder.encode(password),
-            ).build()
+            AccountBuilder(email = email, password = passwordEncoder.encode(password)).build()
 
-        val actual = login(username, "invalidPassword123!")
+        val actual = login(email, "invalidPassword123!")
 
         actual["code"] shouldBe ErrorCode.E4011.name
     }
 
     @Test
     fun `서비스 이용이 제한된 유저이면 실패한다`() {
-        val username = "username123"
+        val email = EmailBuilder().build()
         val password = "password123!"
         every { accountService.loadUserByUsername(any()) } returns
             AccountBuilder(
-                username = username,
+                email = email,
                 password = passwordEncoder.encode(password),
                 status = AccountStatus.DISABLED,
             ).build()
 
-        val actual = login(username, password)
+        val actual = login(email, password)
 
         actual["code"] shouldBe ErrorCode.E4032.name
     }
 
     @Test
     fun `로그아웃된 유저이면 성공한다`() {
-        val username = "username123"
+        val email = EmailBuilder().build()
         val password = "password123!"
-        val account = AccountBuilder(username, passwordEncoder.encode(password), AccountStatus.LOGOUT).build()
+        val account = AccountBuilder(email, passwordEncoder.encode(password), AccountStatus.LOGOUT).build()
         every { accountService.loadUserByUsername(any()) } returns account
         every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
         every { accountService.login(any()) } returns account.apply { enable() }
@@ -125,7 +124,7 @@ class LoginTest(
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(LoginRequest(username, password))
+            .body(LoginRequest(email.value, password))
             .post("/auth/login")
             .then()
             .log()
@@ -135,14 +134,14 @@ class LoginTest(
 }
 
 private fun login(
-    username: String,
+    email: Email,
     password: String,
 ): Map<String, String> =
     given()
         .log()
         .all()
         .contentType(ContentType.JSON)
-        .body(LoginRequest(username, password))
+        .body(LoginRequest(email.value, password))
         .post("/auth/login")
         .then()
         .log()

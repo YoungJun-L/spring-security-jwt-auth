@@ -1,11 +1,14 @@
 package com.youngjun.auth.api.controller.v1.request
 
+import com.youngjun.auth.domain.account.Email
+
 data class RegisterAccountRequest(
-    val username: String,
+    val email: String,
     val password: String,
 ) {
     init {
-        require(username.length in 8..<50) { "Username validation error" }
         require(password.length in 8..<65) { "Password validation error" }
     }
+
+    fun toEmail(): Email = Email(email)
 }

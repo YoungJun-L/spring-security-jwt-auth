@@ -19,7 +19,7 @@ class AccountController(
     fun register(
         @RequestBody request: RegisterAccountRequest,
     ): AuthResponse<AccountResponse> {
-        val account = accountService.register(request.username, request.password)
+        val account = accountService.register(request.toEmail(), request.password)
         return AuthResponse.success(AccountResponse.from(account))
     }
 

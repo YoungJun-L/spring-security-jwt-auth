@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
-class RequestBodyUsernamePasswordAuthenticationFilter(
+class JsonLoginAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
     private val objectMapper: ObjectMapper,
     authenticationSuccessHandler: AuthenticationSuccessHandler,
@@ -44,7 +44,7 @@ class RequestBodyUsernamePasswordAuthenticationFilter(
                 throw TypedAuthenticationException(ErrorType.BAD_REQUEST_ERROR, ex)
             }
         return authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username, loginRequest.password),
+            UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.toEmail(), loginRequest.password),
         )
     }
 

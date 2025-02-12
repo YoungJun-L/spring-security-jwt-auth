@@ -27,13 +27,13 @@ class AccountReaderTest(
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
 
-                    val actual = accountReader.read(account.username)
+                    val actual = accountReader.read(account.email)
 
                     actual.id shouldBe account.id
                 }
 
                 test("회원이 존재하지 않으면 실패한다.") {
-                    shouldThrow<UsernameNotFoundException> { accountReader.read("username123") }
+                    shouldThrow<UsernameNotFoundException> { accountReader.read(EmailBuilder().build()) }
                 }
             }
 
@@ -61,14 +61,14 @@ class AccountReaderTest(
 
             context("중복 아이디 검증") {
                 test("성공") {
-                    shouldNotThrow<AuthException> { accountReader.validateUniqueUsername("username123") }
+                    shouldNotThrow<AuthException> { accountReader.validateUniqueEmail(EmailBuilder().build()) }
                 }
 
                 test("중복 아이디가 존재하면 실패한다.") {
-                    val username = "username123"
-                    accountJpaRepository.save(AccountBuilder(username = username).build())
+                    val email = EmailBuilder().build()
+                    accountJpaRepository.save(AccountBuilder(email = email).build())
 
-                    shouldThrow<AuthException> { accountReader.validateUniqueUsername(username) }
+                    shouldThrow<AuthException> { accountReader.validateUniqueEmail(email) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }

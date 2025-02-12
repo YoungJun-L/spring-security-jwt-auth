@@ -2,6 +2,7 @@ package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
+import com.youngjun.auth.domain.account.EmailBuilder
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.TokenStatus
 import com.youngjun.auth.infra.db.AccountJpaRepository
@@ -33,40 +34,40 @@ class AccountServiceTest(
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
 
-                    val actual = accountService.loadUserByUsername(account.username)
+                    val actual = accountService.loadUserByUsername(account.email.value)
 
-                    actual.username shouldBe account.username
+                    actual.email shouldBe account.email
                 }
 
                 test("회원이 존재하지 않으면 실패한다.") {
-                    shouldThrow<UsernameNotFoundException> { accountService.loadUserByUsername("username123") }
+                    shouldThrow<UsernameNotFoundException> { accountService.loadUserByUsername("example@youngjun.com") }
                 }
             }
 
             context("회원 가입") {
                 test("성공") {
-                    val username = "username123"
+                    val email = EmailBuilder().build()
                     val password = "password123!"
 
-                    val actual = accountService.register(username, password)
+                    val actual = accountService.register(email, password)
 
-                    actual.username shouldBe username
+                    actual.email shouldBe email
                 }
 
                 test("비밀번호는 인코딩된다.") {
-                    val username = "username123"
+                    val email = EmailBuilder().build()
                     val password = "password123!"
 
-                    val actual = accountService.register(username, password)
+                    val actual = accountService.register(email, password)
 
                     passwordEncoder.matches(password, actual.password) shouldBe true
                 }
 
                 test("동일한 아이디로 가입하면 실패한다.") {
-                    val username = "username123"
-                    accountJpaRepository.save(AccountBuilder(username = username).build())
+                    val email = EmailBuilder().build()
+                    accountJpaRepository.save(AccountBuilder(email = email).build())
 
-                    shouldThrow<AuthException> { accountService.register(username, "password123!") }
+                    shouldThrow<AuthException> { accountService.register(email, "password123!") }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class AccountReader(
     private val accountRepository: AccountRepository,
 ) {
-    fun read(username: String): Account = accountRepository.findBy(username) ?: throw UsernameNotFoundException("Cannot find user")
+    fun read(email: Email): Account = accountRepository.findBy(email) ?: throw UsernameNotFoundException("Cannot find the user")
 
     fun readEnabled(id: Long): Account {
         val account = accountRepository.findBy(id) ?: throw AuthException(UNAUTHORIZED_ERROR)
@@ -18,8 +18,8 @@ class AccountReader(
         return account
     }
 
-    fun validateUniqueUsername(username: String) {
-        if (accountRepository.existsBy(username)) {
+    fun validateUniqueEmail(email: Email) {
+        if (accountRepository.existsBy(email)) {
             throw AuthException(ACCOUNT_DUPLICATE_ERROR)
         }
     }
