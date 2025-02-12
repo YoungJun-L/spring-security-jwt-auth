@@ -83,11 +83,13 @@ class SecurityConfig(
             .build()
 
     @Bean
-    fun authenticationManager(): AuthenticationManager {
-        val daoAuthenticationProvider = DaoAuthenticationProvider(passwordEncoder)
-        daoAuthenticationProvider.setUserDetailsService(accountService)
-        return ProviderManager(JwtAuthenticationProvider(tokenService), daoAuthenticationProvider)
-    }
+    fun authenticationManager(): AuthenticationManager =
+        ProviderManager(
+            JwtAuthenticationProvider(tokenService),
+            DaoAuthenticationProvider(passwordEncoder).apply {
+                setUserDetailsService(accountService)
+            },
+        )
 
     @Bean
     fun authenticationFailureHandler(): AuthenticationFailureHandler = AuthenticationEntryPointFailureHandler(authenticationEntryPoint())
