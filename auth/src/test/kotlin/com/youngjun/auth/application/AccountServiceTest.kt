@@ -3,6 +3,7 @@ package com.youngjun.auth.application
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.EmailBuilder
+import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.TokenStatus
 import com.youngjun.auth.infra.db.AccountJpaRepository
@@ -47,27 +48,27 @@ class AccountServiceTest(
             context("회원 가입") {
                 test("성공") {
                     val email = EmailBuilder().build()
-                    val password = "password123!"
+                    val rawPassword = RawPasswordBuilder().build()
 
-                    val actual = accountService.register(email, password)
+                    val actual = accountService.register(email, rawPassword)
 
                     actual.email shouldBe email
                 }
 
                 test("비밀번호는 인코딩된다.") {
                     val email = EmailBuilder().build()
-                    val password = "password123!"
+                    val rawPassword = RawPasswordBuilder().build()
 
-                    val actual = accountService.register(email, password)
+                    val actual = accountService.register(email, rawPassword)
 
-                    passwordEncoder.matches(password, actual.password) shouldBe true
+                    passwordEncoder.matches(rawPassword.value, actual.password) shouldBe true
                 }
 
                 test("동일한 아이디로 가입하면 실패한다.") {
                     val email = EmailBuilder().build()
                     accountJpaRepository.save(AccountBuilder(email = email).build())
 
-                    shouldThrow<AuthException> { accountService.register(email, "password123!") }
+                    shouldThrow<AuthException> { accountService.register(email, RawPasswordBuilder().build()) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }
@@ -106,11 +107,11 @@ class AccountServiceTest(
             context("비밀번호 변경") {
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
-                    val newPassword = "newPassword"
+                    val newPassword = RawPasswordBuilder(value = "newPassword").build()
 
                     val actual = accountService.changePassword(account, newPassword)
 
-                    passwordEncoder.matches(newPassword, actual.password) shouldBe true
+                    passwordEncoder.matches(newPassword.value, actual.password) shouldBe true
                 }
             }
         },

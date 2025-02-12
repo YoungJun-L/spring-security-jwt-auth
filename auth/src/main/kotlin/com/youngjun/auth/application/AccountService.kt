@@ -4,6 +4,7 @@ import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.domain.account.AccountReader
 import com.youngjun.auth.domain.account.AccountWriter
 import com.youngjun.auth.domain.account.Email
+import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.RefreshTokenWriter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,10 +21,10 @@ class AccountService(
 
     fun register(
         email: Email,
-        password: String,
+        rawPassword: RawPassword,
     ): Account {
         accountReader.validateUniqueEmail(email)
-        return accountWriter.write(Account(email, passwordEncoder.encode(password)))
+        return accountWriter.write(Account(email, rawPassword.encodeWith(passwordEncoder)))
     }
 
     fun logout(account: Account): Account {
@@ -40,9 +41,9 @@ class AccountService(
 
     fun changePassword(
         account: Account,
-        password: String,
+        rawPassword: RawPassword,
     ): Account {
-        account.changePassword(passwordEncoder.encode(password))
+        account.changePassword(rawPassword.encodeWith(passwordEncoder))
         return accountWriter.write(account)
     }
 }

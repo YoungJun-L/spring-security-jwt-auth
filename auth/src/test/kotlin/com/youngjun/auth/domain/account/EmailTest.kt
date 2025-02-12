@@ -1,11 +1,9 @@
 package com.youngjun.auth.domain.account
 
-import com.youngjun.auth.support.DomainTest
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 
-@DomainTest
 class EmailTest :
     FunSpec(
         {

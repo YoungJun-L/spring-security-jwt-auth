@@ -1,6 +1,5 @@
 package com.youngjun.auth.domain.account
 
-import com.youngjun.auth.support.DomainTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
@@ -11,7 +10,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
-@DomainTest
 class AccountTest :
     FunSpec(
         {
@@ -68,11 +66,11 @@ class AccountTest :
                 test("성공") {
                     val account = AccountBuilder().build()
                     val passwordEncoder = BCryptPasswordEncoder()
-                    val newPassword = "newPassword"
+                    val newPassword = RawPasswordBuilder(value = "newPassword").build()
 
-                    account.changePassword(passwordEncoder.encode(newPassword))
+                    account.changePassword(newPassword.encodeWith(passwordEncoder))
 
-                    passwordEncoder.matches(newPassword, account.password) shouldBe true
+                    passwordEncoder.matches(newPassword.value, account.password) shouldBe true
                 }
             }
         },

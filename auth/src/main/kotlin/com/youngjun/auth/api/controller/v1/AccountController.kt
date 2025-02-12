@@ -19,7 +19,7 @@ class AccountController(
     fun register(
         @RequestBody request: RegisterAccountRequest,
     ): AuthResponse<AccountResponse> {
-        val account = accountService.register(request.toEmail(), request.password)
+        val account = accountService.register(request.toEmail(), request.toRawPassword())
         return AuthResponse.success(AccountResponse.from(account))
     }
 
@@ -28,7 +28,7 @@ class AccountController(
         account: Account,
         @RequestBody request: ChangePasswordRequest,
     ): AuthResponse<AccountResponse> {
-        val changedAccount = accountService.changePassword(account, request.password)
+        val changedAccount = accountService.changePassword(account, request.toRawPassword())
         return AuthResponse.success(AccountResponse.from(changedAccount))
     }
 }

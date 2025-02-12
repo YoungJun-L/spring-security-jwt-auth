@@ -2,6 +2,8 @@ package com.youngjun.auth.security.filter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.youngjun.auth.domain.account.EmailBuilder
+import com.youngjun.auth.domain.account.PasswordBuilder
+import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.SecurityTest
 import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST_ERROR
@@ -44,11 +46,16 @@ class JsonLoginAuthenticationFilterTest :
 
                 test("성공") {
                     val email = EmailBuilder().build()
-                    val password = "password123!"
                     request.contentType = MediaType.APPLICATION_JSON_VALUE
-                    request.setContent(objectMapper.writeValueAsBytes(mapOf("email" to email.value, "password" to password)))
+                    request.setContent(
+                        objectMapper.writeValueAsBytes(mapOf("email" to email.value, "password" to RawPasswordBuilder().build().value)),
+                    )
                     every { authenticationManager.authenticate(any()) } returns
-                        UsernamePasswordAuthenticationToken.authenticated(email, password, AuthorityUtils.NO_AUTHORITIES)
+                        UsernamePasswordAuthenticationToken.authenticated(
+                            email,
+                            PasswordBuilder().build(),
+                            AuthorityUtils.NO_AUTHORITIES,
+                        )
 
                     val actual = jsonLoginAuthenticationFilter.attemptAuthentication(request, response)
 

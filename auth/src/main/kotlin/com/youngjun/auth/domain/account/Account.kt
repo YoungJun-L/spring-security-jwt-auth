@@ -24,13 +24,11 @@ import org.springframework.security.core.userdetails.UserDetails
 class Account(
     @Embedded
     val email: Email,
-    password: String,
+    @Embedded
+    private var password: Password,
     status: AccountStatus = ENABLED,
 ) : BaseEntity(),
     UserDetails {
-    @Column
-    private var password = password
-
     @Enumerated(EnumType.STRING)
     @Column
     var status = status
@@ -38,7 +36,7 @@ class Account(
 
     override fun getUsername(): String = email.value
 
-    override fun getPassword(): String = password
+    override fun getPassword(): String = password.value
 
     override fun getAuthorities(): Collection<GrantedAuthority> = AuthorityUtils.NO_AUTHORITIES
 
@@ -63,7 +61,7 @@ class Account(
         status = LOGOUT
     }
 
-    fun changePassword(encodedPassword: String) {
-        password = encodedPassword
+    fun changePassword(password: Password) {
+        this.password = password
     }
 }

@@ -41,8 +41,4 @@ class RefreshToken(
     fun expire() {
         status = EXPIRED
     }
-
-    fun updateValue(value: String) {
-        this.value = value
-    }
 }
