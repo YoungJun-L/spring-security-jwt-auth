@@ -6,11 +6,6 @@ spring:
     properties:
       hibernate.default_batch_fetch_size: 1000
 
-security:
-  jwt:
-    access-secret-key: CSIggKMW2Qusk3GWgrIud1PhcZgMII3iwHutKMa23A8=
-    refresh-secret-key: Mxu2VhUoC9S5wBk9E4sy7o8DLDtHRwdG0M694ZTr874=
-
 ---
 spring.config.activate.on-profile: test
 
@@ -32,3 +27,51 @@ spring:
     hikari:
       data-source-properties:
         rewriteBatchedStatements: true
+
+  mail:
+    host: host
+
+security:
+  jwt:
+    access-secret-key: 5ZCno4gJ5QAnL7s6h5vbyWNMWz/RbmGpOXPooCZUI2g=
+    refresh-secret-key: H1lYB7BuPya5f3XfKBQQ0WdQ03CYjNJJMMZETFqf6w8=
+
+---
+spring.config.activate.on-profile: local
+
+spring:
+  mail:
+    host: ${MAIL_HOST}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    port: ${MAIL_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+
+security:
+  jwt:
+    access-secret-key: ${ACCESS_SECRET_KEY}
+    refresh-secret-key: ${REFRESH_SECRET_KEY}
+
+---
+spring.config.activate.on-profile: dev
+
+security:
+  jwt:
+    access-secret-key: ${ACCESS_SECRET_KEY}
+    refresh-secret-key: ${REFRESH_SECRET_KEY}
+
+spring:
+  mail:
+    host: ${MAIL_HOST}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    port: ${MAIL_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
