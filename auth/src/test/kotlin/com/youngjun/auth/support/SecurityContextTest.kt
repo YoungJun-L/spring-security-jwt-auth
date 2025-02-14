@@ -2,6 +2,7 @@ package com.youngjun.auth.support
 
 import com.ninjasquad.springmockk.MockkBean
 import com.youngjun.auth.application.AccountService
+import com.youngjun.auth.application.MailService
 import com.youngjun.auth.application.TokenService
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
@@ -34,6 +35,9 @@ abstract class SecurityContextTest {
 
     @MockkBean
     private lateinit var tokenService: TokenService
+
+    @MockkBean
+    private lateinit var mailService: MailService
 
     @BeforeEach
     fun setUp(

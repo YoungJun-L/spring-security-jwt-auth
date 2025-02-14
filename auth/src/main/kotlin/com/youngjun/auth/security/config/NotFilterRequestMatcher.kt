@@ -8,6 +8,7 @@ enum class NotFilterRequestMatcher(
     private val matcher: RequestMatcher,
 ) {
     REGISTER(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/register")),
+    SEND_VERIFICATION_CODE(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/send-verification-code")),
     REISSUE(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/token")),
     H2_CONSOLE(AntPathRequestMatcher.antMatcher("/h2-console/**")),
     API_DOCS(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/docs/**")),

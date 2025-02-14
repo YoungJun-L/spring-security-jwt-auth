@@ -2,14 +2,19 @@ package com.youngjun.auth.api.controller.v1
 
 import com.youngjun.auth.api.controller.v1.request.ChangePasswordRequest
 import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
+import com.youngjun.auth.api.controller.v1.request.SendVerificationCodeRequest
 import com.youngjun.auth.application.AccountService
+import com.youngjun.auth.application.MailService
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.domain.verificationCode.VerificationCodeBuilder
 import com.youngjun.auth.security.token.JwtAuthenticationToken
 import com.youngjun.auth.support.RestDocsTest
 import com.youngjun.auth.support.description
 import com.youngjun.auth.support.ignored
 import com.youngjun.auth.support.type
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given
@@ -26,11 +31,13 @@ import org.springframework.security.core.context.SecurityContextHolder
 
 class AccountControllerTest : RestDocsTest() {
     private lateinit var accountService: AccountService
+    private lateinit var mailService: MailService
 
     @BeforeEach
     fun setUp() {
         accountService = mockk()
-        val accountController = AccountController(accountService)
+        mailService = mockk()
+        val accountController = AccountController(accountService, mailService)
         setMockMvc(accountController)
     }
 
@@ -58,6 +65,35 @@ class AccountControllerTest : RestDocsTest() {
                         "status" type STRING description "status",
                         "data" type OBJECT description "data",
                         "data.userId" type NUMBER description "userId",
+                        "error" type NULL ignored true,
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun `인증 번호 전송 성공`() {
+        every { accountService.generateVerificationCode(any()) } returns VerificationCodeBuilder().build()
+        every { mailService.sendVerificationCode(any(), any()) } just Runs
+
+        given()
+            .log()
+            .all()
+            .contentType(ContentType.JSON)
+            .body(SendVerificationCodeRequest("example@youngjun.com"))
+            .post("/auth/send-verification-code")
+            .then()
+            .log()
+            .all()
+            .apply(
+                document(
+                    "send-verification-code",
+                    requestFields(
+                        "email" type STRING description "email, 이메일 형식",
+                    ),
+                    responseFields(
+                        "status" type STRING description "status",
+                        "data" type NULL description "data",
                         "error" type NULL ignored true,
                     ),
                 ),
