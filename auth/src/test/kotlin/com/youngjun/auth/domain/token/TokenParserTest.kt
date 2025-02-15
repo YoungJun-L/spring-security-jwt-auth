@@ -2,7 +2,7 @@ package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.security.config.JwtProperties
-import com.youngjun.auth.support.DomainTest
+import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED_ERROR
 import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID_ERROR
@@ -14,7 +14,7 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import java.time.Duration
 
-@DomainTest
+@DomainContextTest
 class TokenParserTest(
     private val tokenParser: TokenParser,
     private val refreshTokenJpaRepository: RefreshTokenJpaRepository,

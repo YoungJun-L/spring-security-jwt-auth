@@ -30,9 +30,8 @@ class AccountController(
     fun sendVerificationCode(
         @RequestBody request: SendVerificationCodeRequest,
     ): AuthResponse<Any> {
-        val email = request.toEmail()
-        val verificationCode = accountService.generateVerificationCode(email)
-        mailService.sendVerificationCode(email, verificationCode)
+        val verificationCode = accountService.generateVerificationCode(request.toEmail())
+        mailService.sendVerificationCode(verificationCode)
         return AuthResponse.success()
     }
 

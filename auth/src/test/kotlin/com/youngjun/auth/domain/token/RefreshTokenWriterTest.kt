@@ -2,14 +2,14 @@ package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
-import com.youngjun.auth.support.DomainTest
+import com.youngjun.auth.support.DomainContextTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import org.springframework.data.repository.findByIdOrNull
 
-@DomainTest
+@DomainContextTest
 class RefreshTokenWriterTest(
     private val refreshTokenWriter: RefreshTokenWriter,
     private val refreshTokenJpaRepository: RefreshTokenJpaRepository,

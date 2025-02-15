@@ -1,13 +1,13 @@
 package com.youngjun.auth.domain.account
 
 import com.youngjun.auth.infra.db.AccountJpaRepository
-import com.youngjun.auth.support.DomainTest
+import com.youngjun.auth.support.DomainContextTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 
-@DomainTest
+@DomainContextTest
 class AccountWriterTest(
     private val accountWriter: AccountWriter,
     private val accountJpaRepository: AccountJpaRepository,

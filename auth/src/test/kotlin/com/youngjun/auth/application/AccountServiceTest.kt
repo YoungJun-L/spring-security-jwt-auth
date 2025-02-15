@@ -8,7 +8,7 @@ import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.TokenStatus
 import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
-import com.youngjun.auth.support.ApplicationTest
+import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
 import io.kotest.assertions.throwables.shouldThrow
@@ -20,7 +20,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 
-@ApplicationTest
+@ApplicationContextTest
 class AccountServiceTest(
     private val accountService: AccountService,
     private val passwordEncoder: PasswordEncoder,

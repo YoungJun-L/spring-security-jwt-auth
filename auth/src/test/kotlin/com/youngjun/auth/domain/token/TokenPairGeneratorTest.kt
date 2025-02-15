@@ -3,14 +3,14 @@ package com.youngjun.auth.domain.token
 import com.youngjun.auth.domain.support.hours
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.security.config.JwtProperties
-import com.youngjun.auth.support.DomainTest
+import com.youngjun.auth.support.DomainContextTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
 
-@DomainTest
+@DomainContextTest
 class TokenPairGeneratorTest(
     private val tokenPairGenerator: TokenPairGenerator,
     private val jwtProperties: JwtProperties,

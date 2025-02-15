@@ -3,7 +3,7 @@ package com.youngjun.auth.domain.token
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.domain.support.toEpochSecond
 import com.youngjun.auth.security.config.JwtProperties
-import com.youngjun.auth.support.DomainTest
+import com.youngjun.auth.support.DomainContextTest
 import io.jsonwebtoken.Jwts
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -14,7 +14,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-@DomainTest
+@DomainContextTest
 class JwtGeneratorTest(
     private val jwtProperties: JwtProperties,
 ) : FunSpec(

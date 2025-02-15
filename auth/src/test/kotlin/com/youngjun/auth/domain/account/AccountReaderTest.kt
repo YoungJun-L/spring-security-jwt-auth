@@ -1,7 +1,7 @@
 package com.youngjun.auth.domain.account
 
 import com.youngjun.auth.infra.db.AccountJpaRepository
-import com.youngjun.auth.support.DomainTest
+import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
@@ -14,7 +14,7 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
-@DomainTest
+@DomainContextTest
 class AccountReaderTest(
     private val accountReader: AccountReader,
     private val accountJpaRepository: AccountJpaRepository,

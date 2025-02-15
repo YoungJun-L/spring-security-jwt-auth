@@ -14,7 +14,7 @@ class VerificationCode(
     val email: Email,
     @Column
     val code: Int,
-    isVerified: Boolean,
+    isVerified: Boolean = false,
 ) : BaseEntity() {
     @Column
     var isVerified = isVerified

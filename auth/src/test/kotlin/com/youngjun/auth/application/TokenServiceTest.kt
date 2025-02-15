@@ -12,7 +12,7 @@ import com.youngjun.auth.domain.token.TokenStatus
 import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.security.config.JwtProperties
-import com.youngjun.auth.support.ApplicationTest
+import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
 import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED_ERROR
@@ -28,7 +28,7 @@ import io.kotest.matchers.shouldNotBe
 import java.time.Duration
 import java.time.LocalDateTime
 
-@ApplicationTest
+@ApplicationContextTest
 class TokenServiceTest(
     private val tokenService: TokenService,
     private val refreshTokenJpaRepository: RefreshTokenJpaRepository,

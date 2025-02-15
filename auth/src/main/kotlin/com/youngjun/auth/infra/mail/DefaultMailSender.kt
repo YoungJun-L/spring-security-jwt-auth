@@ -1,5 +1,6 @@
 package com.youngjun.auth.infra.mail
 
+import com.youngjun.auth.domain.account.Email
 import org.springframework.boot.autoconfigure.mail.MailProperties
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -11,14 +12,14 @@ class DefaultMailSender(
     private val mailProperties: MailProperties,
 ) {
     fun send(
-        toAddress: String,
+        toAddress: Email,
         subject: String,
         body: String,
     ) {
         val message = mailSender.createMimeMessage()
         MimeMessageHelper(message).apply {
             setFrom(mailProperties.username)
-            setTo(toAddress)
+            setTo(toAddress.value)
             setSubject(subject)
             setText(body, true)
         }

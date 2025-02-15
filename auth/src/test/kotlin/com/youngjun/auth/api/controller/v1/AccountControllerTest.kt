@@ -74,7 +74,7 @@ class AccountControllerTest : RestDocsTest() {
     @Test
     fun `인증 번호 전송 성공`() {
         every { accountService.generateVerificationCode(any()) } returns VerificationCodeBuilder().build()
-        every { mailService.sendVerificationCode(any(), any()) } just Runs
+        every { mailService.sendVerificationCode(any()) } just Runs
 
         given()
             .log()
