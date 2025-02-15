@@ -13,7 +13,7 @@ class MailService(
 ) {
     fun sendVerificationCode(verificationCode: VerificationCode) {
         mailSender.send(
-            verificationCode.email,
+            verificationCode.emailAddress,
             "Verification Code",
             templateEngine.process(
                 "mail/verification-code.html",

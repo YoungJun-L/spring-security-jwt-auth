@@ -1,9 +1,9 @@
 package com.youngjun.auth.api.controller.v1.request
 
-import com.youngjun.auth.domain.account.Email
+import com.youngjun.auth.domain.account.EmailAddress
 
 data class SendVerificationCodeRequest(
     val email: String,
 ) {
-    fun toEmail(): Email = Email(email)
+    fun toEmailAddress(): EmailAddress = EmailAddress(email)
 }

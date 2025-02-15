@@ -23,21 +23,21 @@ class AccountReaderTest(
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("회원 조회") {
+            context("유저 조회") {
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
 
-                    val actual = accountReader.read(account.email)
+                    val actual = accountReader.read(account.emailAddress)
 
                     actual.id shouldBe account.id
                 }
 
-                test("회원이 존재하지 않으면 실패한다.") {
-                    shouldThrow<UsernameNotFoundException> { accountReader.read(EmailBuilder().build()) }
+                test("유저가 존재하지 않으면 실패한다.") {
+                    shouldThrow<UsernameNotFoundException> { accountReader.read(EmailAddressBuilder().build()) }
                 }
             }
 
-            context("이용 가능한 회원 조회") {
+            context("이용 가능한 유저 조회") {
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.ENABLED).build())
 
@@ -46,7 +46,7 @@ class AccountReaderTest(
                     actual.id shouldBe account.id
                 }
 
-                test("회원이 존재하지 않으면 실패한다.") {
+                test("유저가 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { accountReader.readEnabled(1L) }
                         .errorType shouldBe UNAUTHORIZED_ERROR
                 }
@@ -59,16 +59,16 @@ class AccountReaderTest(
                 }
             }
 
-            context("중복 아이디 검증") {
+            context("중복 이메일 주소 검증") {
                 test("성공") {
-                    shouldNotThrow<AuthException> { accountReader.validateUniqueEmail(EmailBuilder().build()) }
+                    shouldNotThrow<AuthException> { accountReader.validateUniqueEmailAddress(EmailAddressBuilder().build()) }
                 }
 
-                test("중복 아이디가 존재하면 실패한다.") {
-                    val email = EmailBuilder().build()
-                    accountJpaRepository.save(AccountBuilder(email = email).build())
+                test("중복된 이메일 주소가 존재하면 실패한다.") {
+                    val emailAddress = EmailAddressBuilder().build()
+                    accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
-                    shouldThrow<AuthException> { accountReader.validateUniqueEmail(email) }
+                    shouldThrow<AuthException> { accountReader.validateUniqueEmailAddress(emailAddress) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }

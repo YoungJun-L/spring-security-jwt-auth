@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 class AccountTest :
     FunSpec(
         {
-            context("회원 상태 검증") {
+            context("유저 상태 검증") {
                 test("이용 가능") {
                     val account = AccountBuilder(status = AccountStatus.ENABLED).build()
 

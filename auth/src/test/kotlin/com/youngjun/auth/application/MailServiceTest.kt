@@ -34,7 +34,7 @@ class MailServiceTest :
                     mailService.sendVerificationCode(verificationCode)
 
                     verify { templateEngine.process("mail/verification-code.html", any()) }
-                    verify { mailSender.send(verificationCode.email, "Verification Code", result) }
+                    verify { mailSender.send(verificationCode.emailAddress, "Verification Code", result) }
                 }
             }
         },

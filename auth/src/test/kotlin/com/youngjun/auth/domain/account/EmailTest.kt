@@ -22,7 +22,7 @@ class EmailTest :
                     "example@youngjun123.com",
                 ).forEach { validEmail ->
                     test("\"$validEmail\"") {
-                        shouldNotThrow<IllegalArgumentException> { Email(validEmail) }
+                        shouldNotThrow<IllegalArgumentException> { EmailAddress(validEmail) }
                     }
                 }
             }
@@ -40,7 +40,7 @@ class EmailTest :
                     "example@youngjun.co kr",
                 ).forEach { invalidEmail ->
                     test("\"$invalidEmail\"") {
-                        shouldThrow<IllegalArgumentException> { Email(invalidEmail) }
+                        shouldThrow<IllegalArgumentException> { EmailAddress(invalidEmail) }
                     }
                 }
             }

@@ -3,7 +3,7 @@ package com.youngjun.auth.application
 import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.domain.account.AccountReader
 import com.youngjun.auth.domain.account.AccountWriter
-import com.youngjun.auth.domain.account.Email
+import com.youngjun.auth.domain.account.EmailAddress
 import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.RefreshTokenWriter
 import com.youngjun.auth.domain.verificationCode.VerificationCode
@@ -18,14 +18,14 @@ class AccountService(
     private val passwordEncoder: PasswordEncoder,
     private val refreshTokenWriter: RefreshTokenWriter,
 ) : UserDetailsService {
-    override fun loadUserByUsername(email: String): Account = accountReader.read(Email(email))
+    override fun loadUserByUsername(emailAddress: String): Account = accountReader.read(EmailAddress(emailAddress))
 
     fun register(
-        email: Email,
+        emailAddress: EmailAddress,
         rawPassword: RawPassword,
     ): Account {
-        accountReader.validateUniqueEmail(email)
-        return accountWriter.write(Account(email, rawPassword.encodeWith(passwordEncoder)))
+        accountReader.validateUniqueEmailAddress(emailAddress)
+        return accountWriter.write(Account(emailAddress, rawPassword.encodeWith(passwordEncoder)))
     }
 
     fun logout(account: Account): Account {
@@ -48,7 +48,7 @@ class AccountService(
         return accountWriter.write(account)
     }
 
-    fun generateVerificationCode(email: Email): VerificationCode {
+    fun generateVerificationCode(emailAddress: EmailAddress): VerificationCode {
         TODO("Not yet implemented")
     }
 }

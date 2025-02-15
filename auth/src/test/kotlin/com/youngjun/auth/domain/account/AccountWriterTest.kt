@@ -22,7 +22,7 @@ class AccountWriterTest(
 
                     val actual = accountWriter.write(account)
 
-                    actual.email shouldBe account.email
+                    actual.emailAddress shouldBe account.emailAddress
                 }
             }
         },

@@ -1,17 +1,17 @@
 package com.youngjun.auth.domain.account
 
 data class AccountBuilder(
-    val email: Email = EmailBuilder().build(),
+    val emailAddress: EmailAddress = EmailAddressBuilder().build(),
     val password: Password = PasswordBuilder().build(),
     val status: AccountStatus = AccountStatus.ENABLED,
 ) {
-    fun build(): Account = Account(email = email, password = password, status = status)
+    fun build(): Account = Account(emailAddress = emailAddress, password = password, status = status)
 }
 
-data class EmailBuilder(
+data class EmailAddressBuilder(
     val value: String = "example@youngjun.com",
 ) {
-    fun build(): Email = Email(value = value)
+    fun build(): EmailAddress = EmailAddress(value = value)
 }
 
 data class PasswordBuilder(

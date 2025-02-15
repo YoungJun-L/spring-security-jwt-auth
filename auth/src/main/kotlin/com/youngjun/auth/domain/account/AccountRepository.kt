@@ -10,9 +10,9 @@ class AccountRepository(
 ) {
     fun save(account: Account): Account = accountJpaRepository.save(account)
 
-    fun findBy(email: Email): Account? = accountJpaRepository.findByEmail(email)
+    fun findBy(emailAddress: EmailAddress): Account? = accountJpaRepository.findByEmailAddress(emailAddress)
 
     fun findBy(id: Long): Account? = accountJpaRepository.findByIdOrNull(id)
 
-    fun existsBy(email: Email): Boolean = accountJpaRepository.existsByEmail(email)
+    fun existsBy(emailAddress: EmailAddress): Boolean = accountJpaRepository.existsByEmailAddress(emailAddress)
 }

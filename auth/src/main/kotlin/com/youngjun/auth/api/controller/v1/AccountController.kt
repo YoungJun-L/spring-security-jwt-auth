@@ -22,7 +22,7 @@ class AccountController(
     fun register(
         @RequestBody request: RegisterAccountRequest,
     ): AuthResponse<AccountResponse> {
-        val account = accountService.register(request.toEmail(), request.toRawPassword())
+        val account = accountService.register(request.toEmailAddress(), request.toRawPassword())
         return AuthResponse.success(AccountResponse.from(account))
     }
 
@@ -30,7 +30,7 @@ class AccountController(
     fun sendVerificationCode(
         @RequestBody request: SendVerificationCodeRequest,
     ): AuthResponse<Any> {
-        val verificationCode = accountService.generateVerificationCode(request.toEmail())
+        val verificationCode = accountService.generateVerificationCode(request.toEmailAddress())
         mailService.sendVerificationCode(verificationCode)
         return AuthResponse.success()
     }

@@ -1,6 +1,6 @@
 package com.youngjun.auth.domain.verificationCode
 
-import com.youngjun.auth.domain.account.Email
+import com.youngjun.auth.domain.account.EmailAddress
 import com.youngjun.auth.domain.support.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Embedded
@@ -11,7 +11,7 @@ import jakarta.persistence.Table
 @Entity
 class VerificationCode(
     @Embedded
-    val email: Email,
+    val emailAddress: EmailAddress,
     @Column
     val code: Int,
     isVerified: Boolean = false,

@@ -67,7 +67,7 @@ class JwtAuthenticationTest(
     }
 
     @Test
-    fun `존재하지 않는 회원이면 실패한다`() {
+    fun `존재하지 않는 유저이면 실패한다`() {
         every { tokenService.parse(any()) } throws AuthException(ACCOUNT_NOT_FOUND_ERROR)
 
         val actual = authenticate()

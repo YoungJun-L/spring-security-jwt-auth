@@ -2,7 +2,7 @@ package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
-import com.youngjun.auth.domain.account.EmailBuilder
+import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.TokenStatus
@@ -35,40 +35,40 @@ class AccountServiceTest(
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
 
-                    val actual = accountService.loadUserByUsername(account.email.value)
+                    val actual = accountService.loadUserByUsername(account.emailAddress.value)
 
-                    actual.email shouldBe account.email
+                    actual.emailAddress shouldBe account.emailAddress
                 }
 
-                test("회원이 존재하지 않으면 실패한다.") {
+                test("유저가 존재하지 않으면 실패한다.") {
                     shouldThrow<UsernameNotFoundException> { accountService.loadUserByUsername("example@youngjun.com") }
                 }
             }
 
             context("회원 가입") {
                 test("성공") {
-                    val email = EmailBuilder().build()
+                    val emailAddress = EmailAddressBuilder().build()
                     val rawPassword = RawPasswordBuilder().build()
 
-                    val actual = accountService.register(email, rawPassword)
+                    val actual = accountService.register(emailAddress, rawPassword)
 
-                    actual.email shouldBe email
+                    actual.emailAddress shouldBe emailAddress
                 }
 
                 test("비밀번호는 인코딩된다.") {
-                    val email = EmailBuilder().build()
+                    val emailAddress = EmailAddressBuilder().build()
                     val rawPassword = RawPasswordBuilder().build()
 
-                    val actual = accountService.register(email, rawPassword)
+                    val actual = accountService.register(emailAddress, rawPassword)
 
                     passwordEncoder.matches(rawPassword.value, actual.password) shouldBe true
                 }
 
-                test("동일한 아이디로 가입하면 실패한다.") {
-                    val email = EmailBuilder().build()
-                    accountJpaRepository.save(AccountBuilder(email = email).build())
+                test("중복된 이메일 주소가 존재하면 실패한다.") {
+                    val emailAddress = EmailAddressBuilder().build()
+                    accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
-                    shouldThrow<AuthException> { accountService.register(email, RawPasswordBuilder().build()) }
+                    shouldThrow<AuthException> { accountService.register(emailAddress, RawPasswordBuilder().build()) }
                         .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
                 }
             }
@@ -112,6 +112,11 @@ class AccountServiceTest(
                     val actual = accountService.changePassword(account, newPassword)
 
                     passwordEncoder.matches(newPassword.value, actual.password) shouldBe true
+                }
+            }
+
+            context("인증 번호 생성") {
+                test("성공") {
                 }
             }
         },

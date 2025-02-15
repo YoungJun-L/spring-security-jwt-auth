@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails
 @Entity
 class Account(
     @Embedded
-    val email: Email,
+    val emailAddress: EmailAddress,
     @Embedded
     private var password: Password,
     status: AccountStatus = ENABLED,
@@ -34,7 +34,7 @@ class Account(
     var status = status
         private set
 
-    override fun getUsername(): String = email.value
+    override fun getUsername(): String = emailAddress.value
 
     override fun getPassword(): String = password.value
 

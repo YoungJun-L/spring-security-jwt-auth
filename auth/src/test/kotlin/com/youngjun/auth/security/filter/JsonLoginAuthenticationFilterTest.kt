@@ -1,7 +1,7 @@
 package com.youngjun.auth.security.filter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.youngjun.auth.domain.account.EmailBuilder
+import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.account.PasswordBuilder
 import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.security.support.error.TypedAuthenticationException
@@ -45,14 +45,16 @@ class JsonLoginAuthenticationFilterTest :
                 val response = MockHttpServletResponse()
 
                 test("성공") {
-                    val email = EmailBuilder().build()
+                    val emailAddress = EmailAddressBuilder().build()
                     request.contentType = MediaType.APPLICATION_JSON_VALUE
                     request.setContent(
-                        objectMapper.writeValueAsBytes(mapOf("email" to email.value, "password" to RawPasswordBuilder().build().value)),
+                        objectMapper.writeValueAsBytes(
+                            mapOf("email" to emailAddress.value, "password" to RawPasswordBuilder().build().value),
+                        ),
                     )
                     every { authenticationManager.authenticate(any()) } returns
                         UsernamePasswordAuthenticationToken.authenticated(
-                            email,
+                            emailAddress,
                             PasswordBuilder().build(),
                             AuthorityUtils.NO_AUTHORITIES,
                         )

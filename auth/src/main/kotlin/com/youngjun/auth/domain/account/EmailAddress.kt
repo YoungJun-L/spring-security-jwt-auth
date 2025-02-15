@@ -4,15 +4,15 @@ import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 
 @Embeddable
-data class Email(
+data class EmailAddress(
     @Column(name = "email")
     val value: String,
 ) {
     init {
-        require(emailRegex.matches(value)) { "Email validation error" }
+        require(emailAddressRegex.matches(value)) { "Email address validation error" }
     }
 
     companion object {
-        private val emailRegex = Regex("[\\w.-]+@[\\w.-]+\\.\\w{2,4}")
+        private val emailAddressRegex = Regex("[\\w.-]+@[\\w.-]+\\.\\w{2,4}")
     }
 }
