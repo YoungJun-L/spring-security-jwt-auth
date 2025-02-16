@@ -14,4 +14,5 @@ enum class ErrorCode {
     E4041,
     E5000,
     E4033,
+    E4291,
 }

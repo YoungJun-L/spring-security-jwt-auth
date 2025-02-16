@@ -2,7 +2,7 @@ package com.youngjun.auth.security.token
 
 import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.SecurityTest
-import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID_ERROR
+import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -43,7 +43,7 @@ class BearerTokenResolverTest :
                         request.addHeader(AUTHORIZATION, "Bearer $it")
 
                         shouldThrow<TypedAuthenticationException> { bearerTokenResolver.resolve(request) }
-                            .errorType shouldBe TOKEN_INVALID_ERROR
+                            .errorType shouldBe TOKEN_INVALID
                     }
                 }
             }

@@ -3,9 +3,9 @@ package com.youngjun.auth.domain.account
 import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
-import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED_ERROR
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
+import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -48,28 +48,28 @@ class AccountReaderTest(
 
                 test("유저가 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { accountReader.readEnabled(1L) }
-                        .errorType shouldBe UNAUTHORIZED_ERROR
+                        .errorType shouldBe UNAUTHORIZED
                 }
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
                     val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.DISABLED).build())
 
                     shouldThrow<AuthException> { accountReader.readEnabled(account.id) }
-                        .errorType shouldBe ACCOUNT_DISABLED_ERROR
+                        .errorType shouldBe ACCOUNT_DISABLED
                 }
             }
 
             context("중복 이메일 주소 검증") {
-                test("성공") {
+                test("없는 경우") {
                     shouldNotThrow<AuthException> { accountReader.validateUniqueEmailAddress(EmailAddressBuilder().build()) }
                 }
 
-                test("중복된 이메일 주소가 존재하면 실패한다.") {
+                test("있는 경우") {
                     val emailAddress = EmailAddressBuilder().build()
                     accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
                     shouldThrow<AuthException> { accountReader.validateUniqueEmailAddress(emailAddress) }
-                        .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
+                        .errorType shouldBe ACCOUNT_DUPLICATE
                 }
             }
         },

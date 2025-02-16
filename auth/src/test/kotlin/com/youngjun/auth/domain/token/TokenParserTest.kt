@@ -4,9 +4,9 @@ import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.security.config.JwtProperties
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED_ERROR
-import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID_ERROR
-import com.youngjun.auth.support.error.ErrorType.TOKEN_NOT_FOUND_ERROR
+import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED
+import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID
+import com.youngjun.auth.support.error.ErrorType.TOKEN_NOT_FOUND
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -40,12 +40,12 @@ class TokenParserTest(
                         tokenParser.parse(
                             RawAccessToken(JwtBuilder(secretKey = jwtProperties.accessSecretKey, expiresIn = Duration.ZERO).build()),
                         )
-                    }.errorType shouldBe TOKEN_EXPIRED_ERROR
+                    }.errorType shouldBe TOKEN_EXPIRED
                 }
 
                 test("accessToken 이 유효하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { tokenParser.parse(RawAccessToken(JwtBuilder().build())) }
-                        .errorType shouldBe TOKEN_INVALID_ERROR
+                        .errorType shouldBe TOKEN_INVALID
                 }
             }
 
@@ -66,12 +66,12 @@ class TokenParserTest(
                         tokenParser.parse(
                             RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, expiresIn = Duration.ZERO).build()),
                         )
-                    }.errorType shouldBe TOKEN_EXPIRED_ERROR
+                    }.errorType shouldBe TOKEN_EXPIRED
                 }
 
                 test("refreshToken 이 유효하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { tokenParser.parse(RawRefreshToken(JwtBuilder().build())) }
-                        .errorType shouldBe TOKEN_INVALID_ERROR
+                        .errorType shouldBe TOKEN_INVALID
                 }
 
                 test("refreshToken 이 만료되었으면 실패한다.") {
@@ -81,13 +81,13 @@ class TokenParserTest(
                     refreshTokenJpaRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value, TokenStatus.EXPIRED).build())
 
                     shouldThrow<AuthException> { tokenParser.parse(rawRefreshToken) }
-                        .errorType shouldBe TOKEN_EXPIRED_ERROR
+                        .errorType shouldBe TOKEN_EXPIRED
                 }
 
                 test("refreshToken 이 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> {
                         tokenParser.parse(RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey).build()))
-                    }.errorType shouldBe TOKEN_NOT_FOUND_ERROR
+                    }.errorType shouldBe TOKEN_NOT_FOUND
                 }
             }
         },

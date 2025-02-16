@@ -1,7 +1,7 @@
 package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.TOKEN_NOT_FOUND_ERROR
+import com.youngjun.auth.support.error.ErrorType.TOKEN_NOT_FOUND
 import org.springframework.stereotype.Component
 
 @Component
@@ -14,7 +14,7 @@ class TokenParser(
     fun parse(rawRefreshToken: RawRefreshToken): ParsedRefreshToken {
         val parsedRefreshToken = ParsedRefreshToken.of(rawRefreshToken, jwtParser.parse(rawRefreshToken))
         val refreshToken =
-            refreshTokenRepository.findBy(parsedRefreshToken) ?: throw AuthException(TOKEN_NOT_FOUND_ERROR)
+            refreshTokenRepository.findBy(parsedRefreshToken) ?: throw AuthException(TOKEN_NOT_FOUND)
         refreshToken.verify()
         return parsedRefreshToken
     }

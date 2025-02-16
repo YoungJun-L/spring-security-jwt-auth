@@ -6,7 +6,7 @@ import com.youngjun.auth.domain.account.PasswordBuilder
 import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.SecurityTest
-import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST_ERROR
+import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -70,7 +70,7 @@ class JsonLoginAuthenticationFilterTest :
 
                     shouldThrow<TypedAuthenticationException> {
                         jsonLoginAuthenticationFilter.attemptAuthentication(request, response)
-                    }.errorType shouldBe BAD_REQUEST_ERROR
+                    }.errorType shouldBe BAD_REQUEST
                 }
             }
         },

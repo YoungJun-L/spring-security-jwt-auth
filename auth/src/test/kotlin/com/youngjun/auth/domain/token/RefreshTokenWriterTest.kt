@@ -44,7 +44,7 @@ class RefreshTokenWriterTest(
                 }
             }
 
-            context("refreshToken 만료") {
+            context("만료") {
                 test("성공") {
                     val account = AccountBuilder().build()
                     val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id).build())

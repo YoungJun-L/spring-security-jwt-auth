@@ -1,18 +1,23 @@
 package com.youngjun.auth.domain.account
 
+import com.youngjun.auth.support.DomainTest
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT_ERROR
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
+@DomainTest
 class AccountTest :
     FunSpec(
         {
+            isolationMode = IsolationMode.InstancePerLeaf
+
             context("유저 상태 검증") {
                 test("이용 가능") {
                     val account = AccountBuilder(status = AccountStatus.ENABLED).build()
@@ -24,21 +29,21 @@ class AccountTest :
                     val account = AccountBuilder(status = AccountStatus.LOCKED).build()
 
                     shouldThrow<AuthException> { account.verify() }
-                        .errorType shouldBe ACCOUNT_LOCKED_ERROR
+                        .errorType shouldBe ACCOUNT_LOCKED
                 }
 
                 test("이용 제한") {
                     val account = AccountBuilder(status = AccountStatus.DISABLED).build()
 
                     shouldThrow<AuthException> { account.verify() }
-                        .errorType shouldBe ACCOUNT_DISABLED_ERROR
+                        .errorType shouldBe ACCOUNT_DISABLED
                 }
 
                 test("로그아웃") {
                     val account = AccountBuilder(status = AccountStatus.LOGOUT).build()
 
                     shouldThrow<AuthException> { account.verify() }
-                        .errorType shouldBe ACCOUNT_LOGOUT_ERROR
+                        .errorType shouldBe ACCOUNT_LOGOUT
                 }
             }
 

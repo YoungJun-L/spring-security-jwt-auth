@@ -2,7 +2,7 @@ package com.youngjun.auth.api.config
 
 import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType
+import com.youngjun.auth.support.error.ErrorType.DEFAULT
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
@@ -26,7 +26,7 @@ class AccountArgumentResolver : HandlerMethodArgumentResolver {
             SecurityContextHolder.clearContext()
             return account
         } catch (ex: Exception) {
-            throw AuthException(ErrorType.DEFAULT_ERROR)
+            throw AuthException(DEFAULT)
         }
     }
 }

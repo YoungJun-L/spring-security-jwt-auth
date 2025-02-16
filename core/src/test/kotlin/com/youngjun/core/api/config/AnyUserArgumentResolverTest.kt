@@ -2,7 +2,7 @@ package com.youngjun.core.api.config
 
 import com.youngjun.core.domain.AnyUser
 import com.youngjun.core.support.error.CoreException
-import com.youngjun.core.support.error.ErrorType.DEFAULT_ERROR
+import com.youngjun.core.support.error.ErrorType.DEFAULT
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -76,7 +76,7 @@ class AnyUserArgumentResolverTest :
                             mavContainer = null,
                             binderFactory = null,
                         )
-                    }.errorType shouldBe DEFAULT_ERROR
+                    }.errorType shouldBe DEFAULT
                 }
             }
         },

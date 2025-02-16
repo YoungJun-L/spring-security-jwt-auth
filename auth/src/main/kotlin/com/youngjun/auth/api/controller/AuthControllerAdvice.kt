@@ -1,9 +1,9 @@
 package com.youngjun.auth.api.controller
 
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST_ERROR
-import com.youngjun.auth.support.error.ErrorType.DEFAULT_ERROR
-import com.youngjun.auth.support.error.ErrorType.NOT_FOUND_ERROR
+import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST
+import com.youngjun.auth.support.error.ErrorType.DEFAULT
+import com.youngjun.auth.support.error.ErrorType.NOT_FOUND
 import com.youngjun.auth.support.response.AuthResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -52,13 +52,13 @@ class AuthControllerAdvice {
     )
     fun handleBadRequest(ex: Exception): ResponseEntity<AuthResponse<Any>> {
         log.info("Bad Request: {}", ex.message, ex)
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthResponse.error(BAD_REQUEST_ERROR))
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthResponse.error(BAD_REQUEST))
     }
 
     @ExceptionHandler(NoHandlerFoundException::class, NoResourceFoundException::class)
     fun handleNotFoundException(ex: Exception): ResponseEntity<AuthResponse<Any>> {
         log.info("Not Found: {}", ex.message, ex)
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(AuthResponse.error(NOT_FOUND_ERROR))
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(AuthResponse.error(NOT_FOUND))
     }
 
     @ExceptionHandler(Exception::class)
@@ -66,6 +66,6 @@ class AuthControllerAdvice {
         log.info("Exception: {}", ex.message, ex)
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(AuthResponse.error(DEFAULT_ERROR))
+            .body(AuthResponse.error(DEFAULT))
     }
 }

@@ -1,12 +1,17 @@
 package com.youngjun.auth.domain.account
 
+import com.youngjun.auth.support.DomainTest
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 
+@DomainTest
 class EmailTest :
     FunSpec(
         {
+            isolationMode = IsolationMode.InstancePerLeaf
+
             context("이메일 검증 성공 케이스") {
                 arrayOf(
                     "example@youngjun.com",

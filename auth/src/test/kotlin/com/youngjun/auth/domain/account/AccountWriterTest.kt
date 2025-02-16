@@ -6,6 +6,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
+import org.springframework.data.repository.findByIdOrNull
 
 @DomainContextTest
 class AccountWriterTest(
@@ -16,13 +17,13 @@ class AccountWriterTest(
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("기존 계정 저장") {
+            context("저장") {
                 test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = AccountBuilder().build()
 
-                    val actual = accountWriter.write(account)
+                    accountWriter.write(account)
 
-                    actual.emailAddress shouldBe account.emailAddress
+                    accountJpaRepository.findByIdOrNull(account.id)!!.emailAddress shouldBe account.emailAddress
                 }
             }
         },

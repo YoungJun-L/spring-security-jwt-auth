@@ -9,18 +9,13 @@ import jakarta.persistence.Table
 
 @Table(name = "verification_code")
 @Entity
-class VerificationCode(
+class VerificationCode protected constructor(
     @Embedded
     val emailAddress: EmailAddress,
     @Column
     val code: Int,
-    isVerified: Boolean = false,
 ) : BaseEntity() {
-    @Column
-    var isVerified = isVerified
-        private set
-
-    fun verify() {
-        isVerified = true
+    companion object {
+        fun generate(emailAddress: EmailAddress): VerificationCode = VerificationCode(emailAddress, (100_000..<1_000_000).random())
     }
 }

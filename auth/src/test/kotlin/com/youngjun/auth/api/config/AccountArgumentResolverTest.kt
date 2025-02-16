@@ -4,7 +4,7 @@ import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.security.token.JwtAuthenticationToken
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.DEFAULT_ERROR
+import com.youngjun.auth.support.error.ErrorType.DEFAULT
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -77,7 +77,7 @@ class AccountArgumentResolverTest :
                             mavContainer = null,
                             binderFactory = null,
                         )
-                    }.errorType shouldBe DEFAULT_ERROR
+                    }.errorType shouldBe DEFAULT
                 }
 
                 test("성공하면 인증 정보는 비워진다.") {

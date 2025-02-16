@@ -6,7 +6,6 @@ import com.youngjun.auth.domain.account.AccountWriter
 import com.youngjun.auth.domain.account.EmailAddress
 import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.RefreshTokenWriter
-import com.youngjun.auth.domain.verificationCode.VerificationCode
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -46,9 +45,5 @@ class AccountService(
     ): Account {
         account.changePassword(rawPassword.encodeWith(passwordEncoder))
         return accountWriter.write(account)
-    }
-
-    fun generateVerificationCode(emailAddress: EmailAddress): VerificationCode {
-        TODO("Not yet implemented")
     }
 }

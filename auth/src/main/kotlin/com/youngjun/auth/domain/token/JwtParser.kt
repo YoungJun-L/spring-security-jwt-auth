@@ -2,8 +2,8 @@ package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.security.config.JwtProperties
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED_ERROR
-import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID_ERROR
+import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED
+import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts
@@ -27,8 +27,8 @@ class JwtParser(
         try {
             Payload.from(parser.parseSignedClaims(token).payload)
         } catch (ex: ExpiredJwtException) {
-            throw AuthException(TOKEN_EXPIRED_ERROR)
+            throw AuthException(TOKEN_EXPIRED)
         } catch (ex: Exception) {
-            throw AuthException(TOKEN_INVALID_ERROR)
+            throw AuthException(TOKEN_INVALID)
         }
 }

@@ -4,7 +4,7 @@ import com.youngjun.auth.domain.support.BaseEntity
 import com.youngjun.auth.domain.token.TokenStatus.ENABLED
 import com.youngjun.auth.domain.token.TokenStatus.EXPIRED
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED_ERROR
+import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -33,7 +33,7 @@ class RefreshToken(
 
     fun verify() {
         when (status) {
-            EXPIRED -> throw AuthException(TOKEN_EXPIRED_ERROR)
+            EXPIRED -> throw AuthException(TOKEN_EXPIRED)
             ENABLED -> return
         }
     }

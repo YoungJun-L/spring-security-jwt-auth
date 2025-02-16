@@ -4,6 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.MailService
 import com.youngjun.auth.application.TokenService
+import com.youngjun.auth.application.VerificationCodeService
 import io.kotest.core.annotation.Tags
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
@@ -41,6 +42,9 @@ abstract class SecurityContextTest {
 
     @MockkBean
     private lateinit var tokenService: TokenService
+
+    @MockkBean
+    private lateinit var verificationCodeService: VerificationCodeService
 
     @MockkBean
     private lateinit var mailService: MailService

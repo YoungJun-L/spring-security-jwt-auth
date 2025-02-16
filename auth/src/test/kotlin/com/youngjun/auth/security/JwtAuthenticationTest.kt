@@ -5,11 +5,11 @@ import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.support.SecurityContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorCode
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_NOT_FOUND_ERROR
-import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED_ERROR
-import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID_ERROR
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_NOT_FOUND
+import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED
+import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.restassured.http.ContentType
@@ -50,7 +50,7 @@ class JwtAuthenticationTest(
 
     @Test
     fun `유효하지 않은 JWT 이면 실패한다`() {
-        every { tokenService.parse(any()) } throws AuthException(TOKEN_INVALID_ERROR)
+        every { tokenService.parse(any()) } throws AuthException(TOKEN_INVALID)
 
         val actual = authenticate()
 
@@ -59,7 +59,7 @@ class JwtAuthenticationTest(
 
     @Test
     fun `만료된 JWT 이면 실패한다`() {
-        every { tokenService.parse(any()) } throws AuthException(TOKEN_EXPIRED_ERROR)
+        every { tokenService.parse(any()) } throws AuthException(TOKEN_EXPIRED)
 
         val actual = authenticate()
 
@@ -68,7 +68,7 @@ class JwtAuthenticationTest(
 
     @Test
     fun `존재하지 않는 유저이면 실패한다`() {
-        every { tokenService.parse(any()) } throws AuthException(ACCOUNT_NOT_FOUND_ERROR)
+        every { tokenService.parse(any()) } throws AuthException(ACCOUNT_NOT_FOUND)
 
         val actual = authenticate()
 
@@ -77,7 +77,7 @@ class JwtAuthenticationTest(
 
     @Test
     fun `서비스 이용이 제한된 유저이면 실패한다`() {
-        every { tokenService.parse(any()) } throws AuthException(ACCOUNT_DISABLED_ERROR)
+        every { tokenService.parse(any()) } throws AuthException(ACCOUNT_DISABLED)
 
         val actual = authenticate()
 
@@ -86,7 +86,7 @@ class JwtAuthenticationTest(
 
     @Test
     fun `로그아웃된 유저이면 실패한다`() {
-        every { tokenService.parse(any()) } throws AuthException(ACCOUNT_LOGOUT_ERROR)
+        every { tokenService.parse(any()) } throws AuthException(ACCOUNT_LOGOUT)
 
         val actual = authenticate()
 

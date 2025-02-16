@@ -6,9 +6,9 @@ import com.youngjun.auth.domain.account.AccountStatus.LOCKED
 import com.youngjun.auth.domain.account.AccountStatus.LOGOUT
 import com.youngjun.auth.domain.support.BaseEntity
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT_ERROR
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT
 import jakarta.persistence.Column
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
@@ -46,9 +46,9 @@ class Account(
 
     fun verify() {
         when (status) {
-            LOCKED -> throw AuthException(ACCOUNT_LOCKED_ERROR)
-            DISABLED -> throw AuthException(ACCOUNT_DISABLED_ERROR)
-            LOGOUT -> throw AuthException(ACCOUNT_LOGOUT_ERROR)
+            LOCKED -> throw AuthException(ACCOUNT_LOCKED)
+            DISABLED -> throw AuthException(ACCOUNT_DISABLED)
+            LOGOUT -> throw AuthException(ACCOUNT_LOGOUT)
             ENABLED -> return
         }
     }

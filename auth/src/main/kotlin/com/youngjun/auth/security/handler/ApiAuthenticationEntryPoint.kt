@@ -2,10 +2,10 @@ package com.youngjun.auth.security.handler
 
 import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.error.ErrorType
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED_ERROR
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED_ERROR
-import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED_ERROR
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED
+import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED
 import com.youngjun.auth.support.response.AuthResponse
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -36,10 +36,10 @@ class ApiAuthenticationEntryPoint(
     private fun resolve(ex: AuthenticationException) =
         when (ex) {
             is TypedAuthenticationException -> ex.errorType
-            is BadCredentialsException -> ACCOUNT_BAD_CREDENTIALS_ERROR
-            is LockedException -> ACCOUNT_LOCKED_ERROR
-            is DisabledException -> ACCOUNT_DISABLED_ERROR
-            else -> UNAUTHORIZED_ERROR
+            is BadCredentialsException -> ACCOUNT_BAD_CREDENTIALS
+            is LockedException -> ACCOUNT_LOCKED
+            is DisabledException -> ACCOUNT_DISABLED
+            else -> UNAUTHORIZED
         }
 
     private fun log(

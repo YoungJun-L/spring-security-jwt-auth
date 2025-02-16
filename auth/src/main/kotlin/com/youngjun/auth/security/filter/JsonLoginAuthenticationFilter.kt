@@ -3,7 +3,7 @@ package com.youngjun.auth.security.filter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.youngjun.auth.security.support.error.TypedAuthenticationException
-import com.youngjun.auth.support.error.ErrorType
+import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpMethod
@@ -41,7 +41,7 @@ class JsonLoginAuthenticationFilter(
             try {
                 objectMapper.readValue(request.reader)
             } catch (ex: Exception) {
-                throw TypedAuthenticationException(ErrorType.BAD_REQUEST_ERROR, ex)
+                throw TypedAuthenticationException(BAD_REQUEST, ex)
             }
         return authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.toEmailAddress(), loginRequest.toRawPassword().value),

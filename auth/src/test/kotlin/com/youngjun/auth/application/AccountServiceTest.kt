@@ -10,7 +10,7 @@ import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE_ERROR
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -69,7 +69,7 @@ class AccountServiceTest(
                     accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
                     shouldThrow<AuthException> { accountService.register(emailAddress, RawPasswordBuilder().build()) }
-                        .errorType shouldBe ACCOUNT_DUPLICATE_ERROR
+                        .errorType shouldBe ACCOUNT_DUPLICATE
                 }
             }
 
@@ -112,11 +112,6 @@ class AccountServiceTest(
                     val actual = accountService.changePassword(account, newPassword)
 
                     passwordEncoder.matches(newPassword.value, actual.password) shouldBe true
-                }
-            }
-
-            context("인증 번호 생성") {
-                test("성공") {
                 }
             }
         },
