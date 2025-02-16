@@ -13,9 +13,10 @@ class VerificationCode protected constructor(
     @Embedded
     val emailAddress: EmailAddress,
     @Column
-    val code: Int,
+    val code: String,
 ) : BaseEntity() {
     companion object {
-        fun generate(emailAddress: EmailAddress): VerificationCode = VerificationCode(emailAddress, (100_000..<1_000_000).random())
+        fun generate(emailAddress: EmailAddress): VerificationCode =
+            VerificationCode(emailAddress, (0..<1_000_000).random().toString().padStart(6, '0'))
     }
 }

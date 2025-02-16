@@ -29,10 +29,12 @@ class VerificationCodeServiceTest(
             context("인증 코드 생성") {
                 test("성공") {
                     val emailAddress = EmailAddressBuilder().build()
+
                     val actual = verificationCodeService.generate(emailAddress)
 
                     actual.emailAddress shouldBe emailAddress
-                    actual.code shouldBeInRange 100_000..<1_000_000
+                    actual.code.toInt() shouldBeInRange (0..<1_000_000)
+                    actual.code.length shouldBe 6
                 }
 
                 test("중복된 이메일 주소가 존재하면 실패한다.") {
