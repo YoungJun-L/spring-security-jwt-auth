@@ -1,25 +1,24 @@
 package com.youngjun.auth.domain.token
 
-import com.youngjun.auth.security.config.JwtProperties
-import com.youngjun.auth.support.DomainContextTest
+import com.youngjun.auth.security.config.JwtPropertiesBuilder
+import com.youngjun.auth.support.DomainTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED
 import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import java.time.Duration
 
-@DomainContextTest
-class JwtParserTest(
-    private val jwtParser: JwtParser,
-    private val jwtProperties: JwtProperties,
-) : FunSpec(
+@DomainTest
+class JwtParserTest :
+    FunSpec(
         {
-            extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
+
+            val jwtProperties = JwtPropertiesBuilder().build()
+            val jwtParser = JwtParser(jwtProperties)
 
             context("accessToken 파싱") {
                 test("성공") {

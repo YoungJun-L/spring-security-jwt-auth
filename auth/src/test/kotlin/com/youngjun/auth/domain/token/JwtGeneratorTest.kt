@@ -2,26 +2,24 @@ package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.domain.support.toEpochSecond
-import com.youngjun.auth.security.config.JwtProperties
-import com.youngjun.auth.support.DomainContextTest
+import com.youngjun.auth.security.config.JwtPropertiesBuilder
+import com.youngjun.auth.support.DomainTest
 import io.jsonwebtoken.Jwts
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-@DomainContextTest
-class JwtGeneratorTest(
-    private val jwtProperties: JwtProperties,
-) : FunSpec(
+@DomainTest
+class JwtGeneratorTest :
+    FunSpec(
         {
-            extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
+            val jwtProperties = JwtPropertiesBuilder().build()
             val clock = Clock.fixed(Instant.now(), ZoneId.systemDefault())
             val now = LocalDateTime.now(clock)
             val jwtGenerator = JwtGenerator(jwtProperties, clock)
@@ -37,7 +35,7 @@ class JwtGeneratorTest(
                     accessTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "$userId"
                 }
 
-                test("access token 만료 시간 검증") {
+                test("만료 시간 검증") {
                     val actual = jwtGenerator.generateAccessToken(1L)
 
                     val expected = now + jwtProperties.accessTokenExpiresIn
@@ -46,8 +44,7 @@ class JwtGeneratorTest(
                         .parseSignedClaims(actual.value)
                         .payload.expiration
                         .toInstant()
-                        .epochSecond shouldBe
-                        expected.toEpochSecond()
+                        .epochSecond shouldBe expected.toEpochSecond()
                 }
             }
 
@@ -62,7 +59,7 @@ class JwtGeneratorTest(
                     refreshTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "$userId"
                 }
 
-                test("refresh token 만료 시간 검증") {
+                test("만료 시간 검증") {
                     val actual = jwtGenerator.generateRefreshToken(1L)
 
                     val expected = now + jwtProperties.refreshTokenExpiresIn
@@ -81,22 +78,14 @@ class JwtGeneratorTest(
                 test("갱신되는 경우") {
                     val userId = 1L
 
-                    val actual =
-                        jwtGenerator.generateRefreshTokenOnExpiration(
-                            userId,
-                            now + jwtProperties.expirationThreshold,
-                        )
+                    val actual = jwtGenerator.generateRefreshTokenOnExpiration(userId, now + jwtProperties.expirationThreshold)
 
                     actual.isNotEmpty() shouldBe true
                     refreshTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "$userId"
                 }
 
-                test("refresh token 만료 시간 검증") {
-                    val actual =
-                        jwtGenerator.generateRefreshTokenOnExpiration(
-                            1L,
-                            now + jwtProperties.expirationThreshold,
-                        )
+                test("만료 시간 검증") {
+                    val actual = jwtGenerator.generateRefreshTokenOnExpiration(1L, now + jwtProperties.expirationThreshold)
 
                     val expected = now + jwtProperties.refreshTokenExpiresIn
                     actual.expiration shouldBe expected
@@ -108,11 +97,7 @@ class JwtGeneratorTest(
                 }
 
                 test("갱신되지 않는 경우") {
-                    val actual =
-                        jwtGenerator.generateRefreshTokenOnExpiration(
-                            1L,
-                            now + jwtProperties.expirationThreshold + 1.seconds,
-                        )
+                    val actual = jwtGenerator.generateRefreshTokenOnExpiration(1L, now + jwtProperties.expirationThreshold + 1.seconds)
 
                     actual.isNotEmpty() shouldBe false
                 }

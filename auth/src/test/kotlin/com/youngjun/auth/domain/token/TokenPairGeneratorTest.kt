@@ -2,22 +2,21 @@ package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.domain.support.hours
 import com.youngjun.auth.domain.support.seconds
-import com.youngjun.auth.security.config.JwtProperties
-import com.youngjun.auth.support.DomainContextTest
+import com.youngjun.auth.security.config.JwtPropertiesBuilder
+import com.youngjun.auth.support.DomainTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
 
-@DomainContextTest
-class TokenPairGeneratorTest(
-    private val tokenPairGenerator: TokenPairGenerator,
-    private val jwtProperties: JwtProperties,
-) : FunSpec(
+@DomainTest
+class TokenPairGeneratorTest :
+    FunSpec(
         {
-            extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
+
+            val jwtProperties = JwtPropertiesBuilder().build()
+            val tokenPairGenerator = TokenPairGenerator(JwtGenerator(jwtProperties))
 
             context("발급") {
                 test("성공") {
