@@ -21,9 +21,9 @@ class TokenService(
 
     fun reissue(rawRefreshToken: RawRefreshToken): TokenPair {
         val parsedRefreshToken = tokenParser.parse(rawRefreshToken)
-        accountReader.readEnabled(parsedRefreshToken.userId)
+        accountReader.read(parsedRefreshToken.userId).verify()
         return tokenPairGenerator.generateOnExpiration(parsedRefreshToken).also { refreshTokenStore.replaceIfNotEmpty(it.refreshToken) }
     }
 
-    fun parse(rawAccessToken: RawAccessToken): Account = accountReader.readEnabled(tokenParser.parse(rawAccessToken).userId)
+    fun parse(rawAccessToken: RawAccessToken): Account = accountReader.read(tokenParser.parse(rawAccessToken).userId).also { it.verify() }
 }

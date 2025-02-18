@@ -13,11 +13,7 @@ class AccountReader(
     fun read(emailAddress: EmailAddress): Account =
         accountRepository.findBy(emailAddress) ?: throw UsernameNotFoundException("Cannot find the user")
 
-    fun readEnabled(id: Long): Account {
-        val account = accountRepository.findBy(id) ?: throw AuthException(UNAUTHORIZED)
-        account.verify()
-        return account
-    }
+    fun read(id: Long): Account = accountRepository.findBy(id) ?: throw AuthException(UNAUTHORIZED)
 
     fun checkExists(emailAddress: EmailAddress) {
         if (accountRepository.existsBy(emailAddress)) {

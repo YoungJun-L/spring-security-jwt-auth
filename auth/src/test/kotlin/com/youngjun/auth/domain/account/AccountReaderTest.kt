@@ -3,7 +3,6 @@ package com.youngjun.auth.domain.account
 import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
 import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED
 import io.kotest.assertions.throwables.shouldNotThrow
@@ -23,7 +22,7 @@ class AccountReaderTest(
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("조회") {
+            context("이메일 주소로 조회") {
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
 
@@ -37,25 +36,18 @@ class AccountReaderTest(
                 }
             }
 
-            context("이용 가능한 유저 조회") {
+            context("조회") {
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.ENABLED).build())
 
-                    val actual = accountReader.readEnabled(account.id)
+                    val actual = accountReader.read(account.id)
 
                     actual.id shouldBe account.id
                 }
 
                 test("존재하지 않으면 실패한다.") {
-                    shouldThrow<AuthException> { accountReader.readEnabled(1L) }
+                    shouldThrow<AuthException> { accountReader.read(1L) }
                         .errorType shouldBe UNAUTHORIZED
-                }
-
-                test("서비스 이용이 제한된 유저이면 실패한다.") {
-                    val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.DISABLED).build())
-
-                    shouldThrow<AuthException> { accountReader.readEnabled(account.id) }
-                        .errorType shouldBe ACCOUNT_DISABLED
                 }
             }
 
