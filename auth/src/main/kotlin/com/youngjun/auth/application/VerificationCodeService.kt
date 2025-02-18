@@ -6,6 +6,7 @@ import com.youngjun.auth.domain.verificationCode.VerificationCode
 import com.youngjun.auth.domain.verificationCode.VerificationCodeReader
 import com.youngjun.auth.domain.verificationCode.VerificationCodeWriter
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class VerificationCodeService(
@@ -13,9 +14,12 @@ class VerificationCodeService(
     private val verificationCodeWriter: VerificationCodeWriter,
     private val accountReader: AccountReader,
 ) {
-    fun generate(emailAddress: EmailAddress): VerificationCode {
+    fun generate(
+        emailAddress: EmailAddress,
+        now: LocalDateTime = LocalDateTime.now(),
+    ): VerificationCode {
         accountReader.checkExists(emailAddress)
-        verificationCodeReader.checkRecentSavesExceeded(emailAddress)
+        verificationCodeReader.checkRecentSavesExceeded(emailAddress, now)
         return VerificationCode.generate(emailAddress).also { verificationCodeWriter.write(it) }
     }
 }

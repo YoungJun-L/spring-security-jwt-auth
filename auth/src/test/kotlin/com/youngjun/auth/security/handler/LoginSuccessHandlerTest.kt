@@ -42,7 +42,7 @@ class LoginSuccessHandlerTest :
                     val account = AccountBuilder().build()
                     val authentication = UsernamePasswordAuthenticationToken(account, null, AuthorityUtils.NO_AUTHORITIES)
                     every { accountService.login(any()) } returns account.apply { enable() }
-                    every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
+                    every { tokenService.issue(any(), any()) } returns TokenPairBuilder(userId = account.id).build()
 
                     loginSuccessHandler.onAuthenticationSuccess(request, response, authentication)
 
@@ -54,7 +54,7 @@ class LoginSuccessHandlerTest :
                     val account = AccountBuilder().build()
                     val authentication = UsernamePasswordAuthenticationToken(account, null, AuthorityUtils.NO_AUTHORITIES)
                     every { accountService.login(any()) } returns account.apply { enable() }
-                    every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
+                    every { tokenService.issue(any(), any()) } returns TokenPairBuilder(userId = account.id).build()
 
                     loginSuccessHandler.onAuthenticationSuccess(request, response, authentication)
 

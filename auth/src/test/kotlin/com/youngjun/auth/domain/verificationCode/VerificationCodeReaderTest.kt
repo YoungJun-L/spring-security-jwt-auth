@@ -1,6 +1,8 @@
 package com.youngjun.auth.domain.verificationCode
 
 import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.support.minutes
+import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
@@ -25,16 +27,24 @@ class VerificationCodeReaderTest(
             context("허용된 발급 수 검증") {
                 test("10분 내 발급된 인증 코드가 5개 미만인 경우") {
                     val emailAddress = EmailAddressBuilder().build()
-                    verificationCodeJpaRepository.saveAll(List(4) { generateVerificationCode(emailAddress = emailAddress) })
+                    val now =
+                        verificationCodeJpaRepository
+                            .saveAll(List(4) { generateVerificationCode(emailAddress = emailAddress) })
+                            .first()
+                            .createdAt + 10.minutes - 1.seconds
 
-                    shouldNotThrow<AuthException> { verificationCodeReader.checkRecentSavesExceeded(emailAddress) }
+                    shouldNotThrow<AuthException> { verificationCodeReader.checkRecentSavesExceeded(emailAddress, now) }
                 }
 
                 test("10분 내 발급된 인증 코드가 5개 이상인 경우") {
                     val emailAddress = EmailAddressBuilder().build()
-                    verificationCodeJpaRepository.saveAll(List(5) { generateVerificationCode(emailAddress = emailAddress) })
+                    val now =
+                        verificationCodeJpaRepository
+                            .saveAll(List(5) { generateVerificationCode(emailAddress = emailAddress) })
+                            .first()
+                            .createdAt + 10.minutes - 1.seconds
 
-                    shouldThrow<AuthException> { verificationCodeReader.checkRecentSavesExceeded(emailAddress) }
+                    shouldThrow<AuthException> { verificationCodeReader.checkRecentSavesExceeded(emailAddress, now) }
                         .errorType shouldBe VERIFICATION_CODE_LIMIT_EXCEEDED
                 }
             }

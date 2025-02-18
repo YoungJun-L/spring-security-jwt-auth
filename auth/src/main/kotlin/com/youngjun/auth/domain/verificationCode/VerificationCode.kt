@@ -22,7 +22,7 @@ class VerificationCode private constructor(
 ) : BaseEntity() {
     fun verifyWith(
         rawVerificationCode: RawVerificationCode,
-        now: LocalDateTime,
+        now: LocalDateTime = LocalDateTime.now(),
     ) {
         fun isMismatched() = code != rawVerificationCode.value
 

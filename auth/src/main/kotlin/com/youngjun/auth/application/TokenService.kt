@@ -9,6 +9,7 @@ import com.youngjun.auth.domain.token.TokenPair
 import com.youngjun.auth.domain.token.TokenPairGenerator
 import com.youngjun.auth.domain.token.TokenParser
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class TokenService(
@@ -17,13 +18,21 @@ class TokenService(
     private val refreshTokenStore: RefreshTokenStore,
     private val accountReader: AccountReader,
 ) {
-    fun issue(userId: Long): TokenPair = tokenPairGenerator.generate(userId).also { refreshTokenStore.replaceIfNotEmpty(it.refreshToken) }
+    fun issue(
+        userId: Long,
+        now: LocalDateTime = LocalDateTime.now(),
+    ): TokenPair = tokenPairGenerator.generate(userId, now).also { refreshTokenStore.replaceIfNotEmpty(it.refreshToken) }
 
-    fun reissue(rawRefreshToken: RawRefreshToken): TokenPair {
+    fun reissue(
+        rawRefreshToken: RawRefreshToken,
+        now: LocalDateTime = LocalDateTime.now(),
+    ): TokenPair {
         val parsedRefreshToken = tokenParser.parse(rawRefreshToken)
         accountReader.read(parsedRefreshToken.userId).verify()
-        return tokenPairGenerator.generateOnExpiration(parsedRefreshToken).also { refreshTokenStore.replaceIfNotEmpty(it.refreshToken) }
+        return tokenPairGenerator
+            .generateOnExpiration(parsedRefreshToken, now)
+            .also { refreshTokenStore.replaceIfNotEmpty(it.refreshToken) }
     }
 
-    fun parse(rawAccessToken: RawAccessToken): Account = accountReader.read(tokenParser.parse(rawAccessToken).userId).also { it.verify() }
+    fun parse(rawAccessToken: RawAccessToken): Account = accountReader.read(tokenParser.parse(rawAccessToken).userId).apply { verify() }
 }

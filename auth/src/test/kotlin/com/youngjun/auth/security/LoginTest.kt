@@ -44,7 +44,7 @@ class LoginTest(
         val rawPassword = RawPasswordBuilder().build()
         val account = AccountBuilder(emailAddress, Password.encodedWith(rawPassword, passwordEncoder)).build()
         every { accountService.loadUserByUsername(any()) } returns account
-        every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
+        every { tokenService.issue(any(), any()) } returns TokenPairBuilder(userId = account.id).build()
         every { accountService.login(any()) } returns account.apply { account.enable() }
 
         given()
@@ -120,7 +120,7 @@ class LoginTest(
         val rawPassword = RawPasswordBuilder().build()
         val account = AccountBuilder(emailAddress, Password.encodedWith(rawPassword, passwordEncoder), AccountStatus.LOGOUT).build()
         every { accountService.loadUserByUsername(any()) } returns account
-        every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
+        every { tokenService.issue(any(), any()) } returns TokenPairBuilder(userId = account.id).build()
         every { accountService.login(any()) } returns account.apply { enable() }
 
         given()

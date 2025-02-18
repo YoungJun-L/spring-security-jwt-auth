@@ -1,7 +1,6 @@
 package com.youngjun.auth.domain.verificationCode
 
 import com.youngjun.auth.domain.account.EmailAddressBuilder
-import com.youngjun.auth.domain.config.now
 import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.support.DomainTest
@@ -58,7 +57,7 @@ class VerificationCodeTest :
                 test("일치하지 않는 경우") {
                     val verificationCode = generateVerificationCode(EmailAddressBuilder().build())
 
-                    shouldThrow<AuthException> { verificationCode.verifyWith(generateRawVerificationCodeExcluding(verificationCode), now) }
+                    shouldThrow<AuthException> { verificationCode.verifyWith(generateRawVerificationCodeExcluding(verificationCode)) }
                         .errorType shouldBe VERIFICATION_CODE_MISMATCHED
                 }
             }

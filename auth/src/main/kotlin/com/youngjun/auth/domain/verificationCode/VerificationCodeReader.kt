@@ -6,16 +6,17 @@ import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_LIMIT_EXCEEDED
 import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_NOT_FOUND
 import org.springframework.stereotype.Component
-import java.time.Clock
 import java.time.LocalDateTime
 
 @Component
 class VerificationCodeReader(
     private val verificationCodeRepository: VerificationCodeRepository,
-    private val clock: Clock,
 ) {
-    fun checkRecentSavesExceeded(emailAddress: EmailAddress) {
-        if (verificationCodeRepository.countSince(emailAddress, LocalDateTime.now(clock) - RECENT_DURATION) >= COUNT_LIMIT) {
+    fun checkRecentSavesExceeded(
+        emailAddress: EmailAddress,
+        now: LocalDateTime = LocalDateTime.now(),
+    ) {
+        if (verificationCodeRepository.countSince(emailAddress, now - RECENT_DURATION) >= COUNT_LIMIT) {
             throw AuthException(VERIFICATION_CODE_LIMIT_EXCEEDED)
         }
     }

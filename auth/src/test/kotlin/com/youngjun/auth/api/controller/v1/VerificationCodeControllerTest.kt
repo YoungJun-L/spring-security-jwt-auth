@@ -38,7 +38,7 @@ class VerificationCodeControllerTest : RestDocsTest() {
     @Test
     fun `인증 코드 전송 성공`() {
         val emailAddress = EmailAddressBuilder().build()
-        every { verificationCodeService.generate(any()) } returns generateVerificationCode(emailAddress)
+        every { verificationCodeService.generate(any(), any()) } returns generateVerificationCode(emailAddress)
         every { mailService.sendVerificationCode(any()) } just Runs
 
         given()

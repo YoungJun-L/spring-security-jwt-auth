@@ -35,23 +35,16 @@ class AccountService(
         return accountWriter.write(Account(emailAddress, Password.encodedWith(rawPassword, passwordEncoder)))
     }
 
-    fun logout(account: Account): Account {
-        account.logout()
-        accountWriter.write(account)
-        refreshTokenStore.expireIfExists(account)
-        return account
-    }
+    fun logout(account: Account): Account =
+        account
+            .apply { logout() }
+            .let { accountWriter.write(it) }
+            .also { refreshTokenStore.expireIfExists(it) }
 
-    fun login(account: Account): Account {
-        account.enable()
-        return accountWriter.write(account)
-    }
+    fun login(account: Account): Account = account.apply { enable() }.let { accountWriter.write(it) }
 
     fun changePassword(
         account: Account,
         rawPassword: RawPassword,
-    ): Account {
-        account.changePassword(Password.encodedWith(rawPassword, passwordEncoder))
-        return accountWriter.write(account)
-    }
+    ): Account = account.apply { changePassword(Password.encodedWith(rawPassword, passwordEncoder)) }.let { accountWriter.write(it) }
 }

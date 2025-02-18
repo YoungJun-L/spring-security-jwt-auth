@@ -1,7 +1,5 @@
 package com.youngjun.auth.domain.token
 
-import com.youngjun.auth.domain.config.fixedClock
-import com.youngjun.auth.domain.config.now
 import com.youngjun.auth.domain.support.hours
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.security.config.JwtPropertiesBuilder
@@ -9,6 +7,7 @@ import com.youngjun.auth.support.DomainTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import java.time.LocalDateTime
 
 @DomainTest
 class TokenPairGeneratorTest :
@@ -17,7 +16,7 @@ class TokenPairGeneratorTest :
             isolationMode = IsolationMode.InstancePerLeaf
 
             val jwtProperties = JwtPropertiesBuilder().build()
-            val tokenPairGenerator = TokenPairGenerator(JwtGenerator(jwtProperties, fixedClock))
+            val tokenPairGenerator = TokenPairGenerator(JwtGenerator(jwtProperties))
 
             context("발급") {
                 test("성공") {
@@ -29,7 +28,7 @@ class TokenPairGeneratorTest :
                 }
             }
 
-            context("재발급") {
+            context("만료 시간에 따른 발급") {
                 test("성공") {
                     val userId = 1L
 
@@ -39,6 +38,7 @@ class TokenPairGeneratorTest :
                 }
 
                 test("refreshToken 이 곧 만료되면 refresh token 도 갱신된다.") {
+                    val now = LocalDateTime.now()
                     val parsedRefreshToken =
                         ParsedRefreshTokenBuilder(
                             userId = 1L,
@@ -46,12 +46,14 @@ class TokenPairGeneratorTest :
                             expiresIn = jwtProperties.expirationThreshold - 1.seconds,
                         ).build()
 
-                    val actual = tokenPairGenerator.generateOnExpiration(parsedRefreshToken)
+                    val actual = tokenPairGenerator.generateOnExpiration(parsedRefreshToken, now)
 
                     actual.refreshToken.isNotEmpty() shouldBe true
                 }
 
                 test("refreshToken 이 아직 만료되지 않았으면 refresh token 은 갱신되지 않는다.") {
+                    val now = LocalDateTime.now()
+
                     val actual =
                         tokenPairGenerator.generateOnExpiration(
                             ParsedRefreshTokenBuilder(
@@ -59,6 +61,7 @@ class TokenPairGeneratorTest :
                                 issuedAt = now,
                                 expiresIn = jwtProperties.expirationThreshold + 1.hours,
                             ).build(),
+                            now,
                         )
 
                     actual.refreshToken.isNotEmpty() shouldBe false

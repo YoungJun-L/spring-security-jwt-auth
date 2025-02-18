@@ -4,7 +4,6 @@ import com.youngjun.auth.domain.support.toInstant
 import com.youngjun.auth.security.config.JwtProperties
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
-import java.time.Clock
 import java.time.LocalDateTime
 import java.util.Date
 import javax.crypto.SecretKey
@@ -12,31 +11,36 @@ import javax.crypto.SecretKey
 @Component
 class JwtGenerator(
     private val jwtProperties: JwtProperties,
-    private val clock: Clock,
 ) {
-    fun generateAccessToken(userId: Long): ParsedAccessToken {
-        val now = LocalDateTime.now(clock)
+    fun generateAccessToken(
+        userId: Long,
+        now: LocalDateTime = LocalDateTime.now(),
+    ): ParsedAccessToken {
         val expiration = now + jwtProperties.accessTokenExpiresIn
         return ParsedAccessToken(buildJwt(userId, now, expiration, jwtProperties.accessSecretKey), Payload(userId, expiration))
     }
 
-    fun generateRefreshToken(userId: Long): ParsedRefreshToken {
-        val now = LocalDateTime.now(clock)
+    fun generateRefreshToken(
+        userId: Long,
+        now: LocalDateTime = LocalDateTime.now(),
+    ): ParsedRefreshToken {
         val expiration = now + jwtProperties.refreshTokenExpiresIn
         return ParsedRefreshToken(buildJwt(userId, now, expiration, jwtProperties.refreshSecretKey), Payload(userId, expiration))
     }
 
     fun generateRefreshTokenOnExpiration(
-        userId: Long,
-        refreshTokenExpiration: LocalDateTime,
+        parsedRefreshToken: ParsedRefreshToken,
+        now: LocalDateTime = LocalDateTime.now(),
     ): ParsedRefreshToken {
         fun isExpiringSoon(now: LocalDateTime) =
-            now in (refreshTokenExpiration - jwtProperties.expirationThreshold..<refreshTokenExpiration)
+            now in (parsedRefreshToken.expiration - jwtProperties.expirationThreshold..<parsedRefreshToken.expiration)
 
-        val now = LocalDateTime.now(clock)
         return if (isExpiringSoon(now)) {
             val expiration = now + jwtProperties.refreshTokenExpiresIn
-            ParsedRefreshToken(buildJwt(userId, now, expiration, jwtProperties.refreshSecretKey), Payload(userId, expiration))
+            ParsedRefreshToken(
+                buildJwt(parsedRefreshToken.userId, now, expiration, jwtProperties.refreshSecretKey),
+                Payload(parsedRefreshToken.userId, expiration),
+            )
         } else {
             ParsedRefreshToken.Empty
         }

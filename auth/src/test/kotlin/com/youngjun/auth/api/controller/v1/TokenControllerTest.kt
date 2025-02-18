@@ -34,7 +34,7 @@ class TokenControllerTest : RestDocsTest() {
 
     @Test
     fun `재발급 성공`() {
-        every { tokenService.reissue(any()) } returns TokenPairBuilder().build()
+        every { tokenService.reissue(any(), any()) } returns TokenPairBuilder().build()
 
         given()
             .log()

@@ -2,8 +2,6 @@ package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
-import com.youngjun.auth.domain.config.now
-import com.youngjun.auth.domain.support.hours
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.domain.token.JwtBuilder
 import com.youngjun.auth.domain.token.RawAccessToken
@@ -27,6 +25,7 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.time.Duration
+import java.time.LocalDateTime
 
 @ApplicationContextTest
 class TokenServiceTest(
@@ -72,36 +71,38 @@ class TokenServiceTest(
 
                 test("refreshToken 이 아직 만료되지 않았으면 refresh token 은 갱신되지 않는다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
+                    val now = LocalDateTime.now()
                     val rawRefreshToken =
                         RawRefreshToken(
                             JwtBuilder(
                                 subject = account.id.toString(),
                                 issuedAt = now,
-                                expiresIn = jwtProperties.expirationThreshold + 1.hours,
+                                expiresIn = jwtProperties.expirationThreshold + 1.seconds,
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
                         )
                     refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
 
-                    val actual = tokenService.reissue(rawRefreshToken)
+                    val actual = tokenService.reissue(rawRefreshToken, now)
 
                     actual.refreshToken.isNotEmpty() shouldBe false
                 }
 
                 test("refreshToken 이 곧 만료되면 refresh token 도 갱신된다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
+                    val now = LocalDateTime.now()
                     val rawRefreshToken =
                         RawRefreshToken(
                             JwtBuilder(
                                 subject = account.id.toString(),
                                 issuedAt = now,
-                                expiresIn = jwtProperties.expirationThreshold - 1.seconds,
+                                expiresIn = jwtProperties.expirationThreshold,
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
                         )
                     refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
 
-                    val actual = tokenService.reissue(rawRefreshToken)
+                    val actual = tokenService.reissue(rawRefreshToken, now)
 
                     actual.refreshToken.isNotEmpty() shouldBe true
                     actual.refreshToken.value shouldNotBe rawRefreshToken.value
@@ -128,7 +129,6 @@ class TokenServiceTest(
                         RawRefreshToken(
                             JwtBuilder(
                                 subject = account.id.toString(),
-                                issuedAt = now,
                                 expiresIn = Duration.ZERO,
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
@@ -197,7 +197,6 @@ class TokenServiceTest(
                         RawAccessToken(
                             JwtBuilder(
                                 subject = account.id.toString(),
-                                issuedAt = now,
                                 expiresIn = Duration.ZERO,
                                 secretKey = jwtProperties.accessSecretKey,
                             ).build(),

@@ -2,6 +2,8 @@ package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.support.minutes
+import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.domain.verificationCode.generateVerificationCode
 import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
@@ -46,11 +48,12 @@ class VerificationCodeServiceTest(
 
                 test("10분 내 발급된 인증 코드가 5개 이상이면 실패한다.") {
                     val emailAddress = EmailAddressBuilder().build()
+                    val verificationCodes =
+                        verificationCodeJpaRepository.saveAll(List(5) { generateVerificationCode(emailAddress = emailAddress) })
 
-                    verificationCodeJpaRepository.saveAll(List(5) { generateVerificationCode(emailAddress = emailAddress) })
-
-                    shouldThrow<AuthException> { verificationCodeService.generate(emailAddress) }
-                        .errorType shouldBe VERIFICATION_CODE_LIMIT_EXCEEDED
+                    shouldThrow<AuthException> {
+                        verificationCodeService.generate(emailAddress, verificationCodes.first().createdAt + 10.minutes - 1.seconds)
+                    }.errorType shouldBe VERIFICATION_CODE_LIMIT_EXCEEDED
                 }
             }
         },
