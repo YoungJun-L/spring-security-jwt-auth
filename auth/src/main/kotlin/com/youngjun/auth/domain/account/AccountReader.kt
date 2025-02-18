@@ -19,7 +19,7 @@ class AccountReader(
         return account
     }
 
-    fun validateUniqueEmailAddress(emailAddress: EmailAddress) {
+    fun checkExists(emailAddress: EmailAddress) {
         if (accountRepository.existsBy(emailAddress)) {
             throw AuthException(ACCOUNT_DUPLICATE)
         }

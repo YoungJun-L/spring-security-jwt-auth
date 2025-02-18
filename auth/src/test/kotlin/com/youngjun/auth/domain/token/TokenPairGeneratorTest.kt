@@ -1,5 +1,7 @@
 package com.youngjun.auth.domain.token
 
+import com.youngjun.auth.domain.config.fixedClock
+import com.youngjun.auth.domain.config.now
 import com.youngjun.auth.domain.support.hours
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.security.config.JwtPropertiesBuilder
@@ -7,7 +9,6 @@ import com.youngjun.auth.support.DomainTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import java.time.LocalDateTime
 
 @DomainTest
 class TokenPairGeneratorTest :
@@ -16,7 +17,7 @@ class TokenPairGeneratorTest :
             isolationMode = IsolationMode.InstancePerLeaf
 
             val jwtProperties = JwtPropertiesBuilder().build()
-            val tokenPairGenerator = TokenPairGenerator(JwtGenerator(jwtProperties))
+            val tokenPairGenerator = TokenPairGenerator(JwtGenerator(jwtProperties, fixedClock))
 
             context("발급") {
                 test("성공") {
@@ -41,7 +42,7 @@ class TokenPairGeneratorTest :
                     val parsedRefreshToken =
                         ParsedRefreshTokenBuilder(
                             userId = 1L,
-                            issuedAt = LocalDateTime.now(),
+                            issuedAt = now,
                             expiresIn = jwtProperties.expirationThreshold - 1.seconds,
                         ).build()
 
@@ -55,7 +56,7 @@ class TokenPairGeneratorTest :
                         tokenPairGenerator.generateOnExpiration(
                             ParsedRefreshTokenBuilder(
                                 userId = 1L,
-                                issuedAt = LocalDateTime.now(),
+                                issuedAt = now,
                                 expiresIn = jwtProperties.expirationThreshold + 1.hours,
                             ).build(),
                         )

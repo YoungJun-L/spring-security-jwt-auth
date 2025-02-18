@@ -12,7 +12,7 @@ import javax.crypto.SecretKey
 @Component
 class JwtGenerator(
     private val jwtProperties: JwtProperties,
-    private val clock: Clock = Clock.systemDefaultZone(),
+    private val clock: Clock,
 ) {
     fun generateAccessToken(userId: Long): ParsedAccessToken {
         val now = LocalDateTime.now(clock)

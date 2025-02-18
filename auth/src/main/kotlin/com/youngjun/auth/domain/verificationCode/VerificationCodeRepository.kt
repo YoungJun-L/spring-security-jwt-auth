@@ -3,7 +3,6 @@ package com.youngjun.auth.domain.verificationCode
 import com.youngjun.auth.domain.account.EmailAddress
 import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import org.springframework.stereotype.Repository
-import java.time.Duration
 import java.time.LocalDateTime
 
 @Repository
@@ -12,8 +11,11 @@ class VerificationCodeRepository(
 ) {
     fun save(verificationCode: VerificationCode): VerificationCode = verificationCodeJpaRepository.save(verificationCode)
 
-    fun countRecentlySaved(
+    fun countSince(
         emailAddress: EmailAddress,
-        duration: Duration,
-    ): Int = verificationCodeJpaRepository.countByEmailAddressAndCreatedAtAfter(emailAddress, LocalDateTime.now() - duration)
+        since: LocalDateTime,
+    ): Int = verificationCodeJpaRepository.countByEmailAddressAndCreatedAtAfter(emailAddress, since)
+
+    fun findLatestBy(emailAddress: EmailAddress): VerificationCode? =
+        verificationCodeJpaRepository.findFirstByEmailAddressOrderByCreatedAtDesc(emailAddress)
 }

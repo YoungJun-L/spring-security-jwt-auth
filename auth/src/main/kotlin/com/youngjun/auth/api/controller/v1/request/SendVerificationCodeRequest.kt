@@ -5,5 +5,5 @@ import com.youngjun.auth.domain.account.EmailAddress
 data class SendVerificationCodeRequest(
     val email: String,
 ) {
-    fun toEmailAddress(): EmailAddress = EmailAddress(email)
+    fun toEmailAddress(): EmailAddress = EmailAddress.from(email)
 }

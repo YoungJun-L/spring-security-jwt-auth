@@ -15,4 +15,7 @@ enum class ErrorCode {
     E5000,
     E4033,
     E4291,
+    E4014,
+    E4042,
+    E4015,
 }

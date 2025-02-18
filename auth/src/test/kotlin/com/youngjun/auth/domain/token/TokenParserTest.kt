@@ -35,7 +35,7 @@ class TokenParserTest(
                     actual.userId shouldBe userId
                 }
 
-                test("accessToken 의 만료 시간이 지났으면 실패한다.") {
+                test("accessToken 의 유효 기간이 지났으면 실패한다.") {
                     shouldThrow<AuthException> {
                         tokenParser.parse(
                             RawAccessToken(JwtBuilder(secretKey = jwtProperties.accessSecretKey, expiresIn = Duration.ZERO).build()),
@@ -61,7 +61,7 @@ class TokenParserTest(
                     actual.userId shouldBe userId
                 }
 
-                test("refreshToken 의 만료 시간이 지났으면 실패한다.") {
+                test("refreshToken 의 유효 기간이 지났으면 실패한다.") {
                     shouldThrow<AuthException> {
                         tokenParser.parse(
                             RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, expiresIn = Duration.ZERO).build()),

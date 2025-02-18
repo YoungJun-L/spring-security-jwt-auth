@@ -4,12 +4,18 @@ import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.account.RawPasswordBuilder
+import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.TokenStatus
+import com.youngjun.auth.domain.verificationCode.RawVerificationCodeBuilder
+import com.youngjun.auth.domain.verificationCode.generateRawVerificationCodeExcluding
+import com.youngjun.auth.domain.verificationCode.generateVerificationCode
 import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
+import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
+import com.youngjun.auth.support.error.ErrorType
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -26,6 +32,7 @@ class AccountServiceTest(
     private val passwordEncoder: PasswordEncoder,
     private val accountJpaRepository: AccountJpaRepository,
     private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
+    private val verificationCodeJpaRepository: VerificationCodeJpaRepository,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -40,7 +47,7 @@ class AccountServiceTest(
                     actual.emailAddress shouldBe account.emailAddress
                 }
 
-                test("유저가 존재하지 않으면 실패한다.") {
+                test("존재하지 않으면 실패한다.") {
                     shouldThrow<UsernameNotFoundException> { accountService.loadUserByUsername("example@youngjun.com") }
                 }
             }
@@ -48,9 +55,14 @@ class AccountServiceTest(
             context("회원 가입") {
                 test("성공") {
                     val emailAddress = EmailAddressBuilder().build()
-                    val rawPassword = RawPasswordBuilder().build()
+                    val verificationCode = verificationCodeJpaRepository.save(generateVerificationCode(emailAddress))
 
-                    val actual = accountService.register(emailAddress, rawPassword)
+                    val actual =
+                        accountService.register(
+                            emailAddress,
+                            RawPasswordBuilder().build(),
+                            RawVerificationCodeBuilder(verificationCode.code).build(),
+                        )
 
                     actual.emailAddress shouldBe emailAddress
                 }
@@ -58,8 +70,14 @@ class AccountServiceTest(
                 test("비밀번호는 인코딩된다.") {
                     val emailAddress = EmailAddressBuilder().build()
                     val rawPassword = RawPasswordBuilder().build()
+                    val verificationCode = verificationCodeJpaRepository.save(generateVerificationCode(emailAddress))
 
-                    val actual = accountService.register(emailAddress, rawPassword)
+                    val actual =
+                        accountService.register(
+                            emailAddress,
+                            rawPassword,
+                            RawVerificationCodeBuilder(verificationCode.code).build(),
+                        )
 
                     passwordEncoder.matches(rawPassword.value, actual.password) shouldBe true
                 }
@@ -68,8 +86,46 @@ class AccountServiceTest(
                     val emailAddress = EmailAddressBuilder().build()
                     accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
-                    shouldThrow<AuthException> { accountService.register(emailAddress, RawPasswordBuilder().build()) }
-                        .errorType shouldBe ACCOUNT_DUPLICATE
+                    shouldThrow<AuthException> {
+                        accountService.register(emailAddress, RawPasswordBuilder().build(), RawVerificationCodeBuilder().build())
+                    }.errorType shouldBe ACCOUNT_DUPLICATE
+                }
+
+                test("인증 코드가 존재하지 않으면 실패한다.") {
+                    shouldThrow<AuthException> {
+                        accountService.register(
+                            EmailAddressBuilder().build(),
+                            RawPasswordBuilder().build(),
+                            RawVerificationCodeBuilder().build(),
+                        )
+                    }.errorType shouldBe ErrorType.VERIFICATION_CODE_NOT_FOUND
+                }
+
+                test("인증 코드가 일치하지 않으면 실패한다.") {
+                    val emailAddress = EmailAddressBuilder().build()
+                    val verificationCode = verificationCodeJpaRepository.save(generateVerificationCode(emailAddress))
+
+                    shouldThrow<AuthException> {
+                        accountService.register(
+                            emailAddress,
+                            RawPasswordBuilder().build(),
+                            generateRawVerificationCodeExcluding(verificationCode),
+                        )
+                    }.errorType shouldBe ErrorType.VERIFICATION_CODE_MISMATCHED
+                }
+
+                test("인증 코드 유효 기간이 지났으면 실패한다.") {
+                    val emailAddress = EmailAddressBuilder().build()
+                    val verificationCode = verificationCodeJpaRepository.save(generateVerificationCode(emailAddress))
+
+                    shouldThrow<AuthException> {
+                        accountService.register(
+                            emailAddress,
+                            RawPasswordBuilder().build(),
+                            RawVerificationCodeBuilder(verificationCode.code).build(),
+                            verificationCode.createdAt + 10.minutes,
+                        )
+                    }.errorType shouldBe ErrorType.VERIFICATION_CODE_EXPIRED
                 }
             }
 

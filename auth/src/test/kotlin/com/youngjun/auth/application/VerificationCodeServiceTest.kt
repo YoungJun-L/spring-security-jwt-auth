@@ -2,7 +2,7 @@ package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.EmailAddressBuilder
-import com.youngjun.auth.domain.verificationCode.VerificationCode
+import com.youngjun.auth.domain.verificationCode.generateVerificationCode
 import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.ApplicationContextTest
@@ -13,7 +13,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.shouldBe
 
 @ApplicationContextTest
@@ -33,7 +32,7 @@ class VerificationCodeServiceTest(
                     val actual = verificationCodeService.generate(emailAddress)
 
                     actual.emailAddress shouldBe emailAddress
-                    actual.code.toInt() shouldBeInRange (0..<1_000_000)
+                    actual.code.all { it.isDigit() } shouldBe true
                     actual.code.length shouldBe 6
                 }
 
@@ -48,7 +47,7 @@ class VerificationCodeServiceTest(
                 test("10분 내 발급된 인증 코드가 5개 이상이면 실패한다.") {
                     val emailAddress = EmailAddressBuilder().build()
 
-                    verificationCodeJpaRepository.saveAll(List(5) { VerificationCode.generate(emailAddress = emailAddress) })
+                    verificationCodeJpaRepository.saveAll(List(5) { generateVerificationCode(emailAddress = emailAddress) })
 
                     shouldThrow<AuthException> { verificationCodeService.generate(emailAddress) }
                         .errorType shouldBe VERIFICATION_CODE_LIMIT_EXCEEDED

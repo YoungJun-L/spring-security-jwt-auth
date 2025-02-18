@@ -19,7 +19,7 @@ class VerificationCodeWriterTest(
 
             context("저장") {
                 test("성공") {
-                    val verificationCode = VerificationCodeBuilder().build()
+                    val verificationCode = generateVerificationCode()
 
                     verificationCodeWriter.write(verificationCode)
 

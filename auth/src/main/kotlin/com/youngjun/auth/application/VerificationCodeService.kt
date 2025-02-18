@@ -14,8 +14,8 @@ class VerificationCodeService(
     private val accountReader: AccountReader,
 ) {
     fun generate(emailAddress: EmailAddress): VerificationCode {
-        accountReader.validateUniqueEmailAddress(emailAddress)
-        verificationCodeReader.validateRequestLimitExceeded(emailAddress)
+        accountReader.checkExists(emailAddress)
+        verificationCodeReader.checkRecentSavesExceeded(emailAddress)
         return VerificationCode.generate(emailAddress).also { verificationCodeWriter.write(it) }
     }
 }

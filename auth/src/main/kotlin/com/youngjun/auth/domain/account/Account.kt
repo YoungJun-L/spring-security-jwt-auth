@@ -32,7 +32,7 @@ class Account(
     @Enumerated(EnumType.STRING)
     @Column
     var status = status
-        private set
+        protected set
 
     override fun getUsername(): String = emailAddress.value
 

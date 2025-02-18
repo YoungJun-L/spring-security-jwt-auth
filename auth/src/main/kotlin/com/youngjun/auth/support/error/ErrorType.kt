@@ -29,5 +29,8 @@ enum class ErrorType(
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, ErrorCode.E4013, "토큰이 만료되었습니다.", LogLevel.INFO),
 
     // verification code
-    VERIFICATION_CODE_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, ErrorCode.E4291, "인증번호 요청 가능 횟수를 초과했습니다.", LogLevel.WARN),
+    VERIFICATION_CODE_MISMATCHED(HttpStatus.UNAUTHORIZED, ErrorCode.E4014, "인증 코드가 일치하지 않습니다.", LogLevel.INFO),
+    VERIFICATION_CODE_EXPIRED(HttpStatus.UNAUTHORIZED, ErrorCode.E4015, "인증 코드가 만료되었습니다.", LogLevel.WARN),
+    VERIFICATION_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E4042, "이메일 인증이 필요합니다.", LogLevel.WARN),
+    VERIFICATION_CODE_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, ErrorCode.E4291, "인증 코드 요청 가능 횟수를 초과했습니다.", LogLevel.WARN),
 }

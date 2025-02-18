@@ -1,5 +1,6 @@
 package com.youngjun.auth.domain.token
 
+import com.youngjun.auth.domain.config.now
 import com.youngjun.auth.domain.support.hours
 import com.youngjun.auth.domain.support.toInstant
 import io.jsonwebtoken.Jwts
@@ -23,7 +24,7 @@ data class RefreshTokenBuilder(
 
 data class JwtBuilder(
     val subject: String = "488387734",
-    val issuedAt: LocalDateTime = LocalDateTime.now(),
+    val issuedAt: LocalDateTime = now,
     val expiresIn: Duration = 12.hours,
     val extraClaims: Map<String, Any> = emptyMap(),
     val secretKey: SecretKey =
@@ -57,7 +58,7 @@ data class TokenPairBuilder(
 
 data class ParsedAccessTokenBuilder(
     val userId: Long = 4046540831,
-    val issuedAt: LocalDateTime = LocalDateTime.now(),
+    val issuedAt: LocalDateTime = now,
     val expiresIn: Duration = 12.hours,
     val secretKey: SecretKey =
         Jwts.SIG.HS256
@@ -73,7 +74,7 @@ data class ParsedAccessTokenBuilder(
 
 data class ParsedRefreshTokenBuilder(
     val userId: Long = 9594670051,
-    val issuedAt: LocalDateTime = LocalDateTime.now(),
+    val issuedAt: LocalDateTime = now,
     val expiresIn: Duration = 12.hours,
     val secretKey: SecretKey =
         Jwts.SIG.HS256
@@ -89,7 +90,7 @@ data class ParsedRefreshTokenBuilder(
 
 data class PayloadBuilder(
     val userId: Long = 6208931181,
-    val expiration: LocalDateTime = LocalDateTime.now(),
+    val expiration: LocalDateTime = now,
 ) {
     fun build(): Payload =
         Payload(

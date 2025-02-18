@@ -4,7 +4,7 @@ import com.youngjun.auth.api.controller.v1.request.SendVerificationCodeRequest
 import com.youngjun.auth.application.MailService
 import com.youngjun.auth.application.VerificationCodeService
 import com.youngjun.auth.domain.account.EmailAddressBuilder
-import com.youngjun.auth.domain.verificationCode.VerificationCode
+import com.youngjun.auth.domain.verificationCode.generateVerificationCode
 import com.youngjun.auth.support.RestDocsTest
 import com.youngjun.auth.support.description
 import com.youngjun.auth.support.ignored
@@ -38,7 +38,7 @@ class VerificationCodeControllerTest : RestDocsTest() {
     @Test
     fun `인증 코드 전송 성공`() {
         val emailAddress = EmailAddressBuilder().build()
-        every { verificationCodeService.generate(any()) } returns VerificationCode.generate(emailAddress)
+        every { verificationCodeService.generate(any()) } returns generateVerificationCode(emailAddress)
         every { mailService.sendVerificationCode(any()) } just Runs
 
         given()

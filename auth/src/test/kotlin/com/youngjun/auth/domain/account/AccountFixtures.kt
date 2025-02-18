@@ -1,5 +1,7 @@
 package com.youngjun.auth.domain.account
 
+import org.springframework.security.crypto.password.PasswordEncoder
+
 data class AccountBuilder(
     val emailAddress: EmailAddress = EmailAddressBuilder().build(),
     val password: Password = PasswordBuilder().build(),
@@ -11,17 +13,27 @@ data class AccountBuilder(
 data class EmailAddressBuilder(
     val value: String = "example@youngjun.com",
 ) {
-    fun build(): EmailAddress = EmailAddress(value = value)
+    fun build(): EmailAddress = EmailAddress.from(value = value)
 }
 
 data class PasswordBuilder(
-    val value: String = "\$2a\$10\$msjhx7NVjB0qoN/k7G2VVuuQNB7PSF/d.WfWYOQJwfyvcDfZIKBte",
+    val rawPassword: RawPassword = RawPasswordBuilder().build(),
+    val passwordEncoder: PasswordEncoder = NoOperationPasswordEncoder,
 ) {
-    fun build(): Password = Password(value = value)
+    fun build(): Password = Password.encodedWith(rawPassword, passwordEncoder)
 }
 
 data class RawPasswordBuilder(
     val value: String = "password123!",
 ) {
     fun build(): RawPassword = RawPassword(value = value)
+}
+
+object NoOperationPasswordEncoder : PasswordEncoder {
+    override fun encode(rawPassword: CharSequence): String = rawPassword.toString()
+
+    override fun matches(
+        rawPassword: CharSequence,
+        encodedPassword: String,
+    ): Boolean = rawPassword == encodedPassword
 }

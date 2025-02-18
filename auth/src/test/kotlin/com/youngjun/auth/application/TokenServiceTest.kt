@@ -2,6 +2,7 @@ package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
+import com.youngjun.auth.domain.config.now
 import com.youngjun.auth.domain.support.hours
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.domain.token.JwtBuilder
@@ -26,7 +27,6 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.time.Duration
-import java.time.LocalDateTime
 
 @ApplicationContextTest
 class TokenServiceTest(
@@ -76,7 +76,7 @@ class TokenServiceTest(
                         RawRefreshToken(
                             JwtBuilder(
                                 subject = account.id.toString(),
-                                issuedAt = LocalDateTime.now(),
+                                issuedAt = now,
                                 expiresIn = jwtProperties.expirationThreshold + 1.hours,
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
@@ -94,7 +94,7 @@ class TokenServiceTest(
                         RawRefreshToken(
                             JwtBuilder(
                                 subject = account.id.toString(),
-                                issuedAt = LocalDateTime.now(),
+                                issuedAt = now,
                                 expiresIn = jwtProperties.expirationThreshold - 1.seconds,
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
@@ -122,13 +122,13 @@ class TokenServiceTest(
                         .errorType shouldBe TOKEN_INVALID
                 }
 
-                test("refreshToken 의 만료 시간이 지났으면 실패한다.") {
+                test("refreshToken 의 유효 기간이 지났으면 실패한다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
                     val rawRefreshToken =
                         RawRefreshToken(
                             JwtBuilder(
                                 subject = account.id.toString(),
-                                issuedAt = LocalDateTime.now(),
+                                issuedAt = now,
                                 expiresIn = Duration.ZERO,
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
@@ -191,13 +191,13 @@ class TokenServiceTest(
                         .errorType shouldBe TOKEN_INVALID
                 }
 
-                test("accessToken 의 만료 시간이 지났으면 실패한다.") {
+                test("accessToken 의 유효 기간이 지났으면 실패한다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
                     val rawAccessToken =
                         RawAccessToken(
                             JwtBuilder(
                                 subject = account.id.toString(),
-                                issuedAt = LocalDateTime.now(),
+                                issuedAt = now,
                                 expiresIn = Duration.ZERO,
                                 secretKey = jwtProperties.accessSecretKey,
                             ).build(),

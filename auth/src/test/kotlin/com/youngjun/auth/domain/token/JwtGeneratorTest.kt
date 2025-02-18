@@ -1,5 +1,7 @@
 package com.youngjun.auth.domain.token
 
+import com.youngjun.auth.domain.config.fixedClock
+import com.youngjun.auth.domain.config.now
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.domain.support.toEpochSecond
 import com.youngjun.auth.security.config.JwtPropertiesBuilder
@@ -8,10 +10,6 @@ import io.jsonwebtoken.Jwts
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import java.time.Clock
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 
 @DomainTest
 class JwtGeneratorTest :
@@ -20,9 +18,7 @@ class JwtGeneratorTest :
             isolationMode = IsolationMode.InstancePerLeaf
 
             val jwtProperties = JwtPropertiesBuilder().build()
-            val clock = Clock.fixed(Instant.now(), ZoneId.systemDefault())
-            val now = LocalDateTime.now(clock)
-            val jwtGenerator = JwtGenerator(jwtProperties, clock)
+            val jwtGenerator = JwtGenerator(jwtProperties, fixedClock)
 
             context("accessToken 발급") {
                 val accessTokenParser = Jwts.parser().verifyWith(jwtProperties.accessSecretKey).build()

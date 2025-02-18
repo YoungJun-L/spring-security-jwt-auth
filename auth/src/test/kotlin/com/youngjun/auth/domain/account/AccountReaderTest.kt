@@ -23,7 +23,7 @@ class AccountReaderTest(
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("유저 조회") {
+            context("조회") {
                 test("성공") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
 
@@ -32,7 +32,7 @@ class AccountReaderTest(
                     actual.id shouldBe account.id
                 }
 
-                test("유저가 존재하지 않으면 실패한다.") {
+                test("존재하지 않으면 실패한다.") {
                     shouldThrow<UsernameNotFoundException> { accountReader.read(EmailAddressBuilder().build()) }
                 }
             }
@@ -46,7 +46,7 @@ class AccountReaderTest(
                     actual.id shouldBe account.id
                 }
 
-                test("유저가 존재하지 않으면 실패한다.") {
+                test("존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> { accountReader.readEnabled(1L) }
                         .errorType shouldBe UNAUTHORIZED
                 }
@@ -60,15 +60,15 @@ class AccountReaderTest(
             }
 
             context("중복 이메일 주소 검증") {
-                test("없는 경우") {
-                    shouldNotThrow<AuthException> { accountReader.validateUniqueEmailAddress(EmailAddressBuilder().build()) }
+                test("중복되지 않는 경우") {
+                    shouldNotThrow<AuthException> { accountReader.checkExists(EmailAddressBuilder().build()) }
                 }
 
-                test("있는 경우") {
+                test("중복되는 경우") {
                     val emailAddress = EmailAddressBuilder().build()
                     accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
-                    shouldThrow<AuthException> { accountReader.validateUniqueEmailAddress(emailAddress) }
+                    shouldThrow<AuthException> { accountReader.checkExists(emailAddress) }
                         .errorType shouldBe ACCOUNT_DUPLICATE
                 }
             }

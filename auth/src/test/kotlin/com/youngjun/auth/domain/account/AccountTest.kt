@@ -10,7 +10,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @DomainTest
 class AccountTest :
@@ -18,7 +17,7 @@ class AccountTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("유저 상태 검증") {
+            context("상태 검증") {
                 test("이용 가능") {
                     val account = AccountBuilder(status = AccountStatus.ENABLED).build()
 
@@ -70,12 +69,11 @@ class AccountTest :
             context("비밀번호 변경") {
                 test("성공") {
                     val account = AccountBuilder().build()
-                    val passwordEncoder = BCryptPasswordEncoder()
                     val newPassword = RawPasswordBuilder(value = "newPassword").build()
 
-                    account.changePassword(newPassword.encodeWith(passwordEncoder))
+                    account.changePassword(Password.encodedWith(newPassword, NoOperationPasswordEncoder))
 
-                    passwordEncoder.matches(newPassword.value, account.password) shouldBe true
+                    NoOperationPasswordEncoder.matches(newPassword.value, account.password) shouldBe true
                 }
             }
         },

@@ -7,12 +7,12 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 
 @DomainTest
-class EmailTest :
+class EmailAddressTest :
     FunSpec(
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("이메일 검증 성공 케이스") {
+            context("이메일 주소 검증 성공 케이스") {
                 arrayOf(
                     "example@youngjun.com",
                     "Example@youngjun.com",
@@ -27,12 +27,12 @@ class EmailTest :
                     "example@youngjun123.com",
                 ).forEach { validEmail ->
                     test("\"$validEmail\"") {
-                        shouldNotThrow<IllegalArgumentException> { EmailAddress(validEmail) }
+                        shouldNotThrow<IllegalArgumentException> { EmailAddress.from(validEmail) }
                     }
                 }
             }
 
-            context("이메일 검증 실패 케이스") {
+            context("이메일 주소 검증 실패 케이스") {
                 arrayOf(
                     "@youngjun.com",
                     "example@",
@@ -45,7 +45,7 @@ class EmailTest :
                     "example@youngjun.co kr",
                 ).forEach { invalidEmail ->
                     test("\"$invalidEmail\"") {
-                        shouldThrow<IllegalArgumentException> { EmailAddress(invalidEmail) }
+                        shouldThrow<IllegalArgumentException> { EmailAddress.from(invalidEmail) }
                     }
                 }
             }

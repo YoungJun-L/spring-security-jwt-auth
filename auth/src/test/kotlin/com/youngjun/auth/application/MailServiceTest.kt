@@ -1,6 +1,6 @@
 package com.youngjun.auth.application
 
-import com.youngjun.auth.domain.verificationCode.VerificationCodeBuilder
+import com.youngjun.auth.domain.verificationCode.generateVerificationCode
 import com.youngjun.auth.infra.mail.DefaultMailSender
 import com.youngjun.auth.support.ApplicationTest
 import io.kotest.core.spec.IsolationMode
@@ -26,7 +26,7 @@ class MailServiceTest :
 
             context("메일 전송") {
                 test("성공") {
-                    val verificationCode = VerificationCodeBuilder().build()
+                    val verificationCode = generateVerificationCode()
                     val result = "result"
                     every { templateEngine.process(any<String>(), any()) } returns result
                     every { mailSender.send(any(), any(), any()) } just Runs

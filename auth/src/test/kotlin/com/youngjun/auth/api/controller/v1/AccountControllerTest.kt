@@ -4,6 +4,7 @@ import com.youngjun.auth.api.controller.v1.request.ChangePasswordRequest
 import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.security.token.JwtAuthenticationToken
 import com.youngjun.auth.support.RestDocsTest
 import com.youngjun.auth.support.description
@@ -36,13 +37,14 @@ class AccountControllerTest : RestDocsTest() {
 
     @Test
     fun `회원가입 성공`() {
-        every { accountService.register(any(), any()) } returns AccountBuilder().build()
+        val emailAddress = EmailAddressBuilder().build()
+        every { accountService.register(any(), any(), any(), any()) } returns AccountBuilder(emailAddress = emailAddress).build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(RegisterAccountRequest("example@youngjun.com", "password123!"))
+            .body(RegisterAccountRequest(emailAddress.value, "password123!", "012345"))
             .post("/auth/register")
             .then()
             .log()
@@ -53,6 +55,7 @@ class AccountControllerTest : RestDocsTest() {
                     requestFields(
                         "email" type STRING description "email, 이메일 형식",
                         "password" type STRING description "password, 최소 8자 이상 최대 65자 미만",
+                        "verificationCode" type STRING description "인증 코드 6자리 숫자",
                     ),
                     responseFields(
                         "status" type STRING description "status",

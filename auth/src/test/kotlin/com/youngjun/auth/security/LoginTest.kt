@@ -6,6 +6,7 @@ import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.EmailAddress
 import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.account.Password
 import com.youngjun.auth.domain.account.PasswordBuilder
 import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.account.RawPasswordBuilder
@@ -41,7 +42,7 @@ class LoginTest(
     fun `로그인 성공`() {
         val emailAddress = EmailAddressBuilder().build()
         val rawPassword = RawPasswordBuilder().build()
-        val account = AccountBuilder(emailAddress, rawPassword.encodeWith(passwordEncoder)).build()
+        val account = AccountBuilder(emailAddress, Password.encodedWith(rawPassword, passwordEncoder)).build()
         every { accountService.loadUserByUsername(any()) } returns account
         every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
         every { accountService.login(any()) } returns account.apply { account.enable() }
@@ -104,7 +105,7 @@ class LoginTest(
         every { accountService.loadUserByUsername(any()) } returns
             AccountBuilder(
                 emailAddress = emailAddress,
-                password = rawPassword.encodeWith(passwordEncoder),
+                password = Password.encodedWith(rawPassword, passwordEncoder),
                 status = AccountStatus.DISABLED,
             ).build()
 
@@ -117,7 +118,7 @@ class LoginTest(
     fun `로그아웃된 유저이면 성공한다`() {
         val emailAddress = EmailAddressBuilder().build()
         val rawPassword = RawPasswordBuilder().build()
-        val account = AccountBuilder(emailAddress, rawPassword.encodeWith(passwordEncoder), AccountStatus.LOGOUT).build()
+        val account = AccountBuilder(emailAddress, Password.encodedWith(rawPassword, passwordEncoder), AccountStatus.LOGOUT).build()
         every { accountService.loadUserByUsername(any()) } returns account
         every { tokenService.issue(any()) } returns TokenPairBuilder(userId = account.id).build()
         every { accountService.login(any()) } returns account.apply { enable() }

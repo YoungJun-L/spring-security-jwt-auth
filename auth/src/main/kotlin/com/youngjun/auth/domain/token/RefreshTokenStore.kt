@@ -5,7 +5,7 @@ import jakarta.transaction.Transactional
 import org.springframework.stereotype.Component
 
 @Component
-class RefreshTokenWriter(
+class RefreshTokenStore(
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
     @Transactional
@@ -18,7 +18,7 @@ class RefreshTokenWriter(
     }
 
     @Transactional
-    fun expire(account: Account) {
+    fun expireIfExists(account: Account) {
         refreshTokenRepository.findBy(account)?.expire()
     }
 }

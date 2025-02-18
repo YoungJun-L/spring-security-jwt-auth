@@ -20,16 +20,16 @@ class RefreshToken(
 ) : BaseEntity() {
     @Column
     var userId = userId
-        private set
+        protected set
 
     @Column(name = "token")
     var value = value
-        private set
+        protected set
 
     @Enumerated(EnumType.STRING)
     @Column
     var status = status
-        private set
+        protected set
 
     fun verify() {
         when (status) {

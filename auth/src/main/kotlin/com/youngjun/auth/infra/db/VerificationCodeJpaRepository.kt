@@ -10,4 +10,6 @@ interface VerificationCodeJpaRepository : JpaRepository<VerificationCode, Long> 
         emailAddress: EmailAddress,
         createdAt: LocalDateTime,
     ): Int
+
+    fun findFirstByEmailAddressOrderByCreatedAtDesc(emailAddress: EmailAddress): VerificationCode?
 }
