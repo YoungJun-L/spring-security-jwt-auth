@@ -40,7 +40,7 @@ class JsonLoginAuthenticationFilterTest :
                     authenticationFailureHandler,
                 )
 
-            context("로그인 정보 추출") {
+            context("추출 및 인증") {
                 val request = MockHttpServletRequest()
                 val response = MockHttpServletResponse()
 
@@ -54,8 +54,8 @@ class JsonLoginAuthenticationFilterTest :
                     )
                     every { authenticationManager.authenticate(any()) } returns
                         UsernamePasswordAuthenticationToken.authenticated(
-                            emailAddress,
-                            PasswordBuilder().build(),
+                            emailAddress.value,
+                            PasswordBuilder().build().value,
                             AuthorityUtils.NO_AUTHORITIES,
                         )
 
