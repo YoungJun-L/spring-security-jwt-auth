@@ -32,7 +32,7 @@ abstract class RestDocsTest {
             MockMvcBuilders
                 .standaloneSetup(controller)
                 .apply<StandaloneMockMvcBuilder>(mockMvcConfigurer())
-                .setCustomArgumentResolvers(AccountArgumentResolver())
+                .setCustomArgumentResolvers(AccountArgumentResolver)
                 .setMessageConverters(MappingJackson2HttpMessageConverter(objectMapper()))
                 .build(),
         )

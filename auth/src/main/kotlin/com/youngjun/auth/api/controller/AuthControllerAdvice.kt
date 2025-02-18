@@ -24,11 +24,11 @@ import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @RestControllerAdvice
-class AuthControllerAdvice {
+private object AuthControllerAdvice {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(AuthException::class)
-    fun handleAuthException(ex: AuthException): ResponseEntity<AuthResponse<Any>> {
+    private fun handleAuthException(ex: AuthException): ResponseEntity<AuthResponse<Any>> {
         when (ex.errorType.logLevel) {
             LogLevel.ERROR -> log.error("AuthException : {}", ex.message, ex)
             LogLevel.WARN -> log.warn("AuthException : {}", ex.message, ex)
@@ -50,19 +50,19 @@ class AuthControllerAdvice {
         HttpMediaTypeNotAcceptableException::class,
         HandlerMethodValidationException::class,
     )
-    fun handleBadRequest(ex: Exception): ResponseEntity<AuthResponse<Any>> {
+    private fun handleBadRequest(ex: Exception): ResponseEntity<AuthResponse<Any>> {
         log.info("Bad Request: {}", ex.message, ex)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthResponse.error(BAD_REQUEST))
     }
 
     @ExceptionHandler(NoHandlerFoundException::class, NoResourceFoundException::class)
-    fun handleNotFoundException(ex: Exception): ResponseEntity<AuthResponse<Any>> {
+    private fun handleNotFoundException(ex: Exception): ResponseEntity<AuthResponse<Any>> {
         log.info("Not Found: {}", ex.message, ex)
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(AuthResponse.error(NOT_FOUND))
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleException(ex: Exception): ResponseEntity<AuthResponse<Any>> {
+    private fun handleException(ex: Exception): ResponseEntity<AuthResponse<Any>> {
         log.info("Exception: {}", ex.message, ex)
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)

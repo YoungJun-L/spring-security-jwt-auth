@@ -32,7 +32,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @EnableWebSecurity
 @Configuration
-class SecurityConfig(
+private class SecurityConfig(
     private val tokenService: TokenService,
     private val accountService: AccountService,
     private val passwordEncoder: PasswordEncoder,
@@ -60,7 +60,7 @@ class SecurityConfig(
                 UsernamePasswordAuthenticationFilter::class.java,
             ).addFilterAfter(
                 JwtAuthenticationFilter(
-                    BearerTokenResolver(),
+                    BearerTokenResolver,
                     authenticationManager(),
                     authenticationFailureHandler(),
                 ),
@@ -69,7 +69,7 @@ class SecurityConfig(
                 LogoutFilter(accountService, jsonResponseWriter),
                 JwtAuthenticationFilter::class.java,
             ).addFilterAfter(
-                UserCookieExchangeFilter(),
+                UserCookieExchangeFilter,
                 AuthorizationFilter::class.java,
             ).exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint()) }
             .authenticationManager(authenticationManager())

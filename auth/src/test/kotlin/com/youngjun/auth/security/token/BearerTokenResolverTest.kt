@@ -17,13 +17,12 @@ class BearerTokenResolverTest :
             isolationMode = IsolationMode.InstancePerLeaf
 
             val request = MockHttpServletRequest()
-            val bearerTokenResolver = BearerTokenResolver()
 
             context("토큰 추출") {
                 test("성공") {
                     request.addHeader(AUTHORIZATION, "Bearer a.b.c")
 
-                    val actual = bearerTokenResolver.resolve(request)
+                    val actual = BearerTokenResolver.resolve(request)
 
                     actual shouldBe "a.b.c"
                 }
@@ -31,7 +30,7 @@ class BearerTokenResolverTest :
                 test("Bearer 로 시작하지 않으면 빈 값을 반환한다.") {
                     request.addHeader(AUTHORIZATION, "No-Bearer a.b.c")
 
-                    val actual = bearerTokenResolver.resolve(request)
+                    val actual = BearerTokenResolver.resolve(request)
 
                     actual shouldBe ""
                 }
@@ -42,7 +41,7 @@ class BearerTokenResolverTest :
                     test("\"$it\"") {
                         request.addHeader(AUTHORIZATION, "Bearer $it")
 
-                        shouldThrow<TypedAuthenticationException> { bearerTokenResolver.resolve(request) }
+                        shouldThrow<TypedAuthenticationException> { BearerTokenResolver.resolve(request) }
                             .errorType shouldBe TOKEN_INVALID
                     }
                 }

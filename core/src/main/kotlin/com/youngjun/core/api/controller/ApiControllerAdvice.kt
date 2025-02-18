@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
-class ApiControllerAdvice {
+private object ApiControllerAdvice {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(CoreException::class)
-    fun handleAuthException(ex: CoreException): ResponseEntity<ApiResponse<Any>> {
+    private fun handleAuthException(ex: CoreException): ResponseEntity<ApiResponse<Any>> {
         when (ex.errorType.logLevel) {
             LogLevel.ERROR -> log.error("CoreException : {}", ex.message, ex)
             LogLevel.WARN -> log.warn("CoreException : {}", ex.message, ex)

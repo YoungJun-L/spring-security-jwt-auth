@@ -20,8 +20,6 @@ class UserCookieExchangeFilterTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val userCookieExchangeFilter = UserCookieExchangeFilter()
-
             afterTest { SecurityContextHolder.clearContext() }
 
             context("인증 정보를 쿠키로 교환") {
@@ -33,7 +31,7 @@ class UserCookieExchangeFilterTest :
                     val account = AccountBuilder().build()
                     SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
 
-                    userCookieExchangeFilter.doFilter(request, response, filterChain)
+                    UserCookieExchangeFilter.doFilter(request, response, filterChain)
 
                     val actual = (filterChain.request as HttpServletRequest).cookies.first { it.name == "USER_ID" }.value
                     actual shouldBe account.id.toString()
@@ -43,7 +41,7 @@ class UserCookieExchangeFilterTest :
                     SecurityContextHolder.getContext().authentication =
                         AnonymousAuthenticationToken("key", "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"))
 
-                    userCookieExchangeFilter.doFilter(request, response, filterChain)
+                    UserCookieExchangeFilter.doFilter(request, response, filterChain)
 
                     val actual = (filterChain.request as HttpServletRequest).cookies.first { it.name == "USER_ID" }.value
                     actual shouldBe "0"

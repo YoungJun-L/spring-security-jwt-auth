@@ -19,8 +19,6 @@ class UserArgumentResolverTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val userArgumentResolver = UserArgumentResolver()
-
             class TestController {
                 fun user(user: User) {}
 
@@ -32,14 +30,14 @@ class UserArgumentResolverTest :
                     val method = TestController::class.declaredFunctions.first { it.name == "user" }.javaMethod!!
                     val methodParameter = MethodParameter.forExecutable(method, 0)
 
-                    userArgumentResolver.supportsParameter(methodParameter) shouldBe true
+                    UserArgumentResolver.supportsParameter(methodParameter) shouldBe true
                 }
 
                 test("파라미터가 없는 경우") {
                     val method = TestController::class.declaredFunctions.first { it.name == "notUser" }.javaMethod!!
                     val methodParameter = MethodParameter.forExecutable(method, -1)
 
-                    userArgumentResolver.supportsParameter(methodParameter) shouldBe false
+                    UserArgumentResolver.supportsParameter(methodParameter) shouldBe false
                 }
             }
 
@@ -54,7 +52,7 @@ class UserArgumentResolverTest :
                     val webRequest = ServletWebRequest(request)
 
                     val actual =
-                        userArgumentResolver.resolveArgument(
+                        UserArgumentResolver.resolveArgument(
                             parameter = methodParameter,
                             webRequest = webRequest,
                             mavContainer = null,
@@ -70,7 +68,7 @@ class UserArgumentResolverTest :
                     val webRequest = ServletWebRequest(request)
 
                     shouldThrow<CoreException> {
-                        userArgumentResolver.resolveArgument(
+                        UserArgumentResolver.resolveArgument(
                             parameter = methodParameter,
                             webRequest = webRequest,
                             mavContainer = null,

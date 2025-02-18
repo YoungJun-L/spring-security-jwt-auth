@@ -5,11 +5,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class WebMvcConfig(
-    private val userArgumentResolver: UserArgumentResolver,
-    private val anyUserArgumentResolver: AnyUserArgumentResolver,
-) : WebMvcConfigurer {
+private class WebMvcConfig : WebMvcConfigurer {
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
-        resolvers += arrayOf(anyUserArgumentResolver, userArgumentResolver)
+        resolvers += arrayOf(AnyUserArgumentResolver, UserArgumentResolver)
     }
 }

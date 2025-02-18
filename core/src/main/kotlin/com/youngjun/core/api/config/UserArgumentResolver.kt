@@ -5,14 +5,12 @@ import com.youngjun.core.support.error.CoreException
 import com.youngjun.core.support.error.ErrorType.DEFAULT
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
-import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
-@Component
-class UserArgumentResolver : HandlerMethodArgumentResolver {
+object UserArgumentResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean = parameter.parameterType == User::class.java
 
     override fun resolveArgument(

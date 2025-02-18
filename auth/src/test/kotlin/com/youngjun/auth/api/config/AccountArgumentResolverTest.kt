@@ -21,8 +21,6 @@ class AccountArgumentResolverTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val accountArgumentResolver = AccountArgumentResolver()
-
             afterTest { SecurityContextHolder.clearContext() }
 
             class TestController {
@@ -36,14 +34,14 @@ class AccountArgumentResolverTest :
                     val method = TestController::class.declaredFunctions.first { it.name == "account" }.javaMethod!!
                     val methodParameter = MethodParameter.forExecutable(method, 0)
 
-                    accountArgumentResolver.supportsParameter(methodParameter) shouldBe true
+                    AccountArgumentResolver.supportsParameter(methodParameter) shouldBe true
                 }
 
                 test("파라미터가 없는 경우") {
                     val method = TestController::class.declaredFunctions.first { it.name == "notAccount" }.javaMethod!!
                     val methodParameter = MethodParameter.forExecutable(method, -1)
 
-                    accountArgumentResolver.supportsParameter(methodParameter) shouldBe false
+                    AccountArgumentResolver.supportsParameter(methodParameter) shouldBe false
                 }
             }
 
@@ -57,7 +55,7 @@ class AccountArgumentResolverTest :
                     SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
 
                     val actual =
-                        accountArgumentResolver.resolveArgument(
+                        AccountArgumentResolver.resolveArgument(
                             parameter = methodParameter,
                             webRequest = webRequest,
                             mavContainer = null,
@@ -71,7 +69,7 @@ class AccountArgumentResolverTest :
                     SecurityContextHolder.getContext().authentication = null
 
                     shouldThrow<AuthException> {
-                        accountArgumentResolver.resolveArgument(
+                        AccountArgumentResolver.resolveArgument(
                             parameter = methodParameter,
                             webRequest = webRequest,
                             mavContainer = null,
@@ -83,7 +81,7 @@ class AccountArgumentResolverTest :
                 test("성공하면 인증 정보는 비워진다.") {
                     SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(AccountBuilder().build())
 
-                    accountArgumentResolver.resolveArgument(
+                    AccountArgumentResolver.resolveArgument(
                         parameter = methodParameter,
                         webRequest = webRequest,
                         mavContainer = null,

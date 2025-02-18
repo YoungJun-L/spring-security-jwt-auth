@@ -19,8 +19,6 @@ class AnyUserArgumentResolverTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            val anyUserArgumentResolver = AnyUserArgumentResolver()
-
             class TestController {
                 fun anyUser(anyUser: AnyUser) {}
 
@@ -32,14 +30,14 @@ class AnyUserArgumentResolverTest :
                     val method = TestController::class.declaredFunctions.first { it.name == "anyUser" }.javaMethod!!
                     val methodParameter = MethodParameter.forExecutable(method, 0)
 
-                    anyUserArgumentResolver.supportsParameter(methodParameter) shouldBe true
+                    AnyUserArgumentResolver.supportsParameter(methodParameter) shouldBe true
                 }
 
                 test("파라미터가 없는 경우") {
                     val method = TestController::class.declaredFunctions.first { it.name == "notAnyUser" }.javaMethod!!
                     val methodParameter = MethodParameter.forExecutable(method, -1)
 
-                    anyUserArgumentResolver.supportsParameter(methodParameter) shouldBe false
+                    AnyUserArgumentResolver.supportsParameter(methodParameter) shouldBe false
                 }
             }
 
@@ -54,7 +52,7 @@ class AnyUserArgumentResolverTest :
                     val webRequest = ServletWebRequest(request)
 
                     val actual =
-                        anyUserArgumentResolver.resolveArgument(
+                        AnyUserArgumentResolver.resolveArgument(
                             parameter = methodParameter,
                             webRequest = webRequest,
                             mavContainer = null,
@@ -70,7 +68,7 @@ class AnyUserArgumentResolverTest :
                     val webRequest = ServletWebRequest(request)
 
                     shouldThrow<CoreException> {
-                        anyUserArgumentResolver.resolveArgument(
+                        AnyUserArgumentResolver.resolveArgument(
                             parameter = methodParameter,
                             webRequest = webRequest,
                             mavContainer = null,

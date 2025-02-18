@@ -5,10 +5,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class AuthWebMvcConfig(
-    private val accountArgumentResolver: AccountArgumentResolver,
-) : WebMvcConfigurer {
+private class AuthWebMvcConfig : WebMvcConfigurer {
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
-        resolvers += accountArgumentResolver
+        resolvers += AccountArgumentResolver
     }
 }

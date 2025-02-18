@@ -5,14 +5,12 @@ import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.DEFAULT
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
-@Component
-class AccountArgumentResolver : HandlerMethodArgumentResolver {
+object AccountArgumentResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean = parameter.parameterType == Account::class.java
 
     override fun resolveArgument(
