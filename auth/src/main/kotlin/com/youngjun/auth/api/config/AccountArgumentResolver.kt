@@ -18,13 +18,11 @@ object AccountArgumentResolver : HandlerMethodArgumentResolver {
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
-    ): Account {
+    ): Account =
         try {
-            val account = SecurityContextHolder.getContext().authentication.principal as Account
-            SecurityContextHolder.clearContext()
-            return account
+            (SecurityContextHolder.getContext().authentication.principal as Account)
+                .also { SecurityContextHolder.clearContext() }
         } catch (ex: Exception) {
             throw AuthException(DEFAULT)
         }
-    }
 }
