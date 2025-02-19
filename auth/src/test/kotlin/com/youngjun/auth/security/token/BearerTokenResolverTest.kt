@@ -27,6 +27,12 @@ class BearerTokenResolverTest :
                     actual shouldBe "a.b.c"
                 }
 
+                test("인증 헤더가 없으면 빈 값을 반환한다.") {
+                    val actual = BearerTokenResolver.resolve(request)
+
+                    actual shouldBe ""
+                }
+
                 test("Bearer 로 시작하지 않으면 빈 값을 반환한다.") {
                     request.addHeader(AUTHORIZATION, "No-Bearer a.b.c")
 

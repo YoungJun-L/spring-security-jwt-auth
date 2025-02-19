@@ -11,13 +11,11 @@ object BearerTokenResolver {
     private val authorizationRegex = Regex("^$AUTHENTICATION_SCHEME_BEARER (?<$GROUP_NAME>[\\w-]+\\.[\\w-]+\\.[\\w-]+)$")
 
     fun resolve(request: HttpServletRequest): String {
-        val authorization = request.getHeader(HttpHeaders.AUTHORIZATION) ?: return ""
-        if (!authorization.startsWith(AUTHENTICATION_SCHEME_BEARER)) {
+        val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
+        if (authorization.isNullOrBlank() || !authorization.startsWith(AUTHENTICATION_SCHEME_BEARER)) {
             return ""
         }
-        val result =
-            authorizationRegex.matchEntire(authorization)
-                ?: throw TypedAuthenticationException(TOKEN_INVALID)
+        val result = authorizationRegex.matchEntire(authorization) ?: throw TypedAuthenticationException(TOKEN_INVALID)
         return result.groups[GROUP_NAME]!!.value
     }
 }
