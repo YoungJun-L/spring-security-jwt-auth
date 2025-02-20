@@ -47,9 +47,13 @@ class ApiAuthenticationEntryPoint(
         errorType: ErrorType,
     ) {
         when (errorType.logLevel) {
-            LogLevel.ERROR -> log.error("AuthException : {}", ex.message, ex)
-            LogLevel.WARN -> log.warn("AuthException : {}", ex.message, ex)
-            else -> log.info("AuthException : {}", ex.message, ex)
+            LogLevel.ERROR -> log.error(AUTH_EXCEPTION_LOG_FORMAT, ex.message, ex)
+            LogLevel.WARN -> log.warn(AUTH_EXCEPTION_LOG_FORMAT, ex.message, ex)
+            else -> log.info(AUTH_EXCEPTION_LOG_FORMAT, ex.message, ex)
         }
+    }
+
+    companion object {
+        private const val AUTH_EXCEPTION_LOG_FORMAT = "AuthException : {}"
     }
 }

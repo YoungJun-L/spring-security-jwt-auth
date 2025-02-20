@@ -25,14 +25,15 @@ import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @RestControllerAdvice
 private object AuthControllerAdvice {
+    private const val AUTH_EXCEPTION_LOG_FORMAT = "AuthException : {}"
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(AuthException::class)
     private fun handleAuthException(ex: AuthException): ResponseEntity<AuthResponse<Any>> {
         when (ex.errorType.logLevel) {
-            LogLevel.ERROR -> log.error("AuthException : {}", ex.message, ex)
-            LogLevel.WARN -> log.warn("AuthException : {}", ex.message, ex)
-            else -> log.info("AuthException : {}", ex.message, ex)
+            LogLevel.ERROR -> log.error(AUTH_EXCEPTION_LOG_FORMAT, ex.message, ex)
+            LogLevel.WARN -> log.warn(AUTH_EXCEPTION_LOG_FORMAT, ex.message, ex)
+            else -> log.info(AUTH_EXCEPTION_LOG_FORMAT, ex.message, ex)
         }
         return ResponseEntity
             .status(ex.errorType.status)

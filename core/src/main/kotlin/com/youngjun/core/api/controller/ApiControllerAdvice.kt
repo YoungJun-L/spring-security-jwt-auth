@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 private object ApiControllerAdvice {
+    private const val CORE_EXCEPTION_LOG_FORMAT = "CoreException : {}"
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(CoreException::class)
     private fun handleAuthException(ex: CoreException): ResponseEntity<ApiResponse<Any>> {
         when (ex.errorType.logLevel) {
-            LogLevel.ERROR -> log.error("CoreException : {}", ex.message, ex)
-            LogLevel.WARN -> log.warn("CoreException : {}", ex.message, ex)
-            else -> log.info("CoreException : {}", ex.message, ex)
+            LogLevel.ERROR -> log.error(CORE_EXCEPTION_LOG_FORMAT, ex.message, ex)
+            LogLevel.WARN -> log.warn(CORE_EXCEPTION_LOG_FORMAT, ex.message, ex)
+            else -> log.info(CORE_EXCEPTION_LOG_FORMAT, ex.message, ex)
         }
         return ResponseEntity
             .status(ex.errorType.status)
