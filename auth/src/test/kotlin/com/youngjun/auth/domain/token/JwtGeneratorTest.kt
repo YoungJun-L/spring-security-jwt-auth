@@ -19,14 +19,16 @@ class JwtGeneratorTest :
             val jwtProperties = JwtPropertiesBuilder().build()
             val jwtGenerator = JwtGenerator(jwtProperties)
 
-            context("accessToken 발급") {
-                val accessTokenParser = Jwts.parser().verifyWith(jwtProperties.accessSecretKey).build()
+            val accessTokenParser = Jwts.parser().verifyWith(jwtProperties.accessSecretKey).build()
+            val refreshTokenParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
 
+            context("accessToken 발급") {
                 test("성공") {
                     val userId = 1L
 
                     val actual = jwtGenerator.generateAccessToken(userId)
 
+                    actual.userId shouldBe userId
                     accessTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "$userId"
                 }
 
@@ -46,13 +48,12 @@ class JwtGeneratorTest :
             }
 
             context("refreshToken 발급") {
-                val refreshTokenParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
-
                 test("성공") {
                     val userId = 1L
 
                     val actual = jwtGenerator.generateRefreshToken(userId)
 
+                    actual.userId shouldBe userId
                     refreshTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "$userId"
                 }
 
@@ -72,8 +73,6 @@ class JwtGeneratorTest :
             }
 
             context("만료 시간에 따른 refreshToken 발급") {
-                val refreshTokenParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
-
                 test("갱신되는 경우") {
                     val userId = 1L
                     val now = LocalDateTime.now()
@@ -84,7 +83,6 @@ class JwtGeneratorTest :
                             now,
                         )
 
-                    actual.isNotEmpty() shouldBe true
                     refreshTokenParser.parseSignedClaims(actual.value).payload.subject shouldBe "$userId"
                 }
 

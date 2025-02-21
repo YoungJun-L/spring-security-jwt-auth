@@ -23,7 +23,6 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import java.time.Duration
 import java.time.LocalDateTime
 
@@ -45,21 +44,12 @@ class TokenServiceTest(
                     val actual = tokenService.issue(userId)
 
                     actual.userId shouldBe userId
+                    actual.accessToken.userId shouldBe userId
+                    actual.refreshToken.userId shouldBe userId
                 }
             }
 
             context("토큰 재발급") {
-                test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
-                    val rawRefreshToken =
-                        RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
-
-                    val actual = tokenService.reissue(rawRefreshToken)
-
-                    actual.userId shouldBe account.id
-                }
-
                 test("refreshToken 이 아직 만료되지 않았으면 refreshToken 은 갱신되지 않는다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
                     val now = LocalDateTime.now()
@@ -76,6 +66,8 @@ class TokenServiceTest(
 
                     val actual = tokenService.reissue(rawRefreshToken, now)
 
+                    actual.userId shouldBe account.id
+                    actual.accessToken.userId shouldBe account.id
                     actual.refreshToken.isNotEmpty() shouldBe false
                 }
 
@@ -95,8 +87,9 @@ class TokenServiceTest(
 
                     val actual = tokenService.reissue(rawRefreshToken, now)
 
-                    actual.refreshToken.isNotEmpty() shouldBe true
-                    actual.refreshToken.value shouldNotBe rawRefreshToken.value
+                    actual.userId shouldBe account.id
+                    actual.accessToken.userId shouldBe account.id
+                    actual.refreshToken.userId shouldBe account.id
                 }
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {

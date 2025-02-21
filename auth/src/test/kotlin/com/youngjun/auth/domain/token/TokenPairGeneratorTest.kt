@@ -27,6 +27,8 @@ class TokenPairGeneratorTest(
                     val actual = tokenPairGenerator.generate(userId)
 
                     actual.userId shouldBe userId
+                    actual.accessToken.userId shouldBe userId
+                    actual.refreshToken.userId shouldBe userId
                 }
 
                 test("이전 refreshToken 은 교체된다.") {
@@ -40,39 +42,39 @@ class TokenPairGeneratorTest(
             }
 
             context("만료 시간에 따른 발급") {
-                test("성공") {
-                    val userId = 1L
-
-                    val actual = tokenPairGenerator.generateOnExpiration(ParsedRefreshTokenBuilder(userId).build())
-
-                    actual.userId shouldBe userId
-                }
-
                 test("refreshToken 이 곧 만료되면 refreshToken 도 갱신된다.") {
+                    val userId = 1L
                     val now = LocalDateTime.now()
                     val parsedRefreshToken =
                         ParsedRefreshTokenBuilder(
+                            userId = userId,
                             issuedAt = now,
                             expiresIn = jwtProperties.expirationThreshold,
                         ).build()
 
                     val actual = tokenPairGenerator.generateOnExpiration(parsedRefreshToken, now)
 
-                    actual.refreshToken.isNotEmpty() shouldBe true
+                    actual.userId shouldBe userId
+                    actual.accessToken.userId shouldBe userId
+                    actual.refreshToken.userId shouldBe userId
                 }
 
                 test("refreshToken 이 아직 만료되지 않았으면 refreshToken 은 갱신되지 않는다.") {
+                    val userId = 1L
                     val now = LocalDateTime.now()
 
                     val actual =
                         tokenPairGenerator.generateOnExpiration(
                             ParsedRefreshTokenBuilder(
+                                userId = userId,
                                 issuedAt = now,
                                 expiresIn = jwtProperties.expirationThreshold + 1.seconds,
                             ).build(),
                             now,
                         )
 
+                    actual.userId shouldBe userId
+                    actual.accessToken.userId shouldBe userId
                     actual.refreshToken.isNotEmpty() shouldBe false
                 }
 
