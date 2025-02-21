@@ -11,7 +11,7 @@ class MailService(
     private val mailSender: DefaultMailSender,
     private val templateEngine: TemplateEngine,
 ) {
-    fun sendVerificationCode(verificationCode: VerificationCode) {
+    fun sendVerificationCode(verificationCode: VerificationCode) =
         mailSender.send(
             verificationCode.emailAddress,
             "Verification Code",
@@ -22,5 +22,4 @@ class MailService(
                 },
             ),
         )
-    }
 }

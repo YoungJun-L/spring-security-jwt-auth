@@ -7,6 +7,7 @@ tasks.getByName("jar") {
 }
 
 dependencies {
+    implementation(project(":async"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
