@@ -20,8 +20,7 @@ object AccountArgumentResolver : HandlerMethodArgumentResolver {
         binderFactory: WebDataBinderFactory?,
     ): Account =
         try {
-            (SecurityContextHolder.getContext().authentication.principal as Account)
-                .also { SecurityContextHolder.clearContext() }
+            (SecurityContextHolder.getContext().authentication.principal as Account).also { SecurityContextHolder.clearContext() }
         } catch (ex: Exception) {
             throw AuthException(DEFAULT)
         }

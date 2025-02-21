@@ -9,10 +9,7 @@ class RefreshTokenStore(
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
     @Transactional
-    fun replaceIfNotEmpty(parsedRefreshToken: ParsedRefreshToken) {
-        if (!parsedRefreshToken.isNotEmpty()) {
-            return
-        }
+    fun replace(parsedRefreshToken: ParsedRefreshToken) {
         refreshTokenRepository.deleteBy(parsedRefreshToken.userId)
         refreshTokenRepository.save(parsedRefreshToken)
     }

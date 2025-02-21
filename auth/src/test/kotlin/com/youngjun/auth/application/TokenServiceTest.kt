@@ -47,7 +47,7 @@ class TokenServiceTest(
                     actual.userId shouldBe userId
                 }
 
-                test("이전 refresh token 은 교체된다.") {
+                test("이전 refreshToken 은 교체된다.") {
                     val userId = 1L
                     val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(userId).build())
 
@@ -69,7 +69,7 @@ class TokenServiceTest(
                     actual.userId shouldBe account.id
                 }
 
-                test("refreshToken 이 아직 만료되지 않았으면 refresh token 은 갱신되지 않는다.") {
+                test("refreshToken 이 아직 만료되지 않았으면 refreshToken 은 갱신되지 않는다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
                     val now = LocalDateTime.now()
                     val rawRefreshToken =
@@ -88,7 +88,7 @@ class TokenServiceTest(
                     actual.refreshToken.isNotEmpty() shouldBe false
                 }
 
-                test("refreshToken 이 곧 만료되면 refresh token 도 갱신된다.") {
+                test("refreshToken 이 곧 만료되면 refreshToken 도 갱신된다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
                     val now = LocalDateTime.now()
                     val rawRefreshToken =

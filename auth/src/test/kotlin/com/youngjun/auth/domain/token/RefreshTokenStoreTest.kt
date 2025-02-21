@@ -20,31 +20,15 @@ class RefreshTokenStoreTest(
             extensions(SpringExtension)
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("비어 있지 않으면 이전 refreshToken 과 교체") {
-                test("비어 있지 않고 저장된 것이 없는 경우 새로 저장한다.") {
-                    val parsedRefreshToken = ParsedRefreshTokenBuilder().build()
-
-                    refreshTokenStore.replaceIfNotEmpty(parsedRefreshToken)
-
-                    refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)!!.value shouldBe parsedRefreshToken.value
-                }
-
-                test("비어 있지 않고 저장된 것이 있는 경우 교체된다.") {
+            context("이전 refreshToken 과 교체") {
+                test("성공") {
                     val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder().build())
                     val parsedRefreshToken = ParsedRefreshTokenBuilder(refreshToken.userId).build()
 
-                    refreshTokenStore.replaceIfNotEmpty(parsedRefreshToken)
+                    refreshTokenStore.replace(parsedRefreshToken)
 
                     refreshTokenJpaRepository.findByIdOrNull(refreshToken.id) shouldBe null
                     refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)!!.value shouldBe parsedRefreshToken.value
-                }
-
-                test("비어 있는 경우 교체되지 않는다.") {
-                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder().build())
-
-                    refreshTokenStore.replaceIfNotEmpty(ParsedRefreshToken.Empty)
-
-                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.value shouldBe refreshToken.value
                 }
             }
 

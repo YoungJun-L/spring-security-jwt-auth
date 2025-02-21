@@ -21,7 +21,7 @@ class TokenService(
     fun issue(
         userId: Long,
         now: LocalDateTime = LocalDateTime.now(),
-    ): TokenPair = tokenPairGenerator.generate(userId, now).also { refreshTokenStore.replaceIfNotEmpty(it.refreshToken) }
+    ): TokenPair = tokenPairGenerator.generate(userId, now).also { refreshTokenStore.replace(it.refreshToken) }
 
     fun reissue(
         rawRefreshToken: RawRefreshToken,
@@ -31,7 +31,7 @@ class TokenService(
         accountReader.read(parsedRefreshToken.userId).verify()
         return tokenPairGenerator
             .generateOnExpiration(parsedRefreshToken, now)
-            .also { refreshTokenStore.replaceIfNotEmpty(it.refreshToken) }
+            .also { if (parsedRefreshToken.isNotEmpty()) refreshTokenStore.replace(it.refreshToken) }
     }
 
     fun parse(rawAccessToken: RawAccessToken): Account = accountReader.read(tokenParser.parse(rawAccessToken).userId).apply { verify() }
