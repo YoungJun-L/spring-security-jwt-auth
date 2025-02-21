@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
 
 interface VerificationCodeJpaRepository : JpaRepository<VerificationCode, Long> {
-    fun countByEmailAddressAndCreatedAtAfter(
+    fun countByEmailAddressAndCreatedAtGreaterThanEqual(
         emailAddress: EmailAddress,
         createdAt: LocalDateTime,
     ): Int

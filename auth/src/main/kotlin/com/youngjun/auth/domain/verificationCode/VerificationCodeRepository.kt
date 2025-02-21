@@ -14,7 +14,7 @@ class VerificationCodeRepository(
     fun countSince(
         emailAddress: EmailAddress,
         since: LocalDateTime,
-    ): Int = verificationCodeJpaRepository.countByEmailAddressAndCreatedAtAfter(emailAddress, since)
+    ): Int = verificationCodeJpaRepository.countByEmailAddressAndCreatedAtGreaterThanEqual(emailAddress, since)
 
     fun findLatestBy(emailAddress: EmailAddress): VerificationCode? =
         verificationCodeJpaRepository.findFirstByEmailAddressOrderByCreatedAtDesc(emailAddress)

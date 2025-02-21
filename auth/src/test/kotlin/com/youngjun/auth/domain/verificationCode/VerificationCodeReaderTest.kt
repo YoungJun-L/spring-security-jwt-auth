@@ -2,7 +2,6 @@ package com.youngjun.auth.domain.verificationCode
 
 import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.support.minutes
-import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
@@ -31,7 +30,7 @@ class VerificationCodeReaderTest(
                         verificationCodeJpaRepository
                             .saveAll(List(4) { generateVerificationCode(emailAddress = emailAddress) })
                             .first()
-                            .createdAt + 10.minutes - 1.seconds
+                            .createdAt + 10.minutes
 
                     shouldNotThrow<AuthException> { verificationCodeReader.checkRecentSavesExceeded(emailAddress, now) }
                 }
@@ -42,7 +41,7 @@ class VerificationCodeReaderTest(
                         verificationCodeJpaRepository
                             .saveAll(List(5) { generateVerificationCode(emailAddress = emailAddress) })
                             .first()
-                            .createdAt + 10.minutes - 1.seconds
+                            .createdAt + 10.minutes
 
                     shouldThrow<AuthException> { verificationCodeReader.checkRecentSavesExceeded(emailAddress, now) }
                         .errorType shouldBe VERIFICATION_CODE_LIMIT_EXCEEDED
