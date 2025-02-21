@@ -8,9 +8,10 @@ import org.springframework.boot.logging.LogLevel
 import org.springframework.stereotype.Component
 import java.lang.reflect.Method
 
+private const val AUTH_EXCEPTION_LOG_FORMAT = "AuthException : {}"
+
 @Component
 object AsyncUncaughtAuthExceptionResolver : AsyncUncaughtExceptionResolver {
-    private const val AUTH_EXCEPTION_LOG_FORMAT = "AuthException : {}"
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun supports(ex: Throwable): Boolean = ex is AuthException

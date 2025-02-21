@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
+private val LOGIN_REQUEST_MATCHER: AntPathRequestMatcher = AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/login")
+
 class JsonLoginAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
     private val objectMapper: ObjectMapper,
@@ -46,9 +48,5 @@ class JsonLoginAuthenticationFilter(
         return authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.toEmailAddress().value, loginRequest.toRawPassword().value),
         )
-    }
-
-    companion object {
-        private val LOGIN_REQUEST_MATCHER: AntPathRequestMatcher = AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/login")
     }
 }

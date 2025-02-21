@@ -23,9 +23,10 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 
+private const val AUTH_EXCEPTION_LOG_FORMAT = "AuthException : {}"
+
 @RestControllerAdvice
 private object AuthControllerAdvice {
-    private const val AUTH_EXCEPTION_LOG_FORMAT = "AuthException : {}"
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(AuthException::class)

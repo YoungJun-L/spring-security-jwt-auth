@@ -8,9 +8,10 @@ import org.springframework.boot.logging.LogLevel
 import org.springframework.stereotype.Component
 import java.lang.reflect.Method
 
+private const val CORE_EXCEPTION_LOG_FORMAT = "CoreException : {}"
+
 @Component
 object AsyncUncaughtCoreExceptionResolver : AsyncUncaughtExceptionResolver {
-    private const val CORE_EXCEPTION_LOG_FORMAT = "CoreException : {}"
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun supports(ex: Throwable): Boolean = ex is CoreException

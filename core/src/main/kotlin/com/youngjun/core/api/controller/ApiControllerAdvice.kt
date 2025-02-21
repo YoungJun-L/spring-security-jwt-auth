@@ -9,9 +9,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
+private const val CORE_EXCEPTION_LOG_FORMAT = "CoreException : {}"
+
 @RestControllerAdvice
 private object ApiControllerAdvice {
-    private const val CORE_EXCEPTION_LOG_FORMAT = "CoreException : {}"
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(CoreException::class)

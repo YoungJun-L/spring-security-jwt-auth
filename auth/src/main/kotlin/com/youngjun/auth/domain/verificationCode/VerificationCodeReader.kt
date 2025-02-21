@@ -8,6 +8,9 @@ import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_NOT_FOUND
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
+private const val COUNT_LIMIT = 5
+private val RECENT_DURATION = 10.minutes
+
 @Component
 class VerificationCodeReader(
     private val verificationCodeRepository: VerificationCodeRepository,
@@ -23,9 +26,4 @@ class VerificationCodeReader(
 
     fun readLatest(emailAddress: EmailAddress): VerificationCode =
         verificationCodeRepository.findLatestBy(emailAddress) ?: throw AuthException(VERIFICATION_CODE_NOT_FOUND)
-
-    companion object {
-        private const val COUNT_LIMIT = 5
-        private val RECENT_DURATION = 10.minutes
-    }
 }

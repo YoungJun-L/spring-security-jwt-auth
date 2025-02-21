@@ -18,6 +18,8 @@ import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
 
+private const val AUTH_EXCEPTION_LOG_FORMAT = "AuthException : {}"
+
 class ApiAuthenticationEntryPoint(
     private val jsonResponseWriter: JsonResponseWriter,
 ) : AuthenticationEntryPoint {
@@ -51,9 +53,5 @@ class ApiAuthenticationEntryPoint(
             LogLevel.WARN -> log.warn(AUTH_EXCEPTION_LOG_FORMAT, ex.message, ex)
             else -> log.info(AUTH_EXCEPTION_LOG_FORMAT, ex.message, ex)
         }
-    }
-
-    companion object {
-        private const val AUTH_EXCEPTION_LOG_FORMAT = "AuthException : {}"
     }
 }
