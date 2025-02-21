@@ -46,15 +46,6 @@ class TokenServiceTest(
 
                     actual.userId shouldBe userId
                 }
-
-                test("이전 refreshToken 은 교체된다.") {
-                    val userId = 1L
-                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(userId).build())
-
-                    val actual = tokenService.issue(userId)
-
-                    actual.refreshToken.value shouldNotBe refreshToken.value
-                }
             }
 
             context("토큰 재발급") {

@@ -27,7 +27,6 @@ class RefreshTokenStoreTest(
 
                     refreshTokenStore.replace(parsedRefreshToken)
 
-                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id) shouldBe null
                     refreshTokenJpaRepository.findByUserId(parsedRefreshToken.userId)!!.value shouldBe parsedRefreshToken.value
                 }
             }

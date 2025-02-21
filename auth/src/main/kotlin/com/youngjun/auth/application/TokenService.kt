@@ -4,7 +4,6 @@ import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.domain.account.AccountReader
 import com.youngjun.auth.domain.token.RawAccessToken
 import com.youngjun.auth.domain.token.RawRefreshToken
-import com.youngjun.auth.domain.token.RefreshTokenStore
 import com.youngjun.auth.domain.token.TokenPair
 import com.youngjun.auth.domain.token.TokenPairGenerator
 import com.youngjun.auth.domain.token.TokenParser
@@ -15,13 +14,12 @@ import java.time.LocalDateTime
 class TokenService(
     private val tokenPairGenerator: TokenPairGenerator,
     private val tokenParser: TokenParser,
-    private val refreshTokenStore: RefreshTokenStore,
     private val accountReader: AccountReader,
 ) {
     fun issue(
         userId: Long,
         now: LocalDateTime = LocalDateTime.now(),
-    ): TokenPair = tokenPairGenerator.generate(userId, now).also { refreshTokenStore.replace(it.refreshToken) }
+    ): TokenPair = tokenPairGenerator.generate(userId, now)
 
     fun reissue(
         rawRefreshToken: RawRefreshToken,
@@ -29,9 +27,7 @@ class TokenService(
     ): TokenPair {
         val parsedRefreshToken = tokenParser.parse(rawRefreshToken)
         accountReader.read(parsedRefreshToken.userId).verify()
-        return tokenPairGenerator
-            .generateOnExpiration(parsedRefreshToken, now)
-            .also { if (parsedRefreshToken.isNotEmpty()) refreshTokenStore.replace(it.refreshToken) }
+        return tokenPairGenerator.generateOnExpiration(parsedRefreshToken, now)
     }
 
     fun parse(rawAccessToken: RawAccessToken): Account = accountReader.read(tokenParser.parse(rawAccessToken).userId).apply { verify() }
