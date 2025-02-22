@@ -1,31 +1,11 @@
-= Auth API Docs
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 3
+:toclevels: 1
 :sectlinks:
 
-== Introduce
+== Spring Security JWT Auth
 
-This is the Auth API documentation.
-
-[[login]]
-== Login API
-
-include::user/login.adoc[]
-
-[[register]]
-== Register API
-
-include::user/register.adoc[]
-
-[[authenticate]]
-== Authenticate API
-
-include::user/authenticate.adoc[]
-
-[[reissue]]
-== Reissue API
-
-include::user/token.adoc[]
+include::user.adoc[]
+include::token.adoc[]

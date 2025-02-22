@@ -1,0 +1,21 @@
+= 회원 관련 API
+
+== 회원 가입
+
+operation::register[snippets='http-request,request-fields,http-response,response-fields']
+
+== 로그인
+
+operation::login[snippets='http-request,request-fields,http-response,response-fields']
+
+== 로그아웃
+
+operation::logout[snippets='http-request,http-response,response-fields']
+
+== 인증 코드 전송
+
+operation::send-verification-code[snippets='http-request,request-fields,http-response']
+
+== 비밀번호 변경
+
+operation::login[snippets='http-request,request-fields,http-response,response-fields']

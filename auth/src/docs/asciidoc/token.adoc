@@ -1,0 +1,10 @@
+= JWT 관련 API
+
+== 인증 방식
+
+operation::authenticate[snippets='http-request,request-headers']
+
+== 토큰 재발급
+accessToken 과 다르게 refreshToken 은 만료 시간이 1시간 남았을 때만 재발급됩니다.
+
+operation::token[snippets='http-request,request-fields,http-response,response-fields']
