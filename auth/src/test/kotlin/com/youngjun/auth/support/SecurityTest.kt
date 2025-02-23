@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.WebApplicationContext
+import org.springframework.web.filter.CharacterEncodingFilter
 
 @Tags("security")
 @Target(AnnotationTarget.CLASS)
@@ -64,6 +65,7 @@ abstract class SecurityContextTest {
         RestAssuredMockMvc.mockMvc(
             MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
+                .addFilter<DefaultMockMvcBuilder>(CharacterEncodingFilter(Charsets.UTF_8.name(), true))
                 .apply<DefaultMockMvcBuilder>(mockMvcConfigurer(restDocumentation))
                 .apply<DefaultMockMvcBuilder>(springSecurity())
                 .build(),

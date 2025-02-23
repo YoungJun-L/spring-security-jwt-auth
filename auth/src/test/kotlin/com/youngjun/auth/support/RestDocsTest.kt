@@ -15,6 +15,7 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
+import org.springframework.web.filter.CharacterEncodingFilter
 
 @Tag("restDocs")
 @ActiveProfiles("test")
@@ -31,6 +32,7 @@ abstract class RestDocsTest {
         RestAssuredMockMvc.mockMvc(
             MockMvcBuilders
                 .standaloneSetup(controller)
+                .addFilter<StandaloneMockMvcBuilder>(CharacterEncodingFilter(Charsets.UTF_8.name(), true))
                 .apply<StandaloneMockMvcBuilder>(mockMvcConfigurer())
                 .setCustomArgumentResolvers(AccountArgumentResolver)
                 .setMessageConverters(MappingJackson2HttpMessageConverter(objectMapper()))

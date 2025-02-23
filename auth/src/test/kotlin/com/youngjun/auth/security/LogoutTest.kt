@@ -8,6 +8,7 @@ import com.youngjun.auth.support.description
 import com.youngjun.auth.support.ignored
 import com.youngjun.auth.support.type
 import io.mockk.every
+import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
@@ -35,6 +36,7 @@ class LogoutTest(
             .log()
             .all()
             .header(HttpHeaders.AUTHORIZATION, "Bearer a.b.c")
+            .contentType(ContentType.JSON)
             .post("/auth/logout")
             .then()
             .log()
