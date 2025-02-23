@@ -18,7 +18,7 @@ class VerificationCodeService(
         emailAddress: EmailAddress,
         now: LocalDateTime = LocalDateTime.now(),
     ): VerificationCode {
-        accountReader.checkExists(emailAddress)
+        accountReader.checkNotDuplicate(emailAddress)
         verificationCodeReader.checkRecentSavesExceeded(emailAddress, now)
         return VerificationCode.generate(emailAddress).also { verificationCodeWriter.write(it) }
     }

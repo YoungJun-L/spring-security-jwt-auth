@@ -30,10 +30,10 @@ data class RawPasswordBuilder(
 }
 
 object NoOperationPasswordEncoder : PasswordEncoder {
-    override fun encode(rawPassword: CharSequence): String = rawPassword.toString()
+    override fun encode(rawPassword: CharSequence): String = "NoOp$rawPassword"
 
     override fun matches(
         rawPassword: CharSequence,
         encodedPassword: String,
-    ): Boolean = rawPassword == encodedPassword
+    ): Boolean = "NoOp$rawPassword" == encodedPassword
 }

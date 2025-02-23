@@ -38,7 +38,7 @@ class VerificationCodeServiceTest(
                     actual.code.length shouldBe 6
                 }
 
-                test("중복된 이메일 주소가 존재하면 실패한다.") {
+                test("가입된 이메일 주소가 존재하면 실패한다.") {
                     val emailAddress = EmailAddressBuilder().build()
                     accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 

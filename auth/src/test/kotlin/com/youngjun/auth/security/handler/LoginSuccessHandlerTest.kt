@@ -47,7 +47,7 @@ class LoginSuccessHandlerTest :
                     loginSuccessHandler.onAuthenticationSuccess(request, response, authentication)
 
                     response.status shouldBe HttpStatus.OK.value()
-                    objectMapper.readValue<AuthResponse<LoginResponse>>(response.contentAsByteArray).status shouldBe ResultType.SUCCESS
+                    objectMapper.readValue<AuthResponse<UserTokenResponse>>(response.contentAsByteArray).status shouldBe ResultType.SUCCESS
                 }
 
                 test("성공하면 인증 정보는 비워진다.") {

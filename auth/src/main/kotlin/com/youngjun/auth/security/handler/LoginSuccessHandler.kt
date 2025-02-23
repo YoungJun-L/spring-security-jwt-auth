@@ -23,7 +23,7 @@ class LoginSuccessHandler(
     ) {
         val account = authentication.principal as Account
         accountService.login(account)
-        jsonResponseWriter.write(response, HttpStatus.OK, AuthResponse.success(LoginResponse.from(tokenService.issue(account.id))))
+        jsonResponseWriter.write(response, HttpStatus.OK, AuthResponse.success(UserTokenResponse.from(tokenService.issue(account.id))))
         SecurityContextHolder.clearContext()
     }
 }

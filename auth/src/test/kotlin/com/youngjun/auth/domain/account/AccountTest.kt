@@ -5,6 +5,7 @@ import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_UNCHANGED_PASSWORD
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -71,9 +72,17 @@ class AccountTest :
                     val account = AccountBuilder().build()
                     val newPassword = RawPasswordBuilder(value = "newPassword").build()
 
-                    account.changePassword(Password.encodedWith(newPassword, NoOperationPasswordEncoder))
+                    account.changePassword(newPassword, NoOperationPasswordEncoder)
 
                     NoOperationPasswordEncoder.matches(newPassword.value, account.password) shouldBe true
+                }
+
+                test("기존 비밀번호와 동일하면 실패한다.") {
+                    val unchangedPassword = RawPasswordBuilder().build()
+                    val account = AccountBuilder(password = Password.encodedWith(unchangedPassword, NoOperationPasswordEncoder)).build()
+
+                    shouldThrow<AuthException> { account.changePassword(unchangedPassword, NoOperationPasswordEncoder) }
+                        .errorType shouldBe ACCOUNT_UNCHANGED_PASSWORD
                 }
             }
         },

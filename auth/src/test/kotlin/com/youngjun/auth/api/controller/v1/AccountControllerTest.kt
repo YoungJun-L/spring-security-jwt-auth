@@ -5,6 +5,7 @@ import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.token.TokenPairBuilder
 import com.youngjun.auth.security.token.JwtAuthenticationToken
 import com.youngjun.auth.support.RestDocsTest
 import com.youngjun.auth.support.description
@@ -71,7 +72,7 @@ class AccountControllerTest : RestDocsTest() {
     fun `비밀번호 변경 성공`() {
         val account = AccountBuilder().build()
         SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
-        every { accountService.changePassword(any(), any()) } returns account
+        every { accountService.changePassword(any(), any(), any()) } returns TokenPairBuilder(userId = account.id).build()
 
         given()
             .log()
@@ -92,6 +93,10 @@ class AccountControllerTest : RestDocsTest() {
                         "status" type STRING description "status",
                         "data" type OBJECT description "data",
                         "data.userId" type NUMBER description "userId",
+                        "data.tokens.accessToken" type STRING description "accessToken",
+                        "data.tokens.accessTokenExpiration" type NUMBER description "accessToken 만료 시간, UNIX 타임스탬프(Timestamp)",
+                        "data.tokens.refreshToken" type STRING description "refreshToken",
+                        "data.tokens.refreshTokenExpiration" type NUMBER description "refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)",
                         "error" type NULL ignored true,
                     ),
                 ),

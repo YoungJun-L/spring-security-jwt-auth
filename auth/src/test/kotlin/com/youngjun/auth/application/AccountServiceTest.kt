@@ -3,6 +3,7 @@ package com.youngjun.auth.application
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.account.Password
 import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
@@ -15,8 +16,11 @@ import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_UNCHANGED_PASSWORD
+import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_EXPIRED
+import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_MISMATCHED
+import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_NOT_FOUND
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -98,7 +102,7 @@ class AccountServiceTest(
                             RawPasswordBuilder().build(),
                             RawVerificationCodeBuilder().build(),
                         )
-                    }.errorType shouldBe ErrorType.VERIFICATION_CODE_NOT_FOUND
+                    }.errorType shouldBe VERIFICATION_CODE_NOT_FOUND
                 }
 
                 test("인증 코드가 일치하지 않으면 실패한다.") {
@@ -111,7 +115,7 @@ class AccountServiceTest(
                             RawPasswordBuilder().build(),
                             generateRawVerificationCodeExcluding(verificationCode),
                         )
-                    }.errorType shouldBe ErrorType.VERIFICATION_CODE_MISMATCHED
+                    }.errorType shouldBe VERIFICATION_CODE_MISMATCHED
                 }
 
                 test("인증 코드 유효 기간이 지났으면 실패한다.") {
@@ -125,13 +129,13 @@ class AccountServiceTest(
                             RawVerificationCodeBuilder(verificationCode.code).build(),
                             verificationCode.createdAt + 10.minutes,
                         )
-                    }.errorType shouldBe ErrorType.VERIFICATION_CODE_EXPIRED
+                    }.errorType shouldBe VERIFICATION_CODE_EXPIRED
                 }
             }
 
             context("로그아웃") {
                 test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = AccountBuilder().build()
 
                     val actual = accountService.logout(account)
 
@@ -141,7 +145,7 @@ class AccountServiceTest(
 
                 test("refreshToken 이 만료된다.") {
                     val account = accountJpaRepository.save(AccountBuilder().build())
-                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id).build())
+                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(userId = account.id).build())
 
                     accountService.logout(account)
 
@@ -151,7 +155,7 @@ class AccountServiceTest(
 
             context("로그인") {
                 test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = AccountBuilder().build()
 
                     val actual = accountService.login(account)
 
@@ -162,12 +166,23 @@ class AccountServiceTest(
 
             context("비밀번호 변경") {
                 test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = AccountBuilder().build()
                     val newPassword = RawPasswordBuilder(value = "newPassword").build()
 
                     val actual = accountService.changePassword(account, newPassword)
 
-                    passwordEncoder.matches(newPassword.value, actual.password) shouldBe true
+                    actual.userId shouldBe account.id
+                    actual.accessToken.userId shouldBe account.id
+                    actual.refreshToken.userId shouldBe account.id
+                    passwordEncoder.matches(newPassword.value, account.password) shouldBe true
+                }
+
+                test("기존 비밀번호와 동일하면 실패한다.") {
+                    val unchangedPassword = RawPasswordBuilder(value = "unchangedPassword").build()
+                    val account = AccountBuilder(password = Password.encodedWith(unchangedPassword, passwordEncoder)).build()
+
+                    shouldThrow<AuthException> { accountService.changePassword(account, unchangedPassword) }
+                        .errorType shouldBe ACCOUNT_UNCHANGED_PASSWORD
                 }
             }
         },

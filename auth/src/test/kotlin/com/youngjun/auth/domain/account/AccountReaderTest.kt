@@ -53,14 +53,14 @@ class AccountReaderTest(
 
             context("중복 이메일 주소 검증") {
                 test("중복되지 않는 경우") {
-                    shouldNotThrow<AuthException> { accountReader.checkExists(EmailAddressBuilder().build()) }
+                    shouldNotThrow<AuthException> { accountReader.checkNotDuplicate(EmailAddressBuilder().build()) }
                 }
 
                 test("중복되는 경우") {
                     val emailAddress = EmailAddressBuilder().build()
                     accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
-                    shouldThrow<AuthException> { accountReader.checkExists(emailAddress) }
+                    shouldThrow<AuthException> { accountReader.checkNotDuplicate(emailAddress) }
                         .errorType shouldBe ACCOUNT_DUPLICATE
                 }
             }

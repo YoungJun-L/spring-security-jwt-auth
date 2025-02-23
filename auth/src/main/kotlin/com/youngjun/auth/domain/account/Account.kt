@@ -18,6 +18,7 @@ import jakarta.persistence.Table
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @Table(name = "users")
 @Entity
@@ -61,7 +62,11 @@ class Account(
         status = LOGOUT
     }
 
-    fun changePassword(password: Password) {
-        this.password = password
+    fun changePassword(
+        rawPassword: RawPassword,
+        passwordEncoder: PasswordEncoder,
+    ) {
+        this.password.checkChanged(rawPassword, passwordEncoder)
+        this.password = Password.encodedWith(rawPassword, passwordEncoder)
     }
 }

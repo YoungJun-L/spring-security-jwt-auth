@@ -18,6 +18,7 @@ enum class ErrorType(
     // account
     ACCOUNT_BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, ErrorCode.E4011, "이메일 또는 비밀번호가 다릅니다.", LogLevel.INFO),
     ACCOUNT_DUPLICATE(HttpStatus.BAD_REQUEST, ErrorCode.E4002, "이미 존재하는 이메일입니다.", LogLevel.INFO),
+    ACCOUNT_UNCHANGED_PASSWORD(HttpStatus.BAD_REQUEST, ErrorCode.E4003, "기존 비밀번호와 일치합니다.", LogLevel.INFO),
     ACCOUNT_LOCKED(HttpStatus.FORBIDDEN, ErrorCode.E4031, "계정이 잠겼습니다.", LogLevel.WARN),
     ACCOUNT_DISABLED(HttpStatus.FORBIDDEN, ErrorCode.E4032, "이용이 제한된 유저입니다.", LogLevel.WARN),
     ACCOUNT_LOGOUT(HttpStatus.FORBIDDEN, ErrorCode.E4033, "로그인이 필요합니다.", LogLevel.WARN),

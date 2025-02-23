@@ -15,7 +15,7 @@ class AccountReader(
 
     fun read(id: Long): Account = accountRepository.findBy(id) ?: throw AuthException(UNAUTHORIZED)
 
-    fun checkExists(emailAddress: EmailAddress) {
+    fun checkNotDuplicate(emailAddress: EmailAddress) {
         if (accountRepository.existsBy(emailAddress)) {
             throw AuthException(ACCOUNT_DUPLICATE)
         }
