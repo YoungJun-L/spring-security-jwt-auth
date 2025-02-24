@@ -1,8 +1,6 @@
 package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.domain.support.EPOCH
-import com.youngjun.auth.domain.support.toLocalDateTime
-import io.jsonwebtoken.Claims
 import java.time.LocalDateTime
 
 data class Payload(
@@ -12,6 +10,9 @@ data class Payload(
     companion object {
         val Empty: Payload = Payload(0, EPOCH)
 
-        fun from(claims: Claims): Payload = Payload(claims.subject.toLong(), claims.expiration.toLocalDateTime())
+        fun from(
+            subject: String,
+            expiration: LocalDateTime,
+        ): Payload = Payload(subject.toLong(), expiration)
     }
 }

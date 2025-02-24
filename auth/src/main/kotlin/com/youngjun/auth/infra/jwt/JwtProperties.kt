@@ -1,4 +1,4 @@
-package com.youngjun.auth.security.config
+package com.youngjun.auth.infra.jwt
 
 import com.youngjun.auth.domain.support.hours
 import io.jsonwebtoken.security.Keys

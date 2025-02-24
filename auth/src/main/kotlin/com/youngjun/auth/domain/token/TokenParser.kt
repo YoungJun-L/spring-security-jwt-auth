@@ -1,5 +1,6 @@
 package com.youngjun.auth.domain.token
 
+import com.youngjun.auth.infra.jwt.JwtParser
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.TOKEN_NOT_FOUND
 import org.springframework.stereotype.Component

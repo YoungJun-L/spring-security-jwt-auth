@@ -2,7 +2,7 @@ package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
-import com.youngjun.auth.security.config.JwtProperties
+import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.DomainContextTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec

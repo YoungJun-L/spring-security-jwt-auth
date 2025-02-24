@@ -1,6 +1,9 @@
-package com.youngjun.auth.domain.token
+package com.youngjun.auth.infra.jwt
 
-import com.youngjun.auth.security.config.JwtProperties
+import com.youngjun.auth.domain.support.toLocalDateTime
+import com.youngjun.auth.domain.token.Payload
+import com.youngjun.auth.domain.token.RawAccessToken
+import com.youngjun.auth.domain.token.RawRefreshToken
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED
 import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID
@@ -25,7 +28,8 @@ class JwtParser(
         token: String,
     ): Payload =
         try {
-            Payload.from(parser.parseSignedClaims(token).payload)
+            val payload = parser.parseSignedClaims(token).payload
+            Payload.from(payload.subject, payload.expiration.toLocalDateTime())
         } catch (ex: ExpiredJwtException) {
             throw AuthException(TOKEN_EXPIRED)
         } catch (ex: Exception) {

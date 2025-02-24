@@ -1,7 +1,7 @@
 package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
-import com.youngjun.auth.security.config.JwtProperties
+import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED

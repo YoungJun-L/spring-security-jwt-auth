@@ -1,5 +1,7 @@
 package com.youngjun.auth.domain.token
 
+import com.youngjun.auth.infra.jwt.JwtGenerator
+import com.youngjun.auth.infra.jwt.JwtProperties
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -7,6 +9,7 @@ import java.time.LocalDateTime
 class TokenPairGenerator(
     private val jwtGenerator: JwtGenerator,
     private val refreshTokenStore: RefreshTokenStore,
+    private val jwtProperties: JwtProperties,
 ) {
     fun generate(
         userId: Long,
@@ -21,10 +24,17 @@ class TokenPairGenerator(
     fun generateOnExpiration(
         parsedRefreshToken: ParsedRefreshToken,
         now: LocalDateTime = LocalDateTime.now(),
-    ): TokenPair =
-        TokenPair(
+    ): TokenPair {
+        val generatedRefreshToken =
+            if (parsedRefreshToken.isExpiringSoon(now, jwtProperties.expirationThreshold)) {
+                jwtGenerator.generateRefreshToken(parsedRefreshToken.userId, now).also { refreshTokenStore.replace(it) }
+            } else {
+                ParsedRefreshToken.Empty
+            }
+        return TokenPair(
             parsedRefreshToken.userId,
             jwtGenerator.generateAccessToken(parsedRefreshToken.userId, now),
-            jwtGenerator.generateRefreshTokenOnExpiration(parsedRefreshToken, now),
-        ).also { if (parsedRefreshToken.isNotEmpty()) refreshTokenStore.replace(it.refreshToken) }
+            generatedRefreshToken,
+        )
+    }
 }

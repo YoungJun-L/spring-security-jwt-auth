@@ -1,7 +1,8 @@
-package com.youngjun.auth.domain.token
+package com.youngjun.auth.infra.jwt
 
-import com.youngjun.auth.security.config.JwtPropertiesBuilder
-import com.youngjun.auth.support.DomainTest
+import com.youngjun.auth.domain.token.JwtBuilder
+import com.youngjun.auth.domain.token.RawAccessToken
+import com.youngjun.auth.domain.token.RawRefreshToken
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.TOKEN_EXPIRED
 import com.youngjun.auth.support.error.ErrorType.TOKEN_INVALID
@@ -11,7 +12,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.time.Duration
 
-@DomainTest
 class JwtParserTest :
     FunSpec(
         {
