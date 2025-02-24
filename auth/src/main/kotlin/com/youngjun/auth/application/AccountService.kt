@@ -7,8 +7,6 @@ import com.youngjun.auth.domain.account.EmailAddress
 import com.youngjun.auth.domain.account.Password
 import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.RefreshTokenStore
-import com.youngjun.auth.domain.token.TokenPair
-import com.youngjun.auth.domain.token.TokenPairGenerator
 import com.youngjun.auth.domain.verificationCode.RawVerificationCode
 import com.youngjun.auth.domain.verificationCode.VerificationCodeReader
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -22,7 +20,6 @@ class AccountService(
     private val accountWriter: AccountWriter,
     private val passwordEncoder: PasswordEncoder,
     private val refreshTokenStore: RefreshTokenStore,
-    private val tokenPairGenerator: TokenPairGenerator,
     private val verificationCodeReader: VerificationCodeReader,
 ) : UserDetailsService {
     override fun loadUserByUsername(emailAddress: String): Account = accountReader.read(EmailAddress.from(emailAddress))
@@ -45,14 +42,4 @@ class AccountService(
             .also { refreshTokenStore.expireIfExists(it) }
 
     fun login(account: Account): Account = account.apply { enable() }.let { accountWriter.write(it) }
-
-    fun changePassword(
-        account: Account,
-        rawPassword: RawPassword,
-        now: LocalDateTime = LocalDateTime.now(),
-    ): TokenPair =
-        account
-            .apply { changePassword(rawPassword, passwordEncoder) }
-            .let { accountWriter.write(it) }
-            .let { tokenPairGenerator.generate(it.id, now) }
 }

@@ -3,6 +3,7 @@ package com.youngjun.auth.api.controller.v1
 import com.youngjun.auth.api.controller.v1.request.ChangePasswordRequest
 import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.application.AccountService
+import com.youngjun.auth.application.PasswordService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.token.TokenPairBuilder
@@ -28,11 +29,13 @@ import org.springframework.security.core.context.SecurityContextHolder
 
 class AccountControllerTest : RestDocsTest() {
     private lateinit var accountService: AccountService
+    private lateinit var passwordService: PasswordService
 
     @BeforeEach
     fun setUp() {
         accountService = mockk()
-        val accountController = AccountController(accountService)
+        passwordService = mockk()
+        val accountController = AccountController(accountService, passwordService)
         setMockMvc(accountController)
     }
 
@@ -72,7 +75,7 @@ class AccountControllerTest : RestDocsTest() {
     fun `비밀번호 변경 성공`() {
         val account = AccountBuilder().build()
         SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
-        every { accountService.changePassword(any(), any(), any()) } returns TokenPairBuilder(userId = account.id).build()
+        every { passwordService.changePassword(any(), any(), any()) } returns TokenPairBuilder(userId = account.id).build()
 
         given()
             .log()

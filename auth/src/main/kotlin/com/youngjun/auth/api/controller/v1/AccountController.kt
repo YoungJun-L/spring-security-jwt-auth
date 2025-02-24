@@ -4,6 +4,7 @@ import com.youngjun.auth.api.controller.v1.request.ChangePasswordRequest
 import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.api.controller.v1.response.AccountResponse
 import com.youngjun.auth.application.AccountService
+import com.youngjun.auth.application.PasswordService
 import com.youngjun.auth.domain.account.Account
 import com.youngjun.auth.security.handler.UserTokenResponse
 import com.youngjun.auth.support.response.AuthResponse
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class AccountController(
     private val accountService: AccountService,
+    private val passwordService: PasswordService,
 ) {
     @PostMapping("/auth/register")
     fun register(
@@ -29,7 +31,7 @@ class AccountController(
         account: Account,
         @RequestBody request: ChangePasswordRequest,
     ): AuthResponse<UserTokenResponse> {
-        val tokenPair = accountService.changePassword(account, request.toRawPassword())
+        val tokenPair = passwordService.changePassword(account, request.toRawPassword())
         return AuthResponse.success(UserTokenResponse.from(tokenPair))
     }
 }

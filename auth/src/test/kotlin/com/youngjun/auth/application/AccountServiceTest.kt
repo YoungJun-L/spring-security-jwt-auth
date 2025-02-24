@@ -3,7 +3,6 @@ package com.youngjun.auth.application
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.EmailAddressBuilder
-import com.youngjun.auth.domain.account.Password
 import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
@@ -17,7 +16,6 @@ import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_UNCHANGED_PASSWORD
 import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_EXPIRED
 import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_MISMATCHED
 import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_NOT_FOUND
@@ -161,28 +159,6 @@ class AccountServiceTest(
 
                     actual.id shouldBe account.id
                     actual.status shouldBe AccountStatus.ENABLED
-                }
-            }
-
-            context("비밀번호 변경") {
-                test("성공") {
-                    val account = AccountBuilder().build()
-                    val newPassword = RawPasswordBuilder(value = "newPassword").build()
-
-                    val actual = accountService.changePassword(account, newPassword)
-
-                    actual.userId shouldBe account.id
-                    actual.accessToken.userId shouldBe account.id
-                    actual.refreshToken.userId shouldBe account.id
-                    passwordEncoder.matches(newPassword.value, account.password) shouldBe true
-                }
-
-                test("기존 비밀번호와 동일하면 실패한다.") {
-                    val unchangedPassword = RawPasswordBuilder(value = "unchangedPassword").build()
-                    val account = AccountBuilder(password = Password.encodedWith(unchangedPassword, passwordEncoder)).build()
-
-                    shouldThrow<AuthException> { accountService.changePassword(account, unchangedPassword) }
-                        .errorType shouldBe ACCOUNT_UNCHANGED_PASSWORD
                 }
             }
         },
