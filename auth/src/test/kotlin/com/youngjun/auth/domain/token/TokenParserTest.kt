@@ -1,6 +1,5 @@
 package com.youngjun.auth.domain.token
 
-import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
@@ -17,7 +16,7 @@ import java.time.Duration
 @DomainContextTest
 class TokenParserTest(
     private val tokenParser: TokenParser,
-    private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
+    private val refreshTokenRepository: RefreshTokenRepository,
     private val jwtProperties: JwtProperties,
 ) : FunSpec(
         {
@@ -54,7 +53,7 @@ class TokenParserTest(
                     val userId = 1L
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value).build())
 
                     val actual = tokenParser.parse(rawRefreshToken)
 
@@ -78,7 +77,7 @@ class TokenParserTest(
                     val userId = 1L
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value, TokenStatus.EXPIRED).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value, TokenStatus.EXPIRED).build())
 
                     shouldThrow<AuthException> { tokenParser.parse(rawRefreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED

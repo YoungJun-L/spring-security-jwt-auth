@@ -1,21 +1,22 @@
 package com.youngjun.auth.domain.verificationCode
 
 import com.youngjun.auth.domain.account.EmailAddress
-import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDateTime
 
-@Repository
-class VerificationCodeRepository(
-    private val verificationCodeJpaRepository: VerificationCodeJpaRepository,
-) {
-    fun save(verificationCode: VerificationCode): VerificationCode = verificationCodeJpaRepository.save(verificationCode)
+fun VerificationCodeRepository.countSince(
+    emailAddress: EmailAddress,
+    since: LocalDateTime,
+): Int = countByEmailAddressAndCreatedAtGreaterThanEqual(emailAddress, since)
 
-    fun countSince(
+fun VerificationCodeRepository.findLatestBy(emailAddress: EmailAddress): VerificationCode? =
+    findFirstByEmailAddressOrderByCreatedAtDesc(emailAddress)
+
+interface VerificationCodeRepository : JpaRepository<VerificationCode, Long> {
+    fun countByEmailAddressAndCreatedAtGreaterThanEqual(
         emailAddress: EmailAddress,
-        since: LocalDateTime,
-    ): Int = verificationCodeJpaRepository.countByEmailAddressAndCreatedAtGreaterThanEqual(emailAddress, since)
+        createdAt: LocalDateTime,
+    ): Int
 
-    fun findLatestBy(emailAddress: EmailAddress): VerificationCode? =
-        verificationCodeJpaRepository.findFirstByEmailAddressOrderByCreatedAtDesc(emailAddress)
+    fun findFirstByEmailAddressOrderByCreatedAtDesc(emailAddress: EmailAddress): VerificationCode?
 }

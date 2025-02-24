@@ -13,7 +13,10 @@ class TokenParser(
     fun parse(rawAccessToken: RawAccessToken): ParsedAccessToken = ParsedAccessToken.of(rawAccessToken, jwtParser.parse(rawAccessToken))
 
     fun parse(rawRefreshToken: RawRefreshToken): ParsedRefreshToken =
-        ParsedRefreshToken.of(rawRefreshToken, jwtParser.parse(rawRefreshToken)).also {
-            refreshTokenRepository.findBy(it)?.verify() ?: throw AuthException(TOKEN_NOT_FOUND)
-        }
+        ParsedRefreshToken.of(rawRefreshToken, jwtParser.parse(rawRefreshToken)).also { verify(it) }
+
+    private fun verify(parsedRefreshToken: ParsedRefreshToken) {
+        refreshTokenRepository.findByUserId(parsedRefreshToken.userId)?.takeIf { it.isSameValue(parsedRefreshToken.value) }?.verify()
+            ?: throw AuthException(TOKEN_NOT_FOUND)
+    }
 }

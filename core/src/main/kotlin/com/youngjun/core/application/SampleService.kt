@@ -14,7 +14,7 @@ class SampleService(
     fun readSample(
         user: User,
         sampleId: Long,
-    ): Sample = sampleRepository.findBy(user, sampleId) ?: throw CoreException(SAMPLE_NOT_FOUND)
+    ): Sample = sampleRepository.findByIdAndUserId(user.id, sampleId) ?: throw CoreException(SAMPLE_NOT_FOUND)
 
-    fun readSamples(user: User): List<Sample> = sampleRepository.findAllBy(user)
+    fun readSamples(user: User): List<Sample> = sampleRepository.findAllByUserId(user.id)
 }

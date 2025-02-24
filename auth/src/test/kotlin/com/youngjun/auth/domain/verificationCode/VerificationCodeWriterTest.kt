@@ -1,6 +1,5 @@
 package com.youngjun.auth.domain.verificationCode
 
-import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.DomainContextTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -11,7 +10,7 @@ import org.springframework.data.repository.findByIdOrNull
 @DomainContextTest
 class VerificationCodeWriterTest(
     private val verificationCodeWriter: VerificationCodeWriter,
-    private val verificationCodeJpaRepository: VerificationCodeJpaRepository,
+    private val verificationCodeRepository: VerificationCodeRepository,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -23,7 +22,7 @@ class VerificationCodeWriterTest(
 
                     verificationCodeWriter.write(verificationCode)
 
-                    verificationCodeJpaRepository.findByIdOrNull(verificationCode.id)!!.code shouldBe verificationCode.code
+                    verificationCodeRepository.findByIdOrNull(verificationCode.id)!!.code shouldBe verificationCode.code
                 }
             }
         },

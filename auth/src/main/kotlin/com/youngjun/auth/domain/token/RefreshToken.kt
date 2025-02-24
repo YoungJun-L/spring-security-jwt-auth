@@ -31,6 +31,8 @@ class RefreshToken(
     var status = status
         protected set
 
+    fun isSameValue(value: String): Boolean = this.value == value
+
     fun verify() {
         when (status) {
             EXPIRED -> throw AuthException(TOKEN_EXPIRED)

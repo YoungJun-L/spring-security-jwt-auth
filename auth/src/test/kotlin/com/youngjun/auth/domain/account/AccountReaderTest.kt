@@ -1,6 +1,5 @@
 package com.youngjun.auth.domain.account
 
-import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
@@ -16,7 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 @DomainContextTest
 class AccountReaderTest(
     private val accountReader: AccountReader,
-    private val accountJpaRepository: AccountJpaRepository,
+    private val accountRepository: AccountRepository,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -24,7 +23,7 @@ class AccountReaderTest(
 
             context("이메일 주소로 조회") {
                 test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = accountRepository.save(AccountBuilder().build())
 
                     val actual = accountReader.read(account.emailAddress)
 
@@ -38,7 +37,7 @@ class AccountReaderTest(
 
             context("조회") {
                 test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.ENABLED).build())
+                    val account = accountRepository.save(AccountBuilder(status = AccountStatus.ENABLED).build())
 
                     val actual = accountReader.read(account.id)
 
@@ -58,7 +57,7 @@ class AccountReaderTest(
 
                 test("중복되는 경우") {
                     val emailAddress = EmailAddressBuilder().build()
-                    accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
+                    accountRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
                     shouldThrow<AuthException> { accountReader.checkNotDuplicate(emailAddress) }
                         .errorType shouldBe ACCOUNT_DUPLICATE

@@ -10,12 +10,12 @@ class RefreshTokenStore(
 ) {
     @Transactional
     fun replace(parsedRefreshToken: ParsedRefreshToken) {
-        refreshTokenRepository.deleteBy(parsedRefreshToken.userId)
-        refreshTokenRepository.save(parsedRefreshToken)
+        refreshTokenRepository.deleteByUserId(parsedRefreshToken.userId)
+        refreshTokenRepository.save(RefreshToken(parsedRefreshToken.userId, parsedRefreshToken.value))
     }
 
     @Transactional
     fun expireIfExists(account: Account) {
-        refreshTokenRepository.findBy(account)?.expire()
+        refreshTokenRepository.findByUserId(account.id)?.expire()
     }
 }

@@ -1,18 +1,18 @@
 package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.domain.account.AccountRepository
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
+import com.youngjun.auth.domain.token.RefreshTokenRepository
 import com.youngjun.auth.domain.token.TokenStatus
 import com.youngjun.auth.domain.verificationCode.RawVerificationCodeBuilder
+import com.youngjun.auth.domain.verificationCode.VerificationCodeRepository
 import com.youngjun.auth.domain.verificationCode.generateRawVerificationCodeExcluding
 import com.youngjun.auth.domain.verificationCode.generateVerificationCode
-import com.youngjun.auth.infra.db.AccountJpaRepository
-import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
-import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
@@ -32,9 +32,9 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class AccountServiceTest(
     private val accountService: AccountService,
     private val passwordEncoder: PasswordEncoder,
-    private val accountJpaRepository: AccountJpaRepository,
-    private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
-    private val verificationCodeJpaRepository: VerificationCodeJpaRepository,
+    private val accountRepository: AccountRepository,
+    private val refreshTokenRepository: RefreshTokenRepository,
+    private val verificationCodeRepository: VerificationCodeRepository,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -42,7 +42,7 @@ class AccountServiceTest(
 
             context("유저 조회") {
                 test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = accountRepository.save(AccountBuilder().build())
 
                     val actual = accountService.loadUserByUsername(account.emailAddress.value)
 
@@ -57,7 +57,7 @@ class AccountServiceTest(
             context("회원 가입") {
                 test("성공") {
                     val emailAddress = EmailAddressBuilder().build()
-                    val verificationCode = verificationCodeJpaRepository.save(generateVerificationCode(emailAddress))
+                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
 
                     val actual =
                         accountService.register(
@@ -72,7 +72,7 @@ class AccountServiceTest(
                 test("비밀번호는 인코딩된다.") {
                     val emailAddress = EmailAddressBuilder().build()
                     val rawPassword = RawPasswordBuilder().build()
-                    val verificationCode = verificationCodeJpaRepository.save(generateVerificationCode(emailAddress))
+                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
 
                     val actual =
                         accountService.register(
@@ -86,7 +86,7 @@ class AccountServiceTest(
 
                 test("중복된 이메일 주소가 존재하면 실패한다.") {
                     val emailAddress = EmailAddressBuilder().build()
-                    accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
+                    accountRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
                     shouldThrow<AuthException> {
                         accountService.register(emailAddress, RawPasswordBuilder().build(), RawVerificationCodeBuilder().build())
@@ -105,7 +105,7 @@ class AccountServiceTest(
 
                 test("인증 코드가 일치하지 않으면 실패한다.") {
                     val emailAddress = EmailAddressBuilder().build()
-                    val verificationCode = verificationCodeJpaRepository.save(generateVerificationCode(emailAddress))
+                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
 
                     shouldThrow<AuthException> {
                         accountService.register(
@@ -118,7 +118,7 @@ class AccountServiceTest(
 
                 test("인증 코드 유효 기간이 지났으면 실패한다.") {
                     val emailAddress = EmailAddressBuilder().build()
-                    val verificationCode = verificationCodeJpaRepository.save(generateVerificationCode(emailAddress))
+                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
 
                     shouldThrow<AuthException> {
                         accountService.register(
@@ -142,12 +142,12 @@ class AccountServiceTest(
                 }
 
                 test("refreshToken 이 만료된다.") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
-                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(userId = account.id).build())
+                    val account = accountRepository.save(AccountBuilder().build())
+                    val refreshToken = refreshTokenRepository.save(RefreshTokenBuilder(userId = account.id).build())
 
                     accountService.logout(account)
 
-                    refreshTokenJpaRepository.findByIdOrNull(refreshToken.id)!!.status shouldBe TokenStatus.EXPIRED
+                    refreshTokenRepository.findByIdOrNull(refreshToken.id)!!.status shouldBe TokenStatus.EXPIRED
                 }
             }
 

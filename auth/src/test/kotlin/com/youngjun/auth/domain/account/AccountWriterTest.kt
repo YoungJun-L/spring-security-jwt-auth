@@ -1,6 +1,5 @@
 package com.youngjun.auth.domain.account
 
-import com.youngjun.auth.infra.db.AccountJpaRepository
 import com.youngjun.auth.support.DomainContextTest
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
@@ -11,7 +10,7 @@ import org.springframework.data.repository.findByIdOrNull
 @DomainContextTest
 class AccountWriterTest(
     private val accountWriter: AccountWriter,
-    private val accountJpaRepository: AccountJpaRepository,
+    private val accountRepository: AccountRepository,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -23,7 +22,7 @@ class AccountWriterTest(
 
                     accountWriter.write(account)
 
-                    accountJpaRepository.findByIdOrNull(account.id)!!.emailAddress shouldBe account.emailAddress
+                    accountRepository.findByIdOrNull(account.id)!!.emailAddress shouldBe account.emailAddress
                 }
             }
         },

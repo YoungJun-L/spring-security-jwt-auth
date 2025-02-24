@@ -1,7 +1,6 @@
 package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.domain.support.seconds
-import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.DomainContextTest
 import io.kotest.core.spec.IsolationMode
@@ -13,7 +12,7 @@ import java.time.LocalDateTime
 @DomainContextTest
 class TokenPairGeneratorTest(
     private val tokenPairGenerator: TokenPairGenerator,
-    private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
+    private val refreshTokenRepository: RefreshTokenRepository,
     private val jwtProperties: JwtProperties,
 ) : FunSpec(
         {
@@ -33,11 +32,11 @@ class TokenPairGeneratorTest(
 
                 test("이전 refreshToken 은 교체된다.") {
                     val userId = 1L
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(userId).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId).build())
 
                     val actual = tokenPairGenerator.generate(userId)
 
-                    refreshTokenJpaRepository.findByUserId(userId)!!.value shouldBe actual.refreshToken.value
+                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe actual.refreshToken.value
                 }
             }
 
@@ -87,11 +86,11 @@ class TokenPairGeneratorTest(
                             issuedAt = now,
                             expiresIn = jwtProperties.expirationThreshold,
                         ).build()
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(userId = userId).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId = userId).build())
 
                     val actual = tokenPairGenerator.generateOnExpiration(parsedRefreshToken, now)
 
-                    refreshTokenJpaRepository.findByUserId(userId)!!.value shouldBe actual.refreshToken.value
+                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe actual.refreshToken.value
                 }
 
                 test("refreshToken 이 갱신되지 않으면 이전 refreshToken 과 교체되지 않는다.") {
@@ -103,11 +102,11 @@ class TokenPairGeneratorTest(
                             issuedAt = now,
                             expiresIn = jwtProperties.expirationThreshold + 1.seconds,
                         ).build()
-                    val refreshToken = refreshTokenJpaRepository.save(RefreshTokenBuilder(userId = userId).build())
+                    val refreshToken = refreshTokenRepository.save(RefreshTokenBuilder(userId = userId).build())
 
                     tokenPairGenerator.generateOnExpiration(parsedRefreshToken, now)
 
-                    refreshTokenJpaRepository.findByUserId(userId)!!.value shouldBe refreshToken.value
+                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe refreshToken.value
                 }
             }
         },

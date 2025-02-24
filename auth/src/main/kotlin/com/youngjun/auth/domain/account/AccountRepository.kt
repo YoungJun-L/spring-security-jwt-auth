@@ -1,18 +1,9 @@
 package com.youngjun.auth.domain.account
 
-import com.youngjun.auth.infra.db.AccountJpaRepository
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
 
-@Repository
-class AccountRepository(
-    private val accountJpaRepository: AccountJpaRepository,
-) {
-    fun save(account: Account): Account = accountJpaRepository.save(account)
+interface AccountRepository : JpaRepository<Account, Long> {
+    fun findByEmailAddress(emailAddress: EmailAddress): Account?
 
-    fun findBy(emailAddress: EmailAddress): Account? = accountJpaRepository.findByEmailAddress(emailAddress)
-
-    fun findBy(id: Long): Account? = accountJpaRepository.findByIdOrNull(id)
-
-    fun existsBy(emailAddress: EmailAddress): Boolean = accountJpaRepository.existsByEmailAddress(emailAddress)
+    fun existsByEmailAddress(emailAddress: EmailAddress): Boolean
 }

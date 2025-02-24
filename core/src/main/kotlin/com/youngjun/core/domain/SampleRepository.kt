@@ -1,16 +1,12 @@
 package com.youngjun.core.domain
 
-import com.youngjun.core.infra.db.SampleJpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
 
-@Repository
-class SampleRepository(
-    private val sampleJpaRepository: SampleJpaRepository,
-) {
-    fun findBy(
-        user: User,
-        sampleId: Long,
-    ): Sample? = sampleJpaRepository.findByIdAndUserId(sampleId, user.id)
+interface SampleRepository : JpaRepository<Sample, Long> {
+    fun findByIdAndUserId(
+        id: Long,
+        userId: Long,
+    ): Sample?
 
-    fun findAllBy(user: User): List<Sample> = sampleJpaRepository.findAllByUserId(user.id)
+    fun findAllByUserId(userId: Long): List<Sample>
 }

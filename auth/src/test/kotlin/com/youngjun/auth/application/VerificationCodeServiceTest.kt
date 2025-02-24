@@ -1,12 +1,12 @@
 package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.domain.account.AccountRepository
 import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.support.seconds
+import com.youngjun.auth.domain.verificationCode.VerificationCodeRepository
 import com.youngjun.auth.domain.verificationCode.generateVerificationCode
-import com.youngjun.auth.infra.db.AccountJpaRepository
-import com.youngjun.auth.infra.db.VerificationCodeJpaRepository
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
@@ -20,8 +20,8 @@ import io.kotest.matchers.shouldBe
 @ApplicationContextTest
 class VerificationCodeServiceTest(
     private val verificationCodeService: VerificationCodeService,
-    private val verificationCodeJpaRepository: VerificationCodeJpaRepository,
-    private val accountJpaRepository: AccountJpaRepository,
+    private val verificationCodeRepository: VerificationCodeRepository,
+    private val accountRepository: AccountRepository,
 ) : FunSpec(
         {
             extensions(SpringExtension)
@@ -40,7 +40,7 @@ class VerificationCodeServiceTest(
 
                 test("가입된 이메일 주소가 존재하면 실패한다.") {
                     val emailAddress = EmailAddressBuilder().build()
-                    accountJpaRepository.save(AccountBuilder(emailAddress = emailAddress).build())
+                    accountRepository.save(AccountBuilder(emailAddress = emailAddress).build())
 
                     shouldThrow<AuthException> { verificationCodeService.generate(emailAddress) }
                         .errorType shouldBe ACCOUNT_DUPLICATE
@@ -49,7 +49,7 @@ class VerificationCodeServiceTest(
                 test("10분 내 발급된 인증 코드가 5개 이상이면 실패한다.") {
                     val emailAddress = EmailAddressBuilder().build()
                     val verificationCodes =
-                        verificationCodeJpaRepository.saveAll(List(5) { generateVerificationCode(emailAddress = emailAddress) })
+                        verificationCodeRepository.saveAll(List(5) { generateVerificationCode(emailAddress = emailAddress) })
 
                     shouldThrow<AuthException> {
                         verificationCodeService.generate(emailAddress, verificationCodes.first().createdAt + 10.minutes - 1.seconds)

@@ -1,15 +1,15 @@
 package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.domain.account.AccountRepository
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.domain.token.JwtBuilder
 import com.youngjun.auth.domain.token.RawAccessToken
 import com.youngjun.auth.domain.token.RawRefreshToken
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
+import com.youngjun.auth.domain.token.RefreshTokenRepository
 import com.youngjun.auth.domain.token.TokenStatus
-import com.youngjun.auth.infra.db.AccountJpaRepository
-import com.youngjun.auth.infra.db.RefreshTokenJpaRepository
 import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
@@ -29,8 +29,8 @@ import java.time.LocalDateTime
 @ApplicationContextTest
 class TokenServiceTest(
     private val tokenService: TokenService,
-    private val refreshTokenJpaRepository: RefreshTokenJpaRepository,
-    private val accountJpaRepository: AccountJpaRepository,
+    private val refreshTokenRepository: RefreshTokenRepository,
+    private val accountRepository: AccountRepository,
     private val jwtProperties: JwtProperties,
 ) : FunSpec(
         {
@@ -51,7 +51,7 @@ class TokenServiceTest(
 
             context("토큰 재발급") {
                 test("refreshToken 이 아직 만료되지 않았으면 refreshToken 은 갱신되지 않는다.") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = accountRepository.save(AccountBuilder().build())
                     val now = LocalDateTime.now()
                     val rawRefreshToken =
                         RawRefreshToken(
@@ -62,7 +62,7 @@ class TokenServiceTest(
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
                         )
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
 
                     val actual = tokenService.reissue(rawRefreshToken, now)
 
@@ -72,7 +72,7 @@ class TokenServiceTest(
                 }
 
                 test("refreshToken 이 곧 만료되면 refreshToken 도 갱신된다.") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = accountRepository.save(AccountBuilder().build())
                     val now = LocalDateTime.now()
                     val rawRefreshToken =
                         RawRefreshToken(
@@ -83,7 +83,7 @@ class TokenServiceTest(
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
                         )
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
 
                     val actual = tokenService.reissue(rawRefreshToken, now)
 
@@ -93,10 +93,10 @@ class TokenServiceTest(
                 }
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
-                    val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.DISABLED).build())
+                    val account = accountRepository.save(AccountBuilder(status = AccountStatus.DISABLED).build())
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
                         .errorType shouldBe ACCOUNT_DISABLED
@@ -108,7 +108,7 @@ class TokenServiceTest(
                 }
 
                 test("refreshToken 의 유효 기간이 지났으면 실패한다.") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = accountRepository.save(AccountBuilder().build())
                     val rawRefreshToken =
                         RawRefreshToken(
                             JwtBuilder(
@@ -117,17 +117,17 @@ class TokenServiceTest(
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
                         )
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED
                 }
 
                 test("refreshToken 이 만료되었으면 실패한다.") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = accountRepository.save(AccountBuilder().build())
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value, TokenStatus.EXPIRED).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value, TokenStatus.EXPIRED).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED
@@ -143,7 +143,7 @@ class TokenServiceTest(
                     val account = AccountBuilder().build()
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
                         .errorType shouldBe UNAUTHORIZED
@@ -152,7 +152,7 @@ class TokenServiceTest(
 
             context("accessToken 파싱") {
                 test("성공") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = accountRepository.save(AccountBuilder().build())
                     val rawAccessToken =
                         RawAccessToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.accessSecretKey).build())
 
@@ -162,7 +162,7 @@ class TokenServiceTest(
                 }
 
                 test("서비스 이용이 제한된 유저이면 실패한다.") {
-                    val account = accountJpaRepository.save(AccountBuilder(status = AccountStatus.DISABLED).build())
+                    val account = accountRepository.save(AccountBuilder(status = AccountStatus.DISABLED).build())
                     val rawAccessToken =
                         RawAccessToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.accessSecretKey).build())
 
@@ -176,7 +176,7 @@ class TokenServiceTest(
                 }
 
                 test("accessToken 의 유효 기간이 지났으면 실패한다.") {
-                    val account = accountJpaRepository.save(AccountBuilder().build())
+                    val account = accountRepository.save(AccountBuilder().build())
                     val rawAccessToken =
                         RawAccessToken(
                             JwtBuilder(
@@ -185,7 +185,7 @@ class TokenServiceTest(
                                 secretKey = jwtProperties.accessSecretKey,
                             ).build(),
                         )
-                    refreshTokenJpaRepository.save(RefreshTokenBuilder(account.id, rawAccessToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawAccessToken.value).build())
 
                     shouldThrow<AuthException> { tokenService.parse(rawAccessToken) }
                         .errorType shouldBe TOKEN_EXPIRED
