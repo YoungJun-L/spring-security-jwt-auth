@@ -16,7 +16,7 @@ class TokenParser(
         ParsedRefreshToken.of(rawRefreshToken, jwtParser.parse(rawRefreshToken)).also { verify(it) }
 
     private fun verify(parsedRefreshToken: ParsedRefreshToken) {
-        refreshTokenRepository.findByUserId(parsedRefreshToken.userId)?.takeIf { it.isSameValue(parsedRefreshToken.value) }?.verify()
+        refreshTokenRepository.findByUserId(parsedRefreshToken.userId)?.takeIf { it.matches(parsedRefreshToken.value) }?.verify()
             ?: throw AuthException(TOKEN_NOT_FOUND)
     }
 }

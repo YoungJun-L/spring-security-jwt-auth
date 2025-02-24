@@ -31,7 +31,7 @@ class RefreshToken(
     var status = status
         protected set
 
-    fun isSameValue(value: String): Boolean = this.value == value
+    fun matches(value: String): Boolean = this.value == value
 
     fun verify() {
         when (status) {
