@@ -5,12 +5,12 @@ import com.youngjun.auth.domain.account.AccountRepository
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.support.days
 import com.youngjun.auth.domain.support.seconds
-import com.youngjun.auth.domain.token.JwtBuilder
 import com.youngjun.auth.domain.token.RawAccessToken
 import com.youngjun.auth.domain.token.RawRefreshToken
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.RefreshTokenRepository
 import com.youngjun.auth.domain.token.TokenStatus
+import com.youngjun.auth.infra.jwt.JwtBuilder
 import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException

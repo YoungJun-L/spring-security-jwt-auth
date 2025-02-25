@@ -1,6 +1,7 @@
 package com.youngjun.auth.domain.token
 
 import com.youngjun.auth.domain.support.days
+import com.youngjun.auth.infra.jwt.JwtBuilder
 import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException

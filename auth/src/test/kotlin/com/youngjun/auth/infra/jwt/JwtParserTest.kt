@@ -1,6 +1,5 @@
 package com.youngjun.auth.infra.jwt
 
-import com.youngjun.auth.domain.token.JwtBuilder
 import com.youngjun.auth.domain.token.RawAccessToken
 import com.youngjun.auth.domain.token.RawRefreshToken
 import com.youngjun.auth.support.error.AuthException
