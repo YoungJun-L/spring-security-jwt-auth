@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
 import org.springframework.web.filter.CharacterEncodingFilter
 
+@Tag("core")
 @Tag("restDocs")
 @ActiveProfiles("test")
 @ExtendWith(RestDocumentationExtension::class)

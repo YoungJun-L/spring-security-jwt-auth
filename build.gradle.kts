@@ -80,6 +80,7 @@ subprojects {
         description = "Runs presentation-layer tests."
         useJUnitPlatform {
             includeTags("restDocs")
+            excludeTags("core")
         }
     }
 
