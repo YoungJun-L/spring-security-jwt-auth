@@ -19,10 +19,5 @@ data class ParsedRefreshToken(
 
     companion object {
         val Empty: ParsedRefreshToken = ParsedRefreshToken("", Payload.Empty)
-
-        fun of(
-            rawRefreshToken: RawRefreshToken,
-            payload: Payload,
-        ): ParsedRefreshToken = ParsedRefreshToken(rawRefreshToken.value, payload)
     }
 }

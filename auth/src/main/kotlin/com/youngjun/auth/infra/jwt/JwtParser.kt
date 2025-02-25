@@ -1,6 +1,8 @@
 package com.youngjun.auth.infra.jwt
 
 import com.youngjun.auth.domain.support.toLocalDateTime
+import com.youngjun.auth.domain.token.ParsedAccessToken
+import com.youngjun.auth.domain.token.ParsedRefreshToken
 import com.youngjun.auth.domain.token.Payload
 import com.youngjun.auth.domain.token.RawAccessToken
 import com.youngjun.auth.domain.token.RawRefreshToken
@@ -19,9 +21,11 @@ class JwtParser(
     private val accessTokenParser: JwtParser = Jwts.parser().verifyWith(jwtProperties.accessSecretKey).build()
     private val refreshTokenParser: JwtParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
 
-    fun parse(rawAccessToken: RawAccessToken): Payload = parseToken(accessTokenParser, rawAccessToken.value)
+    fun parse(rawAccessToken: RawAccessToken): ParsedAccessToken =
+        rawAccessToken.parsed(parseToken(accessTokenParser, rawAccessToken.value))
 
-    fun parse(rawRefreshToken: RawRefreshToken): Payload = parseToken(refreshTokenParser, rawRefreshToken.value)
+    fun parse(rawRefreshToken: RawRefreshToken): ParsedRefreshToken =
+        rawRefreshToken.parsed(parseToken(refreshTokenParser, rawRefreshToken.value))
 
     private fun parseToken(
         parser: JwtParser,

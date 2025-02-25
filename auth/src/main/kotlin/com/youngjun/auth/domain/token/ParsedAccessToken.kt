@@ -8,11 +8,4 @@ data class ParsedAccessToken(
 ) {
     val userId: Long get() = payload.userId
     val expiration: LocalDateTime get() = payload.expiration
-
-    companion object {
-        fun of(
-            rawAccessToken: RawAccessToken,
-            payload: Payload,
-        ): ParsedAccessToken = ParsedAccessToken(rawAccessToken.value, payload)
-    }
 }
