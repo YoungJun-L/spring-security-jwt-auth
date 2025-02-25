@@ -1,5 +1,6 @@
 package com.youngjun.auth.domain.token
 
+import com.youngjun.auth.domain.support.days
 import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
@@ -12,6 +13,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import java.time.Duration
+import java.time.LocalDateTime
 
 @DomainContextTest
 class TokenParserTest(
@@ -86,6 +88,25 @@ class TokenParserTest(
                 test("refreshToken 이 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> {
                         tokenParser.parse(RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey).build()))
+                    }.errorType shouldBe TOKEN_NOT_FOUND
+                }
+
+                test("저장된 refreshToken 의 값과 일치하지 않으면 실패한다.") {
+                    val userId = 1L
+                    val rawRefreshToken =
+                        RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value).build())
+
+                    shouldThrow<AuthException> {
+                        tokenParser.parse(
+                            RawRefreshToken(
+                                JwtBuilder(
+                                    secretKey = jwtProperties.refreshSecretKey,
+                                    subject = userId.toString(),
+                                    issuedAt = LocalDateTime.now() + 1.days,
+                                ).build(),
+                            ),
+                        )
                     }.errorType shouldBe TOKEN_NOT_FOUND
                 }
             }
