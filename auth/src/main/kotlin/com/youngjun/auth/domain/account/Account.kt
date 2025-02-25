@@ -66,7 +66,7 @@ class Account(
         rawPassword: RawPassword,
         passwordEncoder: PasswordEncoder,
     ) {
-        this.password.checkChanged(rawPassword, passwordEncoder)
-        this.password = Password.encodedWith(rawPassword, passwordEncoder)
+        password.checkChanged(rawPassword, passwordEncoder)
+        password = Password.encodedWith(rawPassword, passwordEncoder)
     }
 }
