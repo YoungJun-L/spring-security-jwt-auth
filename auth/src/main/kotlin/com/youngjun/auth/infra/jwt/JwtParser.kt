@@ -22,10 +22,10 @@ class JwtParser(
     private val refreshTokenParser: JwtParser = Jwts.parser().verifyWith(jwtProperties.refreshSecretKey).build()
 
     fun parse(rawAccessToken: RawAccessToken): ParsedAccessToken =
-        rawAccessToken.parsed(parseToken(accessTokenParser, rawAccessToken.value))
+        ParsedAccessToken(rawAccessToken, parseToken(accessTokenParser, rawAccessToken.rawValue))
 
     fun parse(rawRefreshToken: RawRefreshToken): ParsedRefreshToken =
-        rawRefreshToken.parsed(parseToken(refreshTokenParser, rawRefreshToken.value))
+        ParsedRefreshToken(rawRefreshToken, parseToken(refreshTokenParser, rawRefreshToken.rawValue))
 
     private fun parseToken(
         parser: JwtParser,

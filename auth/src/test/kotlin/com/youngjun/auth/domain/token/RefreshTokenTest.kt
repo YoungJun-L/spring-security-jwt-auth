@@ -32,11 +32,11 @@ class RefreshTokenTest :
 
             context("값 일치 여부 검증") {
                 test("일치하는 경우") {
-                    RefreshTokenBuilder(value = "a").build().matches("a") shouldBe true
+                    RefreshTokenBuilder(value = RawRefreshToken("a")).build().matches(RawRefreshToken("a")) shouldBe true
                 }
 
                 test("다른 경우") {
-                    RefreshTokenBuilder(value = "a").build().matches("b") shouldBe false
+                    RefreshTokenBuilder(value = RawRefreshToken("a")).build().matches(RawRefreshToken("b")) shouldBe false
                 }
             }
         },

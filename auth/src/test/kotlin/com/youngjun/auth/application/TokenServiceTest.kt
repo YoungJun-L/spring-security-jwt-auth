@@ -63,7 +63,7 @@ class TokenServiceTest(
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
                         )
-                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken).build())
 
                     val actual = tokenService.reissue(rawRefreshToken, now)
 
@@ -84,7 +84,7 @@ class TokenServiceTest(
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
                         )
-                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken).build())
 
                     val actual = tokenService.reissue(rawRefreshToken, now)
 
@@ -97,7 +97,7 @@ class TokenServiceTest(
                     val account = accountRepository.save(AccountBuilder(status = AccountStatus.DISABLED).build())
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
-                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
                         .errorType shouldBe ACCOUNT_DISABLED
@@ -118,7 +118,7 @@ class TokenServiceTest(
                                 secretKey = jwtProperties.refreshSecretKey,
                             ).build(),
                         )
-                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED
@@ -128,7 +128,7 @@ class TokenServiceTest(
                     val account = accountRepository.save(AccountBuilder().build())
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
-                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value, TokenStatus.EXPIRED).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken, TokenStatus.EXPIRED).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED
@@ -144,7 +144,7 @@ class TokenServiceTest(
                     val userId = 1L
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
-                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken).build())
 
                     shouldThrow<AuthException> {
                         tokenService.reissue(
@@ -163,7 +163,7 @@ class TokenServiceTest(
                     val account = AccountBuilder().build()
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.refreshSecretKey).build())
-                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawRefreshToken).build())
 
                     shouldThrow<AuthException> { tokenService.reissue(rawRefreshToken) }
                         .errorType shouldBe UNAUTHORIZED
@@ -205,7 +205,7 @@ class TokenServiceTest(
                                 secretKey = jwtProperties.accessSecretKey,
                             ).build(),
                         )
-                    refreshTokenRepository.save(RefreshTokenBuilder(account.id, rawAccessToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(account.id).build())
 
                     shouldThrow<AuthException> { tokenService.parse(rawAccessToken) }
                         .errorType shouldBe TOKEN_EXPIRED

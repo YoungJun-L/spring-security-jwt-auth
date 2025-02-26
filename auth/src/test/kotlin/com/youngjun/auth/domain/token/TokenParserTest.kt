@@ -56,7 +56,7 @@ class TokenParserTest(
                     val userId = 1L
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
-                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken).build())
 
                     val actual = tokenParser.parse(rawRefreshToken)
 
@@ -80,7 +80,7 @@ class TokenParserTest(
                     val userId = 1L
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
-                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value, TokenStatus.EXPIRED).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken, TokenStatus.EXPIRED).build())
 
                     shouldThrow<AuthException> { tokenParser.parse(rawRefreshToken) }
                         .errorType shouldBe TOKEN_EXPIRED
@@ -96,7 +96,7 @@ class TokenParserTest(
                     val userId = 1L
                     val rawRefreshToken =
                         RawRefreshToken(JwtBuilder(secretKey = jwtProperties.refreshSecretKey, subject = userId.toString()).build())
-                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken.value).build())
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId, rawRefreshToken).build())
 
                     shouldThrow<AuthException> {
                         tokenParser.parse(

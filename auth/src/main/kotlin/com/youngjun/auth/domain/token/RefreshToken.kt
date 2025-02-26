@@ -15,7 +15,7 @@ import jakarta.persistence.Table
 @Entity
 class RefreshToken(
     userId: Long,
-    value: String,
+    value: RawRefreshToken,
     status: TokenStatus = ENABLED,
 ) : BaseEntity() {
     @Column
@@ -31,7 +31,7 @@ class RefreshToken(
     var status = status
         protected set
 
-    fun matches(value: String): Boolean = this.value == value
+    fun matches(value: RawRefreshToken): Boolean = this.value == value
 
     fun verify() {
         when (status) {

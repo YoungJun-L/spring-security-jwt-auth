@@ -3,7 +3,7 @@ package com.youngjun.auth.domain.token
 import java.time.LocalDateTime
 
 data class ParsedAccessToken(
-    val value: String,
+    val value: RawAccessToken,
     private val payload: Payload,
 ) {
     val userId: Long get() = payload.userId

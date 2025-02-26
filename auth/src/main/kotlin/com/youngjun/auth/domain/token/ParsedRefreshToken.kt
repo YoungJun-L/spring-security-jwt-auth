@@ -4,7 +4,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 data class ParsedRefreshToken(
-    val value: String,
+    val value: RawRefreshToken,
     private val payload: Payload,
 ) {
     val userId: Long get() = payload.userId
@@ -18,6 +18,6 @@ data class ParsedRefreshToken(
     ): Boolean = now in (expiration - threshold..<expiration)
 
     companion object {
-        val Empty: ParsedRefreshToken = ParsedRefreshToken("", Payload.Empty)
+        val Empty: ParsedRefreshToken = ParsedRefreshToken(RawRefreshToken(""), Payload.Empty)
     }
 }

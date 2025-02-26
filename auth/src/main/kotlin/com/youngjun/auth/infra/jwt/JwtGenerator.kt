@@ -4,6 +4,8 @@ import com.youngjun.auth.domain.support.toInstant
 import com.youngjun.auth.domain.token.ParsedAccessToken
 import com.youngjun.auth.domain.token.ParsedRefreshToken
 import com.youngjun.auth.domain.token.Payload
+import com.youngjun.auth.domain.token.RawAccessToken
+import com.youngjun.auth.domain.token.RawRefreshToken
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -19,7 +21,7 @@ class JwtGenerator(
         now: LocalDateTime = LocalDateTime.now(),
     ): ParsedAccessToken =
         ParsedAccessToken(
-            buildJwt(userId, now, now + jwtProperties.accessTokenExpiresIn, jwtProperties.accessSecretKey),
+            RawAccessToken(buildJwt(userId, now, now + jwtProperties.accessTokenExpiresIn, jwtProperties.accessSecretKey)),
             Payload(
                 userId,
                 now + jwtProperties.accessTokenExpiresIn,
@@ -31,7 +33,7 @@ class JwtGenerator(
         now: LocalDateTime = LocalDateTime.now(),
     ): ParsedRefreshToken =
         ParsedRefreshToken(
-            buildJwt(userId, now, now + jwtProperties.refreshTokenExpiresIn, jwtProperties.refreshSecretKey),
+            RawRefreshToken(buildJwt(userId, now, now + jwtProperties.refreshTokenExpiresIn, jwtProperties.refreshSecretKey)),
             Payload(
                 userId,
                 now + jwtProperties.refreshTokenExpiresIn,

@@ -9,7 +9,7 @@ import javax.crypto.SecretKey
 
 data class RefreshTokenBuilder(
     val userId: Long = 123456789,
-    val value: String = JwtBuilder().build(),
+    val value: RawRefreshToken = RawRefreshToken(JwtBuilder(subject = userId.toString()).build()),
     val status: TokenStatus = TokenStatus.ENABLED,
 ) {
     fun build(): RefreshToken =
@@ -22,8 +22,8 @@ data class RefreshTokenBuilder(
 
 data class TokenPairBuilder(
     val userId: Long = 425002570,
-    val accessToken: ParsedAccessToken = ParsedAccessTokenBuilder().build(),
-    val refreshToken: ParsedRefreshToken = ParsedRefreshTokenBuilder().build(),
+    val accessToken: ParsedAccessToken = ParsedAccessTokenBuilder(userId = userId).build(),
+    val refreshToken: ParsedRefreshToken = ParsedRefreshTokenBuilder(userId = userId).build(),
 ) {
     fun build(): TokenPair =
         TokenPair(
@@ -44,7 +44,7 @@ data class ParsedAccessTokenBuilder(
 ) {
     fun build(): ParsedAccessToken =
         ParsedAccessToken(
-            value = JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build(),
+            value = RawAccessToken(JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build()),
             payload = PayloadBuilder(userId, issuedAt + expiresIn).build(),
         )
 }
@@ -60,7 +60,7 @@ data class ParsedRefreshTokenBuilder(
 ) {
     fun build(): ParsedRefreshToken =
         ParsedRefreshToken(
-            value = JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build(),
+            value = RawRefreshToken(JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build()),
             payload = PayloadBuilder(userId, issuedAt + expiresIn).build(),
         )
 }

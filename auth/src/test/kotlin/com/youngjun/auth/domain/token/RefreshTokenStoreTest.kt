@@ -21,12 +21,13 @@ class RefreshTokenStoreTest(
 
             context("이전 refreshToken 과 교체") {
                 test("성공") {
-                    val refreshToken = refreshTokenRepository.save(RefreshTokenBuilder().build())
-                    val parsedRefreshToken = ParsedRefreshTokenBuilder(refreshToken.userId).build()
+                    val userId = 1L
+                    refreshTokenRepository.save(RefreshTokenBuilder(userId = userId).build())
+                    val newToken = ParsedRefreshTokenBuilder(userId = userId).build()
 
-                    refreshTokenStore.replace(parsedRefreshToken)
+                    refreshTokenStore.replace(newToken)
 
-                    refreshTokenRepository.findByUserId(parsedRefreshToken.userId)!!.value shouldBe parsedRefreshToken.value
+                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe newToken.value
                 }
             }
 
