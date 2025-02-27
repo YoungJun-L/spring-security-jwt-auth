@@ -16,6 +16,7 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     runtimeOnly("com.h2database:h2")
 
+    testImplementation(project(":test"))
     testImplementation("org.springframework.security:spring-security-test")
 }
 

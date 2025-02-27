@@ -41,14 +41,6 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-reflect")
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-        testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-        testImplementation("org.springframework.restdocs:spring-restdocs-restassured")
-        testImplementation("io.rest-assured:spring-mock-mvc")
-        testImplementation("com.ninja-squad:springmockk:${property("springMockkVersion")}")
-        testImplementation("io.kotest:kotest-runner-junit5:${property("kotestVersion")}")
-        testImplementation("io.kotest.extensions:kotest-extensions-spring:${property("kotestExtensionsSpringVersion")}")
     }
 
     tasks.getByName("bootJar") {

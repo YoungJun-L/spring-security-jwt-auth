@@ -1,4 +1,4 @@
-package com.youngjun.auth.support
+package com.youngjun.test
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

@@ -1,4 +1,4 @@
-package com.youngjun.auth.support
+package com.youngjun.test
 
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType

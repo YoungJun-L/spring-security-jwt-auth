@@ -13,10 +13,10 @@ import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.domain.token.TokenPairBuilder
 import com.youngjun.auth.security.filter.LoginRequest
 import com.youngjun.auth.support.SecurityContextTest
-import com.youngjun.auth.support.description
 import com.youngjun.auth.support.error.ErrorCode
-import com.youngjun.auth.support.ignored
-import com.youngjun.auth.support.type
+import com.youngjun.test.description
+import com.youngjun.test.ignored
+import com.youngjun.test.type
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.restassured.http.ContentType

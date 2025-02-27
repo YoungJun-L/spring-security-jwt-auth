@@ -1,5 +1,6 @@
 package com.youngjun.auth.api.controller.v1
 
+import com.youngjun.auth.api.config.AccountArgumentResolver
 import com.youngjun.auth.api.controller.v1.request.ChangePasswordRequest
 import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.application.AccountService
@@ -8,10 +9,10 @@ import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.token.TokenPairBuilder
 import com.youngjun.auth.security.token.JwtAuthenticationToken
-import com.youngjun.auth.support.RestDocsTest
-import com.youngjun.auth.support.description
-import com.youngjun.auth.support.ignored
-import com.youngjun.auth.support.type
+import com.youngjun.test.RestDocsTest
+import com.youngjun.test.description
+import com.youngjun.test.ignored
+import com.youngjun.test.type
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType
@@ -36,7 +37,7 @@ class AccountControllerTest : RestDocsTest() {
         accountService = mockk()
         passwordService = mockk()
         val accountController = AccountController(accountService, passwordService)
-        setMockMvc(accountController)
+        setMockMvc(accountController, AccountArgumentResolver)
     }
 
     @Test

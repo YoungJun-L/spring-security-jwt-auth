@@ -1,14 +1,17 @@
 package com.youngjun.core.api.controller.v1
 
+import com.youngjun.core.api.config.AnyUserArgumentResolver
+import com.youngjun.core.api.config.UserArgumentResolver
 import com.youngjun.core.application.SampleService
 import com.youngjun.core.domain.Sample
-import com.youngjun.core.support.RestDocsTest
-import com.youngjun.core.support.description
-import com.youngjun.core.support.ignored
-import com.youngjun.core.support.type
+import com.youngjun.test.RestDocsTest
+import com.youngjun.test.description
+import com.youngjun.test.ignored
+import com.youngjun.test.type
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType
+import io.restassured.http.Cookie
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,6 +25,8 @@ import org.springframework.restdocs.payload.JsonFieldType.OBJECT
 import org.springframework.restdocs.payload.JsonFieldType.STRING
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 
+private val userCookie: Cookie = Cookie.Builder("USER_ID", "1").build()
+
 class SampleControllerTest : RestDocsTest() {
     private lateinit var sampleService: SampleService
 
@@ -29,7 +34,7 @@ class SampleControllerTest : RestDocsTest() {
     fun setUp() {
         sampleService = mockk()
         val sampleController = SampleController(sampleService)
-        setMockMvc(sampleController)
+        setMockMvc(sampleController, UserArgumentResolver, AnyUserArgumentResolver)
     }
 
     @Test

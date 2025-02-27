@@ -3,11 +3,11 @@ package com.youngjun.auth.api.controller.v1
 import com.youngjun.auth.api.controller.v1.request.ReissueTokenRequest
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.token.TokenPairBuilder
-import com.youngjun.auth.support.RestDocsTest
-import com.youngjun.auth.support.description
-import com.youngjun.auth.support.ignored
-import com.youngjun.auth.support.optional
-import com.youngjun.auth.support.type
+import com.youngjun.test.RestDocsTest
+import com.youngjun.test.description
+import com.youngjun.test.ignored
+import com.youngjun.test.optional
+import com.youngjun.test.type
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType

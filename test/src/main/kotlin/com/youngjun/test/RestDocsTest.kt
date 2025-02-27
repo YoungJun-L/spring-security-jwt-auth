@@ -1,8 +1,7 @@
-package com.youngjun.auth.support
+package com.youngjun.test
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.youngjun.auth.api.config.AccountArgumentResolver
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
@@ -12,13 +11,12 @@ import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.operation.preprocess.Preprocessors
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
 import org.springframework.web.filter.CharacterEncodingFilter
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 
 @Tag("restDocs")
-@ActiveProfiles("test")
 @ExtendWith(RestDocumentationExtension::class)
 abstract class RestDocsTest {
     private lateinit var restDocumentation: RestDocumentationContextProvider
@@ -28,13 +26,16 @@ abstract class RestDocsTest {
         this.restDocumentation = restDocumentation
     }
 
-    protected fun setMockMvc(controller: Any) {
+    protected fun setMockMvc(
+        controller: Any,
+        vararg argumentResolvers: HandlerMethodArgumentResolver,
+    ) {
         RestAssuredMockMvc.mockMvc(
             MockMvcBuilders
                 .standaloneSetup(controller)
                 .addFilter<StandaloneMockMvcBuilder>(CharacterEncodingFilter(Charsets.UTF_8.name(), true))
                 .apply<StandaloneMockMvcBuilder>(mockMvcConfigurer())
-                .setCustomArgumentResolvers(AccountArgumentResolver)
+                .setCustomArgumentResolvers(*argumentResolvers)
                 .setMessageConverters(MappingJackson2HttpMessageConverter(objectMapper()))
                 .build(),
         )
