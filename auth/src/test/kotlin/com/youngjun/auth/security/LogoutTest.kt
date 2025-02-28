@@ -3,6 +3,7 @@ package com.youngjun.auth.security
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.domain.token.RawAccessToken
 import com.youngjun.auth.support.SecurityContextTest
 import com.youngjun.test.description
 import com.youngjun.test.ignored
@@ -28,14 +29,15 @@ class LogoutTest(
 ) : SecurityContextTest() {
     @Test
     fun `로그아웃 성공`() {
+        val accessToken = RawAccessToken("a.b.c")
         val account = AccountBuilder().build()
-        every { tokenService.parse(any()) } returns account
-        every { accountService.logout(any()) } returns account.apply { logout() }
+        every { tokenService.parse(accessToken) } returns account
+        every { accountService.logout(account) } returns account.apply { logout() }
 
         given()
             .log()
             .all()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer a.b.c")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${accessToken.rawValue}")
             .contentType(ContentType.JSON)
             .post("/auth/logout")
             .then()

@@ -2,6 +2,7 @@ package com.youngjun.auth.security
 
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.domain.token.RawAccessToken
 import com.youngjun.auth.support.SecurityContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorCode
@@ -26,12 +27,13 @@ class JwtAuthenticationTest(
 ) : SecurityContextTest() {
     @Test
     fun `JWT 인증 성공`() {
-        every { tokenService.parse(any()) } returns AccountBuilder().build()
+        val accessToken = RawAccessToken("a.b.c")
+        every { tokenService.parse(accessToken) } returns AccountBuilder().build()
 
         given()
             .log()
             .all()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer a.b.c")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${accessToken.rawValue}")
             .contentType(ContentType.JSON)
             .get("/test")
             .then()
