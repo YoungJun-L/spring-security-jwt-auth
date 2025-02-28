@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
+import org.springframework.stereotype.Component
 
+@Component
 class LoginSuccessHandler(
     private val accountService: AccountService,
     private val tokenService: TokenService,

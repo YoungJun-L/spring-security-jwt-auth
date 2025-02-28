@@ -38,6 +38,7 @@ private class SecurityConfig(
     private val passwordEncoder: PasswordEncoder,
     private val objectMapper: ObjectMapper,
     private val jsonResponseWriter: JsonResponseWriter,
+    private val loginSuccessHandler: LoginSuccessHandler,
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
@@ -54,7 +55,7 @@ private class SecurityConfig(
                 JsonLoginAuthenticationFilter(
                     authenticationManager(),
                     objectMapper,
-                    LoginSuccessHandler(accountService, tokenService, jsonResponseWriter),
+                    loginSuccessHandler,
                     authenticationFailureHandler(),
                 ),
                 UsernamePasswordAuthenticationFilter::class.java,
