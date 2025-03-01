@@ -1,19 +1,19 @@
 package com.youngjun.auth.domain.account
 
 import com.youngjun.auth.support.error.AuthException
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_UNCHANGED_PASSWORD
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @JvmInline
 value class Password private constructor(
     val value: String,
 ) {
-    fun checkChanged(
+    fun verify(
         rawPassword: RawPassword,
         passwordEncoder: PasswordEncoder,
     ) {
-        if (passwordEncoder.matches(rawPassword.value, value)) {
-            throw AuthException(ACCOUNT_UNCHANGED_PASSWORD)
+        if (!passwordEncoder.matches(rawPassword.value, value)) {
+            throw AuthException(ACCOUNT_BAD_CREDENTIALS)
         }
     }
 

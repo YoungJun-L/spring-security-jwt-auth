@@ -2,10 +2,10 @@ package com.youngjun.auth.domain.account
 
 import com.youngjun.auth.support.DomainTest
 import com.youngjun.auth.support.error.AuthException
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT
-import com.youngjun.auth.support.error.ErrorType.ACCOUNT_UNCHANGED_PASSWORD
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
@@ -67,6 +67,23 @@ class AccountTest :
                 }
             }
 
+            context("비밀번호 일치 여부 검증") {
+                test("일치하지 않는 경우") {
+                    val account =
+                        AccountBuilder(password = Password.encodedWith(RawPasswordBuilder().build(), NoOperationPasswordEncoder)).build()
+
+                    shouldThrow<AuthException> { account.verify(RawPassword("wrongPassword"), NoOperationPasswordEncoder) }
+                        .errorType shouldBe ACCOUNT_BAD_CREDENTIALS
+                }
+
+                test("일치하는 경우") {
+                    val rawPassword = RawPasswordBuilder().build()
+                    val account = AccountBuilder(password = Password.encodedWith(rawPassword, NoOperationPasswordEncoder)).build()
+
+                    shouldNotThrow<AuthException> { account.verify(rawPassword, NoOperationPasswordEncoder) }
+                }
+            }
+
             context("비밀번호 변경") {
                 test("성공") {
                     val account = AccountBuilder().build()
@@ -75,14 +92,6 @@ class AccountTest :
                     account.changePassword(newPassword, NoOperationPasswordEncoder)
 
                     NoOperationPasswordEncoder.matches(newPassword.value, account.password) shouldBe true
-                }
-
-                test("기존 비밀번호와 동일하면 실패한다.") {
-                    val unchangedPassword = RawPasswordBuilder().build()
-                    val account = AccountBuilder(password = Password.encodedWith(unchangedPassword, NoOperationPasswordEncoder)).build()
-
-                    shouldThrow<AuthException> { account.changePassword(unchangedPassword, NoOperationPasswordEncoder) }
-                        .errorType shouldBe ACCOUNT_UNCHANGED_PASSWORD
                 }
             }
         },

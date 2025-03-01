@@ -53,6 +53,13 @@ class Account(
         }
     }
 
+    fun verify(
+        rawPassword: RawPassword,
+        passwordEncoder: PasswordEncoder,
+    ) {
+        password.verify(rawPassword, passwordEncoder)
+    }
+
     fun enable() {
         status = ENABLED
     }
@@ -62,10 +69,9 @@ class Account(
     }
 
     fun changePassword(
-        rawPassword: RawPassword,
+        newPassword: RawPassword,
         passwordEncoder: PasswordEncoder,
     ) {
-        password.checkChanged(rawPassword, passwordEncoder)
-        password = Password.encodedWith(rawPassword, passwordEncoder)
+        password = Password.encodedWith(newPassword, passwordEncoder)
     }
 }

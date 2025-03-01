@@ -81,13 +81,13 @@ class AccountControllerTest : RestDocsTest() {
     fun `비밀번호 변경 성공`() {
         val account = AccountBuilder().build()
         SecurityContextHolder.getContext().authentication = JwtAuthenticationToken.authenticated(account)
-        every { passwordService.changePassword(any(), any(), any()) } returns TokenPairBuilder(userId = account.id).build()
+        every { passwordService.changePassword(any(), any(), any(), any()) } returns TokenPairBuilder(userId = account.id).build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(ChangePasswordRequest(RawPassword("password123!")))
+            .body(ChangePasswordRequest(RawPassword("oldPassword"), RawPassword("newPassword")))
             .put("/account/password")
             .then()
             .log()
@@ -96,7 +96,8 @@ class AccountControllerTest : RestDocsTest() {
                 document(
                     "change-password",
                     requestFields(
-                        "password" type STRING description "password, 최소 8자 이상 최대 65자 미만",
+                        "oldPassword" type STRING description "현재 비밀번호, 최소 8자 이상 최대 65자 미만",
+                        "newPassword" type STRING description "변경하려는 비밀번호, 최소 8자 이상 최대 65자 미만",
                     ),
                     responseFields(
                         "status" type STRING description "status",

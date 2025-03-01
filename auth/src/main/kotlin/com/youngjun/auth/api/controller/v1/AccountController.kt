@@ -31,7 +31,7 @@ class AccountController(
         account: Account,
         @RequestBody request: ChangePasswordRequest,
     ): AuthResponse<UserTokenResponse> {
-        val tokenPair = passwordService.changePassword(account, request.password)
+        val tokenPair = passwordService.changePassword(account, request.oldPassword, request.newPassword)
         return AuthResponse.success(UserTokenResponse.from(tokenPair))
     }
 }

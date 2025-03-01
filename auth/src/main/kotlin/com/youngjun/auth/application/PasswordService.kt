@@ -17,11 +17,15 @@ class PasswordService(
 ) {
     fun changePassword(
         account: Account,
-        rawPassword: RawPassword,
+        oldPassword: RawPassword,
+        newPassword: RawPassword,
         now: LocalDateTime = LocalDateTime.now(),
     ): TokenPair =
         account
-            .apply { changePassword(rawPassword, passwordEncoder) }
+            .also {
+                it.verify(oldPassword, passwordEncoder)
+                oldPassword.checkChanged(newPassword)
+            }.apply { changePassword(newPassword, passwordEncoder) }
             .let { accountWriter.write(it) }
             .let { tokenPairGenerator.generate(it.id, now) }
 }
