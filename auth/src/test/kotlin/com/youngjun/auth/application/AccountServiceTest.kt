@@ -59,12 +59,7 @@ class AccountServiceTest(
                     val emailAddress = EmailAddressBuilder().build()
                     val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
 
-                    val actual =
-                        accountService.register(
-                            emailAddress,
-                            RawPasswordBuilder().build(),
-                            RawVerificationCodeBuilder(verificationCode.code).build(),
-                        )
+                    val actual = accountService.register(emailAddress, RawPasswordBuilder().build(), verificationCode.code)
 
                     actual.emailAddress shouldBe emailAddress
                 }
@@ -74,12 +69,7 @@ class AccountServiceTest(
                     val rawPassword = RawPasswordBuilder().build()
                     val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
 
-                    val actual =
-                        accountService.register(
-                            emailAddress,
-                            rawPassword,
-                            RawVerificationCodeBuilder(verificationCode.code).build(),
-                        )
+                    val actual = accountService.register(emailAddress, rawPassword, verificationCode.code)
 
                     passwordEncoder.matches(rawPassword.value, actual.password) shouldBe true
                 }
@@ -124,7 +114,7 @@ class AccountServiceTest(
                         accountService.register(
                             emailAddress,
                             RawPasswordBuilder().build(),
-                            RawVerificationCodeBuilder(verificationCode.code).build(),
+                            verificationCode.code,
                             verificationCode.createdAt + 10.minutes,
                         )
                     }.errorType shouldBe VERIFICATION_CODE_EXPIRED

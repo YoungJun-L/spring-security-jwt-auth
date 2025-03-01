@@ -4,7 +4,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 data class ParsedRefreshToken(
-    val value: RawRefreshToken,
+    val rawToken: RawRefreshToken,
     private val payload: Payload,
 ) {
     val userId: Long get() = payload.userId

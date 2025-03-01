@@ -17,13 +17,13 @@ class VerificationCode private constructor(
     @Column(name = "email")
     val emailAddress: EmailAddress,
     @Column
-    val code: String,
+    val code: RawVerificationCode,
 ) : BaseEntity() {
     fun verifyWith(
         rawVerificationCode: RawVerificationCode,
         now: LocalDateTime = LocalDateTime.now(),
     ) {
-        fun isMismatched() = code != rawVerificationCode.value
+        fun isMismatched() = code != rawVerificationCode
 
         fun isExpired() = createdAt + 10.minutes <= now
 
@@ -35,6 +35,6 @@ class VerificationCode private constructor(
 
     companion object {
         fun generate(emailAddress: EmailAddress): VerificationCode =
-            VerificationCode(emailAddress, (0..<1_000_000).random().toString().padStart(6, '0'))
+            VerificationCode(emailAddress, RawVerificationCode((0..<1_000_000).random().toString().padStart(6, '0')))
     }
 }

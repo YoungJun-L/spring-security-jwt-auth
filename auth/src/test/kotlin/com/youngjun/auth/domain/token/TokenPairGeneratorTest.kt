@@ -36,7 +36,7 @@ class TokenPairGeneratorTest(
 
                     val actual = tokenPairGenerator.generate(userId)
 
-                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe actual.refreshToken.value
+                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe actual.refreshToken.rawToken
                 }
             }
 
@@ -90,7 +90,7 @@ class TokenPairGeneratorTest(
 
                     val actual = tokenPairGenerator.generateOnExpiration(parsedRefreshToken, now)
 
-                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe actual.refreshToken.value
+                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe actual.refreshToken.rawToken
                 }
 
                 test("refreshToken 이 갱신되지 않으면 이전 refreshToken 과 교체되지 않는다.") {

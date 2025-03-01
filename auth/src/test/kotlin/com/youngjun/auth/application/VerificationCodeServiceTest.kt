@@ -34,8 +34,8 @@ class VerificationCodeServiceTest(
                     val actual = verificationCodeService.generate(emailAddress)
 
                     actual.emailAddress shouldBe emailAddress
-                    actual.code.all { it.isDigit() } shouldBe true
-                    actual.code.length shouldBe 6
+                    actual.code.value.all { it.isDigit() } shouldBe true
+                    actual.code.value.length shouldBe 6
                 }
 
                 test("가입된 이메일 주소가 존재하면 실패한다.") {

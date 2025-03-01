@@ -44,7 +44,7 @@ data class ParsedAccessTokenBuilder(
 ) {
     fun build(): ParsedAccessToken =
         ParsedAccessToken(
-            value = RawAccessToken(JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build()),
+            rawToken = RawAccessToken(JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build()),
             payload = PayloadBuilder(userId, issuedAt + expiresIn).build(),
         )
 }
@@ -60,7 +60,7 @@ data class ParsedRefreshTokenBuilder(
 ) {
     fun build(): ParsedRefreshToken =
         ParsedRefreshToken(
-            value = RawRefreshToken(JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build()),
+            rawToken = RawRefreshToken(JwtBuilder(userId.toString(), issuedAt, expiresIn, secretKey = secretKey).build()),
             payload = PayloadBuilder(userId, issuedAt + expiresIn).build(),
         )
 }

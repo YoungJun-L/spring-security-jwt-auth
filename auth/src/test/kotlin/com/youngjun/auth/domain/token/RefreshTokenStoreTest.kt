@@ -27,7 +27,7 @@ class RefreshTokenStoreTest(
 
                     refreshTokenStore.replace(newToken)
 
-                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe newToken.value
+                    refreshTokenRepository.findByUserId(userId)!!.value shouldBe newToken.rawToken
                 }
             }
 

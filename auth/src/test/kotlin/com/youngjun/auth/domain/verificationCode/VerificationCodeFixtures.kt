@@ -15,7 +15,7 @@ fun generateVerificationCode(emailAddress: EmailAddress = EmailAddressBuilder().
 fun generateRawVerificationCodeExcluding(verificationCode: VerificationCode): RawVerificationCode =
     RawVerificationCode(
         generateSequence { (0..<1_000_000).random() }
-            .first { it != verificationCode.code.toInt() }
+            .first { it != verificationCode.code.value.toInt() }
             .toString()
             .padStart(6, '0'),
     )

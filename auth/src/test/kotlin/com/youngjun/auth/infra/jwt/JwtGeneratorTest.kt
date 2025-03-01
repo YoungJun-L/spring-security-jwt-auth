@@ -25,7 +25,7 @@ class JwtGeneratorTest :
                     val actual = jwtGenerator.generateAccessToken(userId)
 
                     actual.userId shouldBe userId
-                    accessTokenParser.parseSignedClaims(actual.value.value).payload.subject shouldBe "$userId"
+                    accessTokenParser.parseSignedClaims(actual.rawToken.value).payload.subject shouldBe "$userId"
                 }
 
                 test("만료 시간 검증") {
@@ -36,7 +36,7 @@ class JwtGeneratorTest :
                     val expected = now + jwtProperties.accessTokenExpiresIn
                     actual.expiration shouldBe expected
                     accessTokenParser
-                        .parseSignedClaims(actual.value.value)
+                        .parseSignedClaims(actual.rawToken.value)
                         .payload.expiration
                         .toInstant()
                         .epochSecond shouldBe expected.toEpochSecond()
@@ -50,7 +50,7 @@ class JwtGeneratorTest :
                     val actual = jwtGenerator.generateRefreshToken(userId)
 
                     actual.userId shouldBe userId
-                    refreshTokenParser.parseSignedClaims(actual.value.value).payload.subject shouldBe "$userId"
+                    refreshTokenParser.parseSignedClaims(actual.rawToken.value).payload.subject shouldBe "$userId"
                 }
 
                 test("만료 시간 검증") {
@@ -61,7 +61,7 @@ class JwtGeneratorTest :
                     val expected = now + jwtProperties.refreshTokenExpiresIn
                     actual.expiration shouldBe expected
                     refreshTokenParser
-                        .parseSignedClaims(actual.value.value)
+                        .parseSignedClaims(actual.rawToken.value)
                         .payload.expiration
                         .toInstant()
                         .epochSecond shouldBe expected.toEpochSecond()

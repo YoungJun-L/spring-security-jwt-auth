@@ -26,8 +26,8 @@ class VerificationCodeTest :
                     val actual = generateVerificationCode(emailAddress)
 
                     actual.emailAddress shouldBe emailAddress
-                    actual.code.all { it.isDigit() } shouldBe true
-                    actual.code.length shouldBe 6
+                    actual.code.value.all { it.isDigit() } shouldBe true
+                    actual.code.value.length shouldBe 6
                 }
             }
 
@@ -36,10 +36,7 @@ class VerificationCodeTest :
                     val verificationCode = generateVerificationCode(EmailAddressBuilder().build())
 
                     shouldNotThrow<AuthException> {
-                        verificationCode.verifyWith(
-                            RawVerificationCodeBuilder(verificationCode.code).build(),
-                            verificationCode.createdAt + 10.minutes - 1.seconds,
-                        )
+                        verificationCode.verifyWith(verificationCode.code, verificationCode.createdAt + 10.minutes - 1.seconds)
                     }
                 }
 
@@ -47,10 +44,7 @@ class VerificationCodeTest :
                     val verificationCode = generateVerificationCode(EmailAddressBuilder().build())
 
                     shouldThrow<AuthException> {
-                        verificationCode.verifyWith(
-                            RawVerificationCodeBuilder(verificationCode.code).build(),
-                            verificationCode.createdAt + 10.minutes,
-                        )
+                        verificationCode.verifyWith(verificationCode.code, verificationCode.createdAt + 10.minutes)
                     }.errorType shouldBe VERIFICATION_CODE_EXPIRED
                 }
 

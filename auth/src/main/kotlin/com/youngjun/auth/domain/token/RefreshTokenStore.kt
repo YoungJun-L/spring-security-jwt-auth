@@ -11,7 +11,7 @@ class RefreshTokenStore(
     @Transactional
     fun replace(parsedRefreshToken: ParsedRefreshToken) {
         refreshTokenRepository.deleteByUserId(parsedRefreshToken.userId)
-        refreshTokenRepository.save(RefreshToken(parsedRefreshToken.userId, parsedRefreshToken.value))
+        refreshTokenRepository.save(RefreshToken(parsedRefreshToken.userId, parsedRefreshToken.rawToken))
     }
 
     @Transactional

@@ -14,9 +14,9 @@ data class TokenPairResponse(
     companion object {
         fun from(tokenPair: TokenPair): TokenPairResponse =
             TokenPairResponse(
-                tokenPair.accessToken.value,
+                tokenPair.accessToken.rawToken,
                 tokenPair.accessToken.expiration.toEpochSecond(),
-                tokenPair.refreshToken.value,
+                tokenPair.refreshToken.rawToken,
                 tokenPair.refreshToken.expiration.toEpochSecond(),
             )
     }
