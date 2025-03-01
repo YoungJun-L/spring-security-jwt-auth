@@ -11,10 +11,10 @@ import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.TokenPairBuilder
 import com.youngjun.auth.domain.verificationCode.RawVerificationCode
 import com.youngjun.auth.security.token.JwtAuthenticationToken
-import com.youngjun.test.RestDocsTest
-import com.youngjun.test.description
-import com.youngjun.test.ignored
-import com.youngjun.test.type
+import com.youngjun.tests.RestDocsTest
+import com.youngjun.tests.description
+import com.youngjun.tests.ignored
+import com.youngjun.tests.type
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType

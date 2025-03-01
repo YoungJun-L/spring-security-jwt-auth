@@ -5,10 +5,10 @@ import com.youngjun.auth.application.MailService
 import com.youngjun.auth.application.VerificationCodeService
 import com.youngjun.auth.domain.account.EmailAddressBuilder
 import com.youngjun.auth.domain.verificationCode.generateVerificationCode
-import com.youngjun.test.RestDocsTest
-import com.youngjun.test.description
-import com.youngjun.test.ignored
-import com.youngjun.test.type
+import com.youngjun.tests.RestDocsTest
+import com.youngjun.tests.description
+import com.youngjun.tests.ignored
+import com.youngjun.tests.type
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just

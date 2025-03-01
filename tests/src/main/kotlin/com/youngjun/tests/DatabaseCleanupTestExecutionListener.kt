@@ -1,4 +1,4 @@
-package com.youngjun.test
+package com.youngjun.tests
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.TestContext

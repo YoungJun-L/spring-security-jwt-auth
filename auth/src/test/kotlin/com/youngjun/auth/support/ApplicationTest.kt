@@ -1,6 +1,6 @@
 package com.youngjun.auth.support
 
-import com.youngjun.test.ContextTest
+import com.youngjun.tests.ContextTest
 import io.kotest.core.annotation.Tags
 
 @Tags("application")

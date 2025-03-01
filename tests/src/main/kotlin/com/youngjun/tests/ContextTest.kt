@@ -1,4 +1,4 @@
-package com.youngjun.test
+package com.youngjun.tests
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

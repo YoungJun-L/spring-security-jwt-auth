@@ -1,4 +1,4 @@
-package com.youngjun.test
+package com.youngjun.tests
 
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType

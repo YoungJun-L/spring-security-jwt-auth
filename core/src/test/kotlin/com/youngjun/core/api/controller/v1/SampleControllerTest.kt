@@ -4,10 +4,10 @@ import com.youngjun.core.api.config.AnyUserArgumentResolver
 import com.youngjun.core.api.config.UserArgumentResolver
 import com.youngjun.core.application.SampleService
 import com.youngjun.core.domain.Sample
-import com.youngjun.test.RestDocsTest
-import com.youngjun.test.description
-import com.youngjun.test.ignored
-import com.youngjun.test.type
+import com.youngjun.tests.RestDocsTest
+import com.youngjun.tests.description
+import com.youngjun.tests.ignored
+import com.youngjun.tests.type
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType

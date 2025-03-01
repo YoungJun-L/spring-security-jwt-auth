@@ -14,9 +14,9 @@ import com.youngjun.auth.domain.token.TokenPairBuilder
 import com.youngjun.auth.security.filter.LoginRequest
 import com.youngjun.auth.support.SecurityContextTest
 import com.youngjun.auth.support.error.ErrorCode
-import com.youngjun.test.description
-import com.youngjun.test.ignored
-import com.youngjun.test.type
+import com.youngjun.tests.description
+import com.youngjun.tests.ignored
+import com.youngjun.tests.type
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.restassured.http.ContentType

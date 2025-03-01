@@ -4,7 +4,7 @@ include(
     "auth",
     "core",
     "async",
-    "test",
+    "tests",
 )
 
 pluginManagement {

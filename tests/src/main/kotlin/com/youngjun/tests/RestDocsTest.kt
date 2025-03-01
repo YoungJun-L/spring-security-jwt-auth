@@ -1,4 +1,4 @@
-package com.youngjun.test
+package com.youngjun.tests
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper

@@ -5,9 +5,9 @@ import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.token.RawAccessToken
 import com.youngjun.auth.support.SecurityContextTest
-import com.youngjun.test.description
-import com.youngjun.test.ignored
-import com.youngjun.test.type
+import com.youngjun.tests.description
+import com.youngjun.tests.ignored
+import com.youngjun.tests.type
 import io.mockk.every
 import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given

@@ -4,11 +4,11 @@ import com.youngjun.auth.api.controller.v1.request.ReissueTokenRequest
 import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.token.RawRefreshToken
 import com.youngjun.auth.domain.token.TokenPairBuilder
-import com.youngjun.test.RestDocsTest
-import com.youngjun.test.description
-import com.youngjun.test.ignored
-import com.youngjun.test.optional
-import com.youngjun.test.type
+import com.youngjun.tests.RestDocsTest
+import com.youngjun.tests.description
+import com.youngjun.tests.ignored
+import com.youngjun.tests.optional
+import com.youngjun.tests.type
 import io.mockk.every
 import io.mockk.mockk
 import io.restassured.http.ContentType
