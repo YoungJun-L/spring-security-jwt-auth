@@ -16,7 +16,7 @@ class TokenController(
     fun reissue(
         @RequestBody request: ReissueTokenRequest,
     ): AuthResponse<TokenPairResponse> {
-        val tokenPair = tokenService.reissue(request.toRawRefreshToken())
+        val tokenPair = tokenService.reissue(request.refreshToken)
         return AuthResponse.success(TokenPairResponse.from(tokenPair))
     }
 }

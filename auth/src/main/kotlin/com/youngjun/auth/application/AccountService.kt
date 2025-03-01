@@ -22,7 +22,7 @@ class AccountService(
     private val refreshTokenStore: RefreshTokenStore,
     private val verificationCodeReader: VerificationCodeReader,
 ) : UserDetailsService {
-    override fun loadUserByUsername(emailAddress: String): Account = accountReader.read(EmailAddress.from(emailAddress))
+    override fun loadUserByUsername(emailAddress: String): Account = accountReader.read(EmailAddress(emailAddress))
 
     fun register(
         emailAddress: EmailAddress,

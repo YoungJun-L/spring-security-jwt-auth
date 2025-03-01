@@ -1,6 +1,7 @@
 package com.youngjun.auth.domain.verificationCode
 
-data class RawVerificationCode(
+@JvmInline
+value class RawVerificationCode(
     val value: String,
 ) {
     init {

@@ -13,7 +13,7 @@ data class AccountBuilder(
 data class EmailAddressBuilder(
     val value: String = "example@youngjun.com",
 ) {
-    fun build(): EmailAddress = EmailAddress.from(value = value)
+    fun build(): EmailAddress = EmailAddress(value = value)
 }
 
 data class PasswordBuilder(

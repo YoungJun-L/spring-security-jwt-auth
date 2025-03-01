@@ -2,13 +2,10 @@ package com.youngjun.auth.domain.account
 
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_UNCHANGED_PASSWORD
-import jakarta.persistence.Column
-import jakarta.persistence.Embeddable
 import org.springframework.security.crypto.password.PasswordEncoder
 
-@Embeddable
-data class Password private constructor(
-    @Column(name = "password")
+@JvmInline
+value class Password private constructor(
     val value: String,
 ) {
     fun checkChanged(

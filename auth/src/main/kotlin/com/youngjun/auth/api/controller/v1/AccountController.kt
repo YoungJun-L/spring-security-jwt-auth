@@ -22,7 +22,7 @@ class AccountController(
     fun register(
         @RequestBody request: RegisterAccountRequest,
     ): AuthResponse<AccountResponse> {
-        val account = accountService.register(request.toEmailAddress(), request.toRawPassword(), request.toRawVerificationCode())
+        val account = accountService.register(request.email, request.password, request.verificationCode)
         return AuthResponse.success(AccountResponse.from(account))
     }
 
@@ -31,7 +31,7 @@ class AccountController(
         account: Account,
         @RequestBody request: ChangePasswordRequest,
     ): AuthResponse<UserTokenResponse> {
-        val tokenPair = passwordService.changePassword(account, request.toRawPassword())
+        val tokenPair = passwordService.changePassword(account, request.password)
         return AuthResponse.success(UserTokenResponse.from(tokenPair))
     }
 }

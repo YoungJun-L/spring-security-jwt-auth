@@ -2,6 +2,7 @@ package com.youngjun.auth.api.controller.v1
 
 import com.youngjun.auth.api.controller.v1.request.ReissueTokenRequest
 import com.youngjun.auth.application.TokenService
+import com.youngjun.auth.domain.token.RawRefreshToken
 import com.youngjun.auth.domain.token.TokenPairBuilder
 import com.youngjun.test.RestDocsTest
 import com.youngjun.test.description
@@ -40,7 +41,7 @@ class TokenControllerTest : RestDocsTest() {
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(ReissueTokenRequest("refreshToken"))
+            .body(ReissueTokenRequest(RawRefreshToken("refreshToken")))
             .post("/auth/token")
             .then()
             .log()

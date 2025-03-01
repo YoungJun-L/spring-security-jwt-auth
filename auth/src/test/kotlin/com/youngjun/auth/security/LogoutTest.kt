@@ -37,7 +37,7 @@ class LogoutTest(
         given()
             .log()
             .all()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${accessToken.rawValue}")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${accessToken.value}")
             .contentType(ContentType.JSON)
             .post("/auth/logout")
             .then()

@@ -4,10 +4,6 @@ import com.youngjun.auth.domain.account.EmailAddress
 import com.youngjun.auth.domain.account.RawPassword
 
 data class LoginRequest(
-    val email: String,
-    val password: String,
-) {
-    fun toEmailAddress(): EmailAddress = EmailAddress.from(email)
-
-    fun toRawPassword(): RawPassword = RawPassword(password)
-}
+    val email: EmailAddress,
+    val password: RawPassword,
+)

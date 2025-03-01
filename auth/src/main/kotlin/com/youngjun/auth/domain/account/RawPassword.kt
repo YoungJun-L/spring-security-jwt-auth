@@ -1,6 +1,7 @@
 package com.youngjun.auth.domain.account
 
-data class RawPassword(
+@JvmInline
+value class RawPassword(
     val value: String,
 ) {
     init {

@@ -29,7 +29,7 @@ class MailServiceTest :
                     val verificationCode = generateVerificationCode()
                     val result = "result"
                     every { templateEngine.process(any<String>(), any()) } returns result
-                    every { mailSender.send(any(), any(), any()) } just Runs
+                    every { mailSender.send(verificationCode.emailAddress, any(), any()) } just Runs
 
                     mailService.sendVerificationCode(verificationCode)
 

@@ -17,7 +17,7 @@ class VerificationCodeController(
     fun sendVerificationCode(
         @RequestBody request: SendVerificationCodeRequest,
     ): AuthResponse<Unit> {
-        val verificationCode = verificationCodeService.generate(request.toEmailAddress())
+        val verificationCode = verificationCodeService.generate(request.email)
         mailService.sendVerificationCode(verificationCode)
         return AuthResponse.success()
     }

@@ -7,7 +7,6 @@ import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_EXPIRED
 import com.youngjun.auth.support.error.ErrorType.VERIFICATION_CODE_MISMATCHED
 import jakarta.persistence.Column
-import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import java.time.LocalDateTime
@@ -15,7 +14,7 @@ import java.time.LocalDateTime
 @Table(name = "verification_code")
 @Entity
 class VerificationCode private constructor(
-    @Embedded
+    @Column(name = "email")
     val emailAddress: EmailAddress,
     @Column
     val code: String,

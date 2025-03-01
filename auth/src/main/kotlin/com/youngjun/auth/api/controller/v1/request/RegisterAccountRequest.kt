@@ -5,13 +5,7 @@ import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.verificationCode.RawVerificationCode
 
 data class RegisterAccountRequest(
-    val email: String,
-    val password: String,
-    val verificationCode: String,
-) {
-    fun toEmailAddress(): EmailAddress = EmailAddress.from(email)
-
-    fun toRawPassword(): RawPassword = RawPassword(password)
-
-    fun toRawVerificationCode(): RawVerificationCode = RawVerificationCode(verificationCode)
-}
+    val email: EmailAddress,
+    val password: RawPassword,
+    val verificationCode: RawVerificationCode,
+)

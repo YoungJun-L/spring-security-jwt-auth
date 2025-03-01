@@ -7,7 +7,9 @@ import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.PasswordService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.TokenPairBuilder
+import com.youngjun.auth.domain.verificationCode.RawVerificationCode
 import com.youngjun.auth.security.token.JwtAuthenticationToken
 import com.youngjun.test.RestDocsTest
 import com.youngjun.test.description
@@ -43,13 +45,16 @@ class AccountControllerTest : RestDocsTest() {
     @Test
     fun `회원가입 성공`() {
         val emailAddress = EmailAddressBuilder().build()
-        every { accountService.register(any(), any(), any(), any()) } returns AccountBuilder(emailAddress = emailAddress).build()
+        val rawPassword = RawPassword("password123!")
+        val rawVerificationCode = RawVerificationCode("012345")
+        every { accountService.register(emailAddress, rawPassword, rawVerificationCode, any()) } returns
+            AccountBuilder(emailAddress = emailAddress).build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(RegisterAccountRequest(emailAddress.value, "password123!", "012345"))
+            .body(RegisterAccountRequest(emailAddress, rawPassword, rawVerificationCode))
             .post("/auth/register")
             .then()
             .log()
@@ -82,7 +87,7 @@ class AccountControllerTest : RestDocsTest() {
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(ChangePasswordRequest("password123!"))
+            .body(ChangePasswordRequest(RawPassword("password123!")))
             .put("/account/password")
             .then()
             .log()

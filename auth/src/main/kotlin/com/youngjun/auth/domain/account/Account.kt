@@ -10,7 +10,6 @@ import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT
 import jakarta.persistence.Column
-import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -23,9 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @Table(name = "users")
 @Entity
 class Account(
-    @Embedded
+    @Column(name = "email")
     val emailAddress: EmailAddress,
-    @Embedded
+    @Column(name = "password")
     private var password: Password,
     status: AccountStatus = ENABLED,
 ) : BaseEntity(),

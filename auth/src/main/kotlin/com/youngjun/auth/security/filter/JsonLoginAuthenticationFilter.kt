@@ -46,7 +46,7 @@ class JsonLoginAuthenticationFilter(
                 throw TypedAuthenticationException(BAD_REQUEST, ex)
             }
         return authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.toEmailAddress().value, loginRequest.toRawPassword().value),
+            UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.email.value, loginRequest.password.value),
         )
     }
 }
