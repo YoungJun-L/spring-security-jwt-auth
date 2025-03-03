@@ -12,7 +12,7 @@ class EmailAddressTest :
         {
             isolationMode = IsolationMode.InstancePerLeaf
 
-            context("이메일 주소 검증 성공 케이스") {
+            context("이메일 주소 검증 성공") {
                 arrayOf(
                     "example@youngjun.com",
                     "Example@youngjun.com",
@@ -32,7 +32,7 @@ class EmailAddressTest :
                 }
             }
 
-            context("이메일 주소 검증 실패 케이스") {
+            context("이메일 주소 검증 실패") {
                 arrayOf(
                     "@youngjun.com",
                     "example@",
