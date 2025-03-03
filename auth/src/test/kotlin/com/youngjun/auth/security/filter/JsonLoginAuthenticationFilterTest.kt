@@ -1,9 +1,10 @@
 package com.youngjun.auth.security.filter
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.youngjun.auth.domain.account.EmailAddressBuilder
-import com.youngjun.auth.domain.account.PasswordBuilder
-import com.youngjun.auth.domain.account.RawPasswordBuilder
+import com.youngjun.auth.domain.account.EMAIL_ADDRESS
+import com.youngjun.auth.domain.account.NoOperationPasswordEncoder
+import com.youngjun.auth.domain.account.Password
+import com.youngjun.auth.domain.account.RAW_PASSWORD
 import com.youngjun.auth.security.support.error.TypedAuthenticationException
 import com.youngjun.auth.support.SecurityTest
 import com.youngjun.auth.support.error.ErrorType.BAD_REQUEST
@@ -45,17 +46,12 @@ class JsonLoginAuthenticationFilterTest :
                 val response = MockHttpServletResponse()
 
                 test("성공") {
-                    val emailAddress = EmailAddressBuilder().build()
                     request.contentType = MediaType.APPLICATION_JSON_VALUE
-                    request.setContent(
-                        objectMapper.writeValueAsBytes(
-                            mapOf("email" to emailAddress.value, "password" to RawPasswordBuilder().build().value),
-                        ),
-                    )
+                    request.setContent(objectMapper.writeValueAsBytes(mapOf("email" to EMAIL_ADDRESS, "password" to RAW_PASSWORD)))
                     every { authenticationManager.authenticate(any()) } returns
                         UsernamePasswordAuthenticationToken.authenticated(
-                            emailAddress.value,
-                            PasswordBuilder().build().value,
+                            EMAIL_ADDRESS.value,
+                            Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder).value,
                             AuthorityUtils.NO_AUTHORITIES,
                         )
 

@@ -16,27 +16,24 @@ class PasswordTest :
             isolationMode = IsolationMode.InstancePerLeaf
             context("비밀번호 일치 여부 검증") {
                 test("일치하지 않는 경우") {
-                    val password = Password.encodedWith(RawPasswordBuilder().build(), NoOperationPasswordEncoder)
+                    val password = Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder)
 
                     shouldThrow<AuthException> { password.verify(RawPassword("wrongPassword"), NoOperationPasswordEncoder) }
                         .errorType shouldBe ACCOUNT_BAD_CREDENTIALS
                 }
 
                 test("일치하는 경우") {
-                    val rawPassword = RawPasswordBuilder().build()
-                    val password = Password.encodedWith(rawPassword, NoOperationPasswordEncoder)
+                    val password = Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder)
 
-                    shouldNotThrow<AuthException> { password.verify(rawPassword, NoOperationPasswordEncoder) }
+                    shouldNotThrow<AuthException> { password.verify(RAW_PASSWORD, NoOperationPasswordEncoder) }
                 }
             }
 
             context("비밀번호 인코딩") {
                 test("성공") {
-                    val rawPassword = RawPasswordBuilder().build()
+                    val actual = Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder)
 
-                    val actual = Password.encodedWith(rawPassword, NoOperationPasswordEncoder)
-
-                    NoOperationPasswordEncoder.matches(rawPassword.value, actual.value) shouldBe true
+                    NoOperationPasswordEncoder.matches(RAW_PASSWORD.value, actual.value) shouldBe true
                 }
             }
         },

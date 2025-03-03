@@ -1,10 +1,10 @@
 package com.youngjun.auth.application
 
 import com.youngjun.auth.domain.account.AccountBuilder
+import com.youngjun.auth.domain.account.NoOperationPasswordEncoder
 import com.youngjun.auth.domain.account.Password
-import com.youngjun.auth.domain.account.PasswordBuilder
+import com.youngjun.auth.domain.account.RAW_PASSWORD
 import com.youngjun.auth.domain.account.RawPassword
-import com.youngjun.auth.domain.account.RawPasswordBuilder
 import com.youngjun.auth.support.ApplicationContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_BAD_CREDENTIALS
@@ -41,17 +41,16 @@ class PasswordServiceTest(
 
                 test("현재 비밀번호와 일치하지 않으면 실패한다.") {
                     val wrongPassword = RawPassword("wrongPassword")
-                    val account = AccountBuilder(password = PasswordBuilder().build()).build()
+                    val account = AccountBuilder(password = Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder)).build()
 
-                    shouldThrow<AuthException> { passwordService.changePassword(account, wrongPassword, RawPasswordBuilder().build()) }
+                    shouldThrow<AuthException> { passwordService.changePassword(account, wrongPassword, RAW_PASSWORD) }
                         .errorType shouldBe ACCOUNT_BAD_CREDENTIALS
                 }
 
                 test("변경하려는 비밀번호가 현재 비밀번호와 동일하면 실패한다.") {
-                    val oldPassword = RawPasswordBuilder().build()
-                    val account = AccountBuilder(password = Password.encodedWith(oldPassword, passwordEncoder)).build()
+                    val account = AccountBuilder(password = Password.encodedWith(RAW_PASSWORD, passwordEncoder)).build()
 
-                    shouldThrow<AuthException> { passwordService.changePassword(account, oldPassword, oldPassword) }
+                    shouldThrow<AuthException> { passwordService.changePassword(account, RAW_PASSWORD, RAW_PASSWORD) }
                         .errorType shouldBe ACCOUNT_UNCHANGED_PASSWORD
                 }
             }

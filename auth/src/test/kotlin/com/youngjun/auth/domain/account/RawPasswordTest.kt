@@ -25,17 +25,13 @@ class RawPasswordTest :
 
             context("비밀번호 변경 여부 검증") {
                 test("변경되지 않은 경우") {
-                    val rawPassword = RawPasswordBuilder().build()
-
-                    shouldThrow<AuthException> { rawPassword.checkChanged(rawPassword) }
+                    shouldThrow<AuthException> { RAW_PASSWORD.checkChanged(RAW_PASSWORD) }
                         .errorType shouldBe ACCOUNT_UNCHANGED_PASSWORD
                 }
 
                 test("변경된 경우") {
-                    val rawPassword = RawPasswordBuilder().build()
-
                     shouldNotThrow<AuthException> {
-                        rawPassword.checkChanged(RawPasswordBuilder(value = "changedPassword").build())
+                        RAW_PASSWORD.checkChanged(RawPassword(value = "changedPassword"))
                     }
                 }
             }

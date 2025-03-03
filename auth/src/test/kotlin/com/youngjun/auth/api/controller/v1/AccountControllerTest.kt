@@ -6,10 +6,11 @@ import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.PasswordService
 import com.youngjun.auth.domain.account.AccountBuilder
-import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.account.EMAIL_ADDRESS
+import com.youngjun.auth.domain.account.RAW_PASSWORD
 import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.TokenPairBuilder
-import com.youngjun.auth.domain.verificationCode.RawVerificationCode
+import com.youngjun.auth.domain.verificationCode.RAW_VERIFICATION_CODE
 import com.youngjun.auth.security.token.JwtAuthenticationToken
 import com.youngjun.tests.RestDocsTest
 import com.youngjun.tests.description
@@ -44,17 +45,14 @@ class AccountControllerTest : RestDocsTest() {
 
     @Test
     fun `회원가입 성공`() {
-        val emailAddress = EmailAddressBuilder().build()
-        val rawPassword = RawPassword("password123!")
-        val rawVerificationCode = RawVerificationCode("012345")
-        every { accountService.register(emailAddress, rawPassword, rawVerificationCode, any()) } returns
-            AccountBuilder(emailAddress = emailAddress).build()
+        every { accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, RAW_VERIFICATION_CODE, any()) } returns
+            AccountBuilder(emailAddress = EMAIL_ADDRESS).build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(RegisterAccountRequest(emailAddress, rawPassword, rawVerificationCode))
+            .body(RegisterAccountRequest(EMAIL_ADDRESS, RAW_PASSWORD, RAW_VERIFICATION_CODE))
             .post("/auth/register")
             .then()
             .log()

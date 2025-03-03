@@ -3,30 +3,11 @@ package com.youngjun.auth.domain.account
 import org.springframework.security.crypto.password.PasswordEncoder
 
 data class AccountBuilder(
-    val emailAddress: EmailAddress = EmailAddressBuilder().build(),
-    val password: Password = PasswordBuilder().build(),
+    val emailAddress: EmailAddress = EMAIL_ADDRESS,
+    val password: Password = Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder),
     val status: AccountStatus = AccountStatus.ENABLED,
 ) {
     fun build(): Account = Account(emailAddress = emailAddress, password = password, status = status)
-}
-
-data class EmailAddressBuilder(
-    val value: String = "example@youngjun.com",
-) {
-    fun build(): EmailAddress = EmailAddress(value = value)
-}
-
-data class PasswordBuilder(
-    val rawPassword: RawPassword = RawPasswordBuilder().build(),
-    val passwordEncoder: PasswordEncoder = NoOperationPasswordEncoder,
-) {
-    fun build(): Password = Password.encodedWith(rawPassword, passwordEncoder)
-}
-
-data class RawPasswordBuilder(
-    val value: String = "password123!",
-) {
-    fun build(): RawPassword = RawPassword(value = value)
 }
 
 object NoOperationPasswordEncoder : PasswordEncoder {
@@ -37,3 +18,7 @@ object NoOperationPasswordEncoder : PasswordEncoder {
         encodedPassword: String,
     ): Boolean = "NoOp$rawPassword" == encodedPassword
 }
+
+val EMAIL_ADDRESS: EmailAddress = EmailAddress("example@youngjun.com")
+
+val RAW_PASSWORD: RawPassword = RawPassword("password123!")

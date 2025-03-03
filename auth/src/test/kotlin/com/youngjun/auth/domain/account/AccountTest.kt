@@ -69,25 +69,23 @@ class AccountTest :
 
             context("비밀번호 일치 여부 검증") {
                 test("일치하지 않는 경우") {
-                    val account =
-                        AccountBuilder(password = Password.encodedWith(RawPasswordBuilder().build(), NoOperationPasswordEncoder)).build()
+                    val account = AccountBuilder(password = Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder)).build()
 
                     shouldThrow<AuthException> { account.verify(RawPassword("wrongPassword"), NoOperationPasswordEncoder) }
                         .errorType shouldBe ACCOUNT_BAD_CREDENTIALS
                 }
 
                 test("일치하는 경우") {
-                    val rawPassword = RawPasswordBuilder().build()
-                    val account = AccountBuilder(password = Password.encodedWith(rawPassword, NoOperationPasswordEncoder)).build()
+                    val account = AccountBuilder(password = Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder)).build()
 
-                    shouldNotThrow<AuthException> { account.verify(rawPassword, NoOperationPasswordEncoder) }
+                    shouldNotThrow<AuthException> { account.verify(RAW_PASSWORD, NoOperationPasswordEncoder) }
                 }
             }
 
             context("비밀번호 변경") {
                 test("성공") {
                     val account = AccountBuilder().build()
-                    val newPassword = RawPasswordBuilder(value = "newPassword").build()
+                    val newPassword = RawPassword(value = "newPassword")
 
                     account.changePassword(newPassword, NoOperationPasswordEncoder)
 

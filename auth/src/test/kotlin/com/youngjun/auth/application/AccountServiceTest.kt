@@ -3,13 +3,13 @@ package com.youngjun.auth.application
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountRepository
 import com.youngjun.auth.domain.account.AccountStatus
-import com.youngjun.auth.domain.account.EmailAddressBuilder
-import com.youngjun.auth.domain.account.RawPasswordBuilder
+import com.youngjun.auth.domain.account.EMAIL_ADDRESS
+import com.youngjun.auth.domain.account.RAW_PASSWORD
 import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
 import com.youngjun.auth.domain.token.RefreshTokenRepository
 import com.youngjun.auth.domain.token.TokenStatus
-import com.youngjun.auth.domain.verificationCode.RawVerificationCodeBuilder
+import com.youngjun.auth.domain.verificationCode.RAW_VERIFICATION_CODE
 import com.youngjun.auth.domain.verificationCode.VerificationCodeRepository
 import com.youngjun.auth.domain.verificationCode.generateRawVerificationCodeExcluding
 import com.youngjun.auth.domain.verificationCode.generateVerificationCode
@@ -56,64 +56,50 @@ class AccountServiceTest(
 
             context("회원 가입") {
                 test("성공") {
-                    val emailAddress = EmailAddressBuilder().build()
-                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
+                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(EMAIL_ADDRESS))
 
-                    val actual = accountService.register(emailAddress, RawPasswordBuilder().build(), verificationCode.code)
+                    val actual = accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, verificationCode.code)
 
-                    actual.emailAddress shouldBe emailAddress
+                    actual.emailAddress shouldBe EMAIL_ADDRESS
                 }
 
                 test("비밀번호는 인코딩된다.") {
-                    val emailAddress = EmailAddressBuilder().build()
-                    val rawPassword = RawPasswordBuilder().build()
-                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
+                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(EMAIL_ADDRESS))
 
-                    val actual = accountService.register(emailAddress, rawPassword, verificationCode.code)
+                    val actual = accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, verificationCode.code)
 
-                    passwordEncoder.matches(rawPassword.value, actual.password) shouldBe true
+                    passwordEncoder.matches(RAW_PASSWORD.value, actual.password) shouldBe true
                 }
 
                 test("중복된 이메일 주소가 존재하면 실패한다.") {
-                    val emailAddress = EmailAddressBuilder().build()
-                    accountRepository.save(AccountBuilder(emailAddress = emailAddress).build())
+                    accountRepository.save(AccountBuilder(emailAddress = EMAIL_ADDRESS).build())
 
                     shouldThrow<AuthException> {
-                        accountService.register(emailAddress, RawPasswordBuilder().build(), RawVerificationCodeBuilder().build())
+                        accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, RAW_VERIFICATION_CODE)
                     }.errorType shouldBe ACCOUNT_DUPLICATE
                 }
 
                 test("인증 코드가 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> {
-                        accountService.register(
-                            EmailAddressBuilder().build(),
-                            RawPasswordBuilder().build(),
-                            RawVerificationCodeBuilder().build(),
-                        )
+                        accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, RAW_VERIFICATION_CODE)
                     }.errorType shouldBe VERIFICATION_CODE_NOT_FOUND
                 }
 
                 test("인증 코드가 일치하지 않으면 실패한다.") {
-                    val emailAddress = EmailAddressBuilder().build()
-                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
+                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(EMAIL_ADDRESS))
 
                     shouldThrow<AuthException> {
-                        accountService.register(
-                            emailAddress,
-                            RawPasswordBuilder().build(),
-                            generateRawVerificationCodeExcluding(verificationCode),
-                        )
+                        accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, generateRawVerificationCodeExcluding(verificationCode))
                     }.errorType shouldBe VERIFICATION_CODE_MISMATCHED
                 }
 
                 test("인증 코드 유효 기간이 지났으면 실패한다.") {
-                    val emailAddress = EmailAddressBuilder().build()
-                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(emailAddress))
+                    val verificationCode = verificationCodeRepository.save(generateVerificationCode(EMAIL_ADDRESS))
 
                     shouldThrow<AuthException> {
                         accountService.register(
-                            emailAddress,
-                            RawPasswordBuilder().build(),
+                            EMAIL_ADDRESS,
+                            RAW_PASSWORD,
                             verificationCode.code,
                             verificationCode.createdAt + 10.minutes,
                         )

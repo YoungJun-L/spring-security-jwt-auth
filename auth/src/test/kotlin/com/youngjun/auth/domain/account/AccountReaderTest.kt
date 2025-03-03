@@ -31,7 +31,7 @@ class AccountReaderTest(
                 }
 
                 test("존재하지 않으면 실패한다.") {
-                    shouldThrow<UsernameNotFoundException> { accountReader.read(EmailAddressBuilder().build()) }
+                    shouldThrow<UsernameNotFoundException> { accountReader.read(EMAIL_ADDRESS) }
                 }
             }
 
@@ -52,14 +52,13 @@ class AccountReaderTest(
 
             context("중복 이메일 주소 검증") {
                 test("중복되지 않는 경우") {
-                    shouldNotThrow<AuthException> { accountReader.checkNotDuplicate(EmailAddressBuilder().build()) }
+                    shouldNotThrow<AuthException> { accountReader.checkNotDuplicate(EMAIL_ADDRESS) }
                 }
 
                 test("중복되는 경우") {
-                    val emailAddress = EmailAddressBuilder().build()
-                    accountRepository.save(AccountBuilder(emailAddress = emailAddress).build())
+                    accountRepository.save(AccountBuilder(emailAddress = EMAIL_ADDRESS).build())
 
-                    shouldThrow<AuthException> { accountReader.checkNotDuplicate(emailAddress) }
+                    shouldThrow<AuthException> { accountReader.checkNotDuplicate(EMAIL_ADDRESS) }
                         .errorType shouldBe ACCOUNT_DUPLICATE
                 }
             }

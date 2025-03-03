@@ -1,6 +1,6 @@
 package com.youngjun.auth.domain.verificationCode
 
-import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.account.EMAIL_ADDRESS
 import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.support.seconds
 import com.youngjun.auth.support.DomainTest
@@ -21,11 +21,9 @@ class VerificationCodeTest :
 
             context("인증 코드 랜덤 생성") {
                 test("성공") {
-                    val emailAddress = EmailAddressBuilder().build()
+                    val actual = generateVerificationCode(EMAIL_ADDRESS)
 
-                    val actual = generateVerificationCode(emailAddress)
-
-                    actual.emailAddress shouldBe emailAddress
+                    actual.emailAddress shouldBe EMAIL_ADDRESS
                     actual.code.value.all { it.isDigit() } shouldBe true
                     actual.code.value.length shouldBe 6
                 }
@@ -33,7 +31,7 @@ class VerificationCodeTest :
 
             context("일치, 유효 기간 검증") {
                 test("일치하고 유효 기간이 지나지 않은 경우") {
-                    val verificationCode = generateVerificationCode(EmailAddressBuilder().build())
+                    val verificationCode = generateVerificationCode()
 
                     shouldNotThrow<AuthException> {
                         verificationCode.verifyWith(verificationCode.code, verificationCode.createdAt + 10.minutes - 1.seconds)
@@ -41,7 +39,7 @@ class VerificationCodeTest :
                 }
 
                 test("일치하나 유효 기간이 지난 경우") {
-                    val verificationCode = generateVerificationCode(EmailAddressBuilder().build())
+                    val verificationCode = generateVerificationCode()
 
                     shouldThrow<AuthException> {
                         verificationCode.verifyWith(verificationCode.code, verificationCode.createdAt + 10.minutes)
@@ -49,7 +47,7 @@ class VerificationCodeTest :
                 }
 
                 test("일치하지 않는 경우") {
-                    val verificationCode = generateVerificationCode(EmailAddressBuilder().build())
+                    val verificationCode = generateVerificationCode()
 
                     shouldThrow<AuthException> { verificationCode.verifyWith(generateRawVerificationCodeExcluding(verificationCode)) }
                         .errorType shouldBe VERIFICATION_CODE_MISMATCHED

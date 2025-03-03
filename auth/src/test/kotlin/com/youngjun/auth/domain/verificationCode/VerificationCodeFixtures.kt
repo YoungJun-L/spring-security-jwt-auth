@@ -1,16 +1,9 @@
 package com.youngjun.auth.domain.verificationCode
 
+import com.youngjun.auth.domain.account.EMAIL_ADDRESS
 import com.youngjun.auth.domain.account.EmailAddress
-import com.youngjun.auth.domain.account.EmailAddressBuilder
 
-data class RawVerificationCodeBuilder(
-    val value: String = "123456",
-) {
-    fun build(): RawVerificationCode = RawVerificationCode(value = value)
-}
-
-fun generateVerificationCode(emailAddress: EmailAddress = EmailAddressBuilder().build()): VerificationCode =
-    VerificationCode.generate(emailAddress)
+fun generateVerificationCode(emailAddress: EmailAddress = EMAIL_ADDRESS): VerificationCode = VerificationCode.generate(emailAddress)
 
 fun generateRawVerificationCodeExcluding(verificationCode: VerificationCode): RawVerificationCode =
     RawVerificationCode(
@@ -19,3 +12,5 @@ fun generateRawVerificationCodeExcluding(verificationCode: VerificationCode): Ra
             .toString()
             .padStart(6, '0'),
     )
+
+val RAW_VERIFICATION_CODE: RawVerificationCode = RawVerificationCode("012345")

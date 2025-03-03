@@ -1,6 +1,6 @@
 package com.youngjun.auth.infra.mail
 
-import com.youngjun.auth.domain.account.EmailAddressBuilder
+import com.youngjun.auth.domain.account.EMAIL_ADDRESS
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -33,12 +33,11 @@ class DefaultMailSenderTest :
                     val mimeMessage = MimeMessage(Session.getInstance(Properties()))
                     every { mailSender.createMimeMessage() } returns mimeMessage
                     every { mailSender.send(any<MimeMessage>()) } just Runs
-                    val emailAddress = EmailAddressBuilder().build()
 
-                    defaultMailSender.send(emailAddress, "subject", "body")
+                    defaultMailSender.send(EMAIL_ADDRESS, "subject", "body")
 
                     mimeMessage.from[0] shouldBe InternetAddress(mailProperties.username)
-                    mimeMessage.allRecipients[0] shouldBe InternetAddress(emailAddress.value)
+                    mimeMessage.allRecipients[0] shouldBe InternetAddress(EMAIL_ADDRESS.value)
                     mimeMessage.subject shouldBe "subject"
                     mimeMessage.content.toString() shouldBe "body"
                     verify { mailSender.send(mimeMessage) }
