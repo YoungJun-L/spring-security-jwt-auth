@@ -1,14 +1,13 @@
 package com.youngjun.auth.security
 
-import com.youngjun.auth.application.AccountService
-import com.youngjun.auth.application.TokenService
 import com.youngjun.auth.domain.account.AccountBuilder
-import com.youngjun.auth.domain.token.RawAccessToken
+import com.youngjun.auth.domain.account.AccountRepository
+import com.youngjun.auth.infra.jwt.JwtBuilder
+import com.youngjun.auth.infra.jwt.JwtProperties
 import com.youngjun.auth.support.SecurityContextTest
 import com.youngjun.tests.description
 import com.youngjun.tests.ignored
 import com.youngjun.tests.type
-import io.mockk.every
 import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc.given
 import org.junit.jupiter.api.Test
@@ -24,20 +23,18 @@ import org.springframework.restdocs.payload.JsonFieldType.STRING
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 
 class LogoutTest(
-    private val tokenService: TokenService,
-    private val accountService: AccountService,
+    private val accountRepository: AccountRepository,
+    private val jwtProperties: JwtProperties,
 ) : SecurityContextTest() {
     @Test
     fun `로그아웃 성공`() {
-        val accessToken = RawAccessToken("a.b.c")
-        val account = AccountBuilder().build()
-        every { tokenService.parse(accessToken) } returns account
-        every { accountService.logout(account) } returns account.apply { logout() }
+        val account = accountRepository.save(AccountBuilder().build())
+        val accessToken = JwtBuilder(subject = account.id.toString(), secretKey = jwtProperties.accessSecretKey).build()
 
         given()
             .log()
             .all()
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${accessToken.value}")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
             .contentType(ContentType.JSON)
             .post("/auth/logout")
             .then()

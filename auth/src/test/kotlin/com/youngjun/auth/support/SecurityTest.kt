@@ -1,25 +1,16 @@
 package com.youngjun.auth.support
 
-import com.ninjasquad.springmockk.MockkBean
-import com.youngjun.auth.application.AccountService
-import com.youngjun.auth.application.MailService
-import com.youngjun.auth.application.PasswordService
-import com.youngjun.auth.application.TokenService
-import com.youngjun.auth.application.VerificationCodeService
+import com.youngjun.tests.ContextTest
 import io.kotest.core.annotation.Tags
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.TestConstructor
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.bind.annotation.GetMapping
@@ -33,27 +24,9 @@ import org.springframework.web.filter.CharacterEncodingFilter
 annotation class SecurityTest
 
 @Tag("securityContext")
-@ActiveProfiles("test")
 @ExtendWith(RestDocumentationExtension::class)
-@ComponentScan("com.youngjun.auth.security")
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@WebMvcTest
+@ContextTest
 abstract class SecurityContextTest {
-    @MockkBean
-    private lateinit var accountService: AccountService
-
-    @MockkBean
-    private lateinit var tokenService: TokenService
-
-    @MockkBean
-    private lateinit var verificationCodeService: VerificationCodeService
-
-    @MockkBean
-    private lateinit var mailService: MailService
-
-    @MockkBean
-    private lateinit var passwordService: PasswordService
-
     @BeforeEach
     fun setUp(
         webApplicationContext: WebApplicationContext,

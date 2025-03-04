@@ -11,7 +11,7 @@ import org.springframework.test.context.TestExecutionListeners
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS,
 )
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Target(AnnotationTarget.ANNOTATION_CLASS)
+@SpringBootTest
+@Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ContextTest
