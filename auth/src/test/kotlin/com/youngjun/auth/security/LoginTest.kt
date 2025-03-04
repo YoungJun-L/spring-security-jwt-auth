@@ -111,7 +111,7 @@ class LoginTest(
             .then()
             .log()
             .all()
-            .statusCode(HttpStatus.OK.value())
+            .status(HttpStatus.OK)
     }
 }
 

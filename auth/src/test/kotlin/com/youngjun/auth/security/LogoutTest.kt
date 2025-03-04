@@ -40,7 +40,7 @@ class LogoutTest(
             .then()
             .log()
             .all()
-            .statusCode(HttpStatus.OK.value())
+            .status(HttpStatus.OK)
             .apply(
                 document(
                     "logout",
