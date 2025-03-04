@@ -3,6 +3,7 @@ package com.youngjun.auth.domain.account
 import com.youngjun.auth.support.DomainContextTest
 import com.youngjun.auth.support.error.AuthException
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DUPLICATE
+import com.youngjun.auth.support.error.ErrorType.ACCOUNT_NOT_FOUND
 import com.youngjun.auth.support.error.ErrorType.UNAUTHORIZED
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
@@ -10,7 +11,6 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 @DomainContextTest
 class AccountReaderTest(
@@ -31,7 +31,8 @@ class AccountReaderTest(
                 }
 
                 test("존재하지 않으면 실패한다.") {
-                    shouldThrow<UsernameNotFoundException> { accountReader.read(EMAIL_ADDRESS) }
+                    shouldThrow<AuthException> { accountReader.read(EMAIL_ADDRESS) }
+                        .errorType shouldBe ACCOUNT_NOT_FOUND
                 }
             }
 

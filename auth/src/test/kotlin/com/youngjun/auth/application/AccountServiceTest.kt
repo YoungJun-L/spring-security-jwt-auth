@@ -50,7 +50,7 @@ class AccountServiceTest(
                 }
 
                 test("존재하지 않으면 실패한다.") {
-                    shouldThrow<UsernameNotFoundException> { accountService.loadUserByUsername("example@youngjun.com") }
+                    shouldThrow<UsernameNotFoundException> { accountService.loadUserByUsername(EMAIL_ADDRESS.value) }
                 }
             }
 

@@ -10,6 +10,7 @@ import com.youngjun.auth.domain.token.RefreshTokenStore
 import com.youngjun.auth.domain.verificationCode.RawVerificationCode
 import com.youngjun.auth.domain.verificationCode.VerificationCodeReader
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -22,7 +23,9 @@ class AccountService(
     private val refreshTokenStore: RefreshTokenStore,
     private val verificationCodeReader: VerificationCodeReader,
 ) : UserDetailsService {
-    override fun loadUserByUsername(emailAddress: String): Account = accountReader.read(EmailAddress(emailAddress))
+    override fun loadUserByUsername(emailAddress: String): Account =
+        runCatching { accountReader.read(EmailAddress(emailAddress)) }
+            .getOrElse { throw UsernameNotFoundException("Cannot find the user. $emailAddress") }
 
     fun register(
         emailAddress: EmailAddress,
