@@ -92,5 +92,20 @@ class AccountTest :
                     NoOperationPasswordEncoder.matches(newPassword.value, account.password) shouldBe true
                 }
             }
+
+            context("계정 이용 제한 여부 검증") {
+                test("이용 가능한 경우") {
+                    val account = AccountBuilder().build()
+
+                    shouldNotThrow<AuthException> { account.checkNotDisabled() }
+                }
+
+                test("이용 제한된 경우") {
+                    val account = AccountBuilder(status = AccountStatus.DISABLED).build()
+
+                    shouldThrow<AuthException> { account.checkNotDisabled() }
+                        .errorType shouldBe ACCOUNT_DISABLED
+                }
+            }
         },
     )

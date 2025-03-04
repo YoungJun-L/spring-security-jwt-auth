@@ -37,7 +37,7 @@ class VerificationCodeControllerTest : RestDocsTest() {
 
     @Test
     fun `인증 코드 전송 성공`() {
-        every { verificationCodeService.generate(EMAIL_ADDRESS, any()) } returns generateVerificationCode(EMAIL_ADDRESS)
+        every { verificationCodeService.generateForNewAccount(EMAIL_ADDRESS, any()) } returns generateVerificationCode(EMAIL_ADDRESS)
         every { mailService.sendVerificationCode(any()) } just Runs
 
         given()
@@ -52,6 +52,35 @@ class VerificationCodeControllerTest : RestDocsTest() {
             .apply(
                 document(
                     "send-verification-code",
+                    requestFields(
+                        "email" type STRING description "email, 이메일 형식",
+                    ),
+                    responseFields(
+                        "status" type STRING description "status",
+                        "data" type NULL description "data",
+                        "error" type NULL ignored true,
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun `비밀번호 초기화 성공`() {
+        every { verificationCodeService.generateForExistingAccount(EMAIL_ADDRESS, any()) } returns generateVerificationCode(EMAIL_ADDRESS)
+        every { mailService.sendVerificationCode(any()) } just Runs
+
+        given()
+            .log()
+            .all()
+            .contentType(ContentType.JSON)
+            .body(SendVerificationCodeRequest(EMAIL_ADDRESS))
+            .post("/auth/reset-password")
+            .then()
+            .log()
+            .all()
+            .apply(
+                document(
+                    "reset-password",
                     requestFields(
                         "email" type STRING description "email, 이메일 형식",
                     ),

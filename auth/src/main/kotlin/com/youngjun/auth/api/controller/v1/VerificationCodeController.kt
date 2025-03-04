@@ -1,5 +1,6 @@
 package com.youngjun.auth.api.controller.v1
 
+import com.youngjun.auth.api.controller.v1.request.ResetPasswordRequest
 import com.youngjun.auth.api.controller.v1.request.SendVerificationCodeRequest
 import com.youngjun.auth.application.MailService
 import com.youngjun.auth.application.VerificationCodeService
@@ -17,7 +18,16 @@ class VerificationCodeController(
     fun sendVerificationCode(
         @RequestBody request: SendVerificationCodeRequest,
     ): AuthResponse<Unit> {
-        val verificationCode = verificationCodeService.generate(request.email)
+        val verificationCode = verificationCodeService.generateForNewAccount(request.email)
+        mailService.sendVerificationCode(verificationCode)
+        return AuthResponse.success()
+    }
+
+    @PostMapping("/auth/reset-password")
+    fun resetPassword(
+        @RequestBody request: ResetPasswordRequest,
+    ): AuthResponse<Unit> {
+        val verificationCode = verificationCodeService.generateForExistingAccount(request.email)
         mailService.sendVerificationCode(verificationCode)
         return AuthResponse.success()
     }

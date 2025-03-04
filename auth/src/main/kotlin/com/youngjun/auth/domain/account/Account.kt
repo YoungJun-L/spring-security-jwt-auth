@@ -53,6 +53,12 @@ class Account(
         }
     }
 
+    fun checkNotDisabled() {
+        if (status == DISABLED) {
+            throw AuthException(ACCOUNT_DISABLED)
+        }
+    }
+
     fun verify(
         rawPassword: RawPassword,
         passwordEncoder: PasswordEncoder,

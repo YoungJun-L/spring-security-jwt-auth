@@ -14,11 +14,20 @@ class VerificationCodeService(
     private val verificationCodeWriter: VerificationCodeWriter,
     private val accountReader: AccountReader,
 ) {
-    fun generate(
+    fun generateForNewAccount(
         emailAddress: EmailAddress,
         now: LocalDateTime = LocalDateTime.now(),
     ): VerificationCode {
         accountReader.checkNotDuplicate(emailAddress)
+        verificationCodeReader.checkRecentSavesExceeded(emailAddress, now)
+        return VerificationCode.generate(emailAddress).also { verificationCodeWriter.write(it) }
+    }
+
+    fun generateForExistingAccount(
+        emailAddress: EmailAddress,
+        now: LocalDateTime = LocalDateTime.now(),
+    ): VerificationCode {
+        accountReader.read(emailAddress).checkNotDisabled()
         verificationCodeReader.checkRecentSavesExceeded(emailAddress, now)
         return VerificationCode.generate(emailAddress).also { verificationCodeWriter.write(it) }
     }
