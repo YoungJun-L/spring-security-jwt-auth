@@ -14,11 +14,21 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 
     testImplementation(project(":tests"))
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.test {
     systemProperties = System.getProperties().asIterable().associate { it.key.toString() to it.value }
     useJUnitPlatform {
+        excludeTags("securityContext", "restDocs")
+    }
+}
+
+tasks.register<Test>("securityTest") {
+    group = "verification"
+    description = "Runs tests for security components."
+    useJUnitPlatform {
+        systemProperty("kotest.tags.include", "security")
         excludeTags("restDocs")
     }
 }
@@ -27,7 +37,7 @@ tasks.getByName<Test>("restDocsTest") {
     group = "verification"
     description = "Runs presentation-layer tests."
     useJUnitPlatform {
-        includeTags("restDocs")
+        includeTags("securityContext", "restDocs")
     }
 }
 
@@ -36,7 +46,7 @@ tasks.getByName<Test>("applicationTest") {
     description = "Runs application-level integration tests."
     useJUnitPlatform {
         systemProperty("kotest.tags.include", "application")
-        excludeTags("restDocs")
+        excludeTags("securityContext", "restDocs")
     }
 }
 
@@ -45,7 +55,7 @@ tasks.getByName<Test>("domainTest") {
     description = "Runs domain-layer tests."
     useJUnitPlatform {
         systemProperty("kotest.tags.include", "domain")
-        excludeTags("restDocs")
+        excludeTags("securityContext", "restDocs")
     }
 }
 
