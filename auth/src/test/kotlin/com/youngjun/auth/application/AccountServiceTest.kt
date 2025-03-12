@@ -44,7 +44,7 @@ class AccountServiceTest(
                 test("성공") {
                     val account = accountRepository.save(AccountBuilder().build())
 
-                    val actual = accountService.loadUserByUsername(account.emailAddress.value)
+                    val actual = accountService.loadUserByUsername(account.username)
 
                     actual.emailAddress shouldBe account.emailAddress
                 }
