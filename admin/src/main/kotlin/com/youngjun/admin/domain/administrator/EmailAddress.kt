@@ -1,6 +1,6 @@
 package com.youngjun.admin.domain.administrator
 
 @JvmInline
-value class RawPassword(
+value class EmailAddress(
     val value: String,
 )

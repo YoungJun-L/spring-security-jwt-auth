@@ -14,4 +14,9 @@ enum class ErrorType(
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, ErrorCode.E4010, "잘못된 접근입니다.", LogLevel.INFO),
     FORBIDDEN(HttpStatus.FORBIDDEN, ErrorCode.E4030, "잘못된 접근입니다.", LogLevel.INFO),
     NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E4040, "해당 정보를 찾을 수 없습니다.", LogLevel.INFO),
+
+    // administrator
+    ADMINISTRATOR_BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, ErrorCode.E4011, "이메일 또는 비밀번호가 다릅니다.", LogLevel.INFO),
+    ADMINISTRATOR_DUPLICATE(HttpStatus.BAD_REQUEST, ErrorCode.E4001, "이미 가입된 계정입니다.", LogLevel.INFO),
+    ADMINISTRATOR_LOCKED(HttpStatus.FORBIDDEN, ErrorCode.E4031, "관리자 승인이 필요합니다.", LogLevel.WARN),
 }

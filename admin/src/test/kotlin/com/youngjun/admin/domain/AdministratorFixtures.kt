@@ -1,16 +1,17 @@
 package com.youngjun.admin.domain
 
 import com.youngjun.admin.domain.administrator.Administrator
+import com.youngjun.admin.domain.administrator.EmailAddress
 import com.youngjun.admin.domain.administrator.Password
 import com.youngjun.admin.domain.administrator.RawPassword
 import org.springframework.security.crypto.password.PasswordEncoder
 
 data class AdministratorBuilder(
-    val username: String = USERNAME,
+    val emailAddress: EmailAddress = EMAIL_ADDRESS,
     val password: Password = Password.encodedWith(RAW_PASSWORD, NoOperationPasswordEncoder),
     val name: String = NAME,
 ) {
-    fun build(): Administrator = Administrator(username = username, password = password, name = name)
+    fun build(): Administrator = Administrator(emailAddress = emailAddress, password = password, name = name)
 }
 
 object NoOperationPasswordEncoder : PasswordEncoder {
@@ -22,7 +23,6 @@ object NoOperationPasswordEncoder : PasswordEncoder {
     ): Boolean = "NoOp$rawPassword" == encodedPassword
 }
 
-const val USERNAME = "example123"
-const val NAME = "Youngjun"
-
+val EMAIL_ADDRESS: EmailAddress = EmailAddress("example@youngjun.com")
 val RAW_PASSWORD: RawPassword = RawPassword("password123!")
+const val NAME: String = "Youngjun"

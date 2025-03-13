@@ -15,8 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails
 @Table(name = "administrator")
 @Entity
 class Administrator(
-    @Column(name = "username")
-    private val username: String,
+    @Column(name = "email")
+    val emailAddress: EmailAddress,
     @Column(name = "password")
     private var password: Password,
     @Column
@@ -28,11 +28,13 @@ class Administrator(
     var status = PENDING
         protected set
 
-    override fun getUsername(): String = username
+    override fun getUsername(): String = emailAddress.value
 
     override fun getPassword(): String = password.value
 
     override fun getAuthorities(): Collection<GrantedAuthority> = listOf(SimpleGrantedAuthority("ROLE_ADMIN"))
+
+    override fun isAccountNonLocked(): Boolean = status == ENABLED
 
     fun approve() {
         status = ENABLED
