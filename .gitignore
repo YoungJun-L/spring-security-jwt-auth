@@ -1,18 +1,18 @@
-.gradle
+backend/.gradle
 .kotlin
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-.env*
+backend/.env
 
 ### IDEA ###
-.idea
+backend/.idea
 *.iws
 *.iml
 *.ipr
 out/
-.run/
+backend/.run/
 
 ### Mac OS ###
 .DS_Store
