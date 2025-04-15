@@ -1,0 +1,4 @@
+export const ERROR_CODES = {
+  INVALID_TOKEN_ERROR: "E4012",
+  EXPIRED_TOKEN_ERROR: "E4013",
+} as const;
