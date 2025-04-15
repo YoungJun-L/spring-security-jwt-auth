@@ -2,10 +2,14 @@
 
 ## 📌 프로젝트 소개
 
+![image](https://github.com/user-attachments/assets/c3441cbe-1ec0-46a6-8f28-f85d9ad86f06)
+
 Kotlin과 Spring Security 기반의 사용자 인증 및 권한 부여 시스템입니다. JWT 기반 인증과 이메일 인증 기능을 제공합니다.
 
 이 인증 모듈은 독립 실행형(Runnable) 모듈로 설계되었으며, 다른 메인 모듈에 쉽게 통합할 수 있도록 구성되었습니다. 이를 통해 메인 서비스에서 별도의 인증 기능 개발 없이도 간편하게 인증 기능을 활용할 수
 있습니다.
+
+React, Antd 기반의 Admin 기능도 제공합니다.
 
 ## 🚀 주요 기능
 
