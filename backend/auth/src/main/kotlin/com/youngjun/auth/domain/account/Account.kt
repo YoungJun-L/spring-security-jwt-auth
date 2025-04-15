@@ -10,6 +10,7 @@ import com.youngjun.auth.support.error.ErrorType.ACCOUNT_DISABLED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOCKED
 import com.youngjun.auth.support.error.ErrorType.ACCOUNT_LOGOUT
 import jakarta.persistence.Column
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -26,9 +27,14 @@ class Account(
     val emailAddress: EmailAddress,
     @Column(name = "password")
     private var password: Password,
+    profile: Profile,
     status: AccountStatus = ENABLED,
 ) : BaseEntity(),
     UserDetails {
+    @Embedded
+    var profile: Profile = profile
+        protected set
+
     @Enumerated(EnumType.STRING)
     @Column
     var status = status

@@ -8,4 +8,7 @@ data class RegisterAccountRequest(
     val email: EmailAddress,
     val password: RawPassword,
     val verificationCode: RawVerificationCode,
-)
+    val profile: ProfileRequest,
+) {
+    fun toProfile() = profile.toProfile()
+}

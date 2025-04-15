@@ -4,6 +4,7 @@ import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.AccountRepository
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.EMAIL_ADDRESS
+import com.youngjun.auth.domain.account.PROFILE
 import com.youngjun.auth.domain.account.RAW_PASSWORD
 import com.youngjun.auth.domain.support.minutes
 import com.youngjun.auth.domain.token.RefreshTokenBuilder
@@ -58,7 +59,7 @@ class AccountServiceTest(
                 test("성공") {
                     val verificationCode = verificationCodeRepository.save(generateVerificationCode(EMAIL_ADDRESS))
 
-                    val actual = accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, verificationCode.code)
+                    val actual = accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, PROFILE, verificationCode.code)
 
                     actual.emailAddress shouldBe EMAIL_ADDRESS
                 }
@@ -66,7 +67,7 @@ class AccountServiceTest(
                 test("비밀번호는 인코딩된다.") {
                     val verificationCode = verificationCodeRepository.save(generateVerificationCode(EMAIL_ADDRESS))
 
-                    val actual = accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, verificationCode.code)
+                    val actual = accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, PROFILE, verificationCode.code)
 
                     passwordEncoder.matches(RAW_PASSWORD.value, actual.password) shouldBe true
                 }
@@ -75,13 +76,13 @@ class AccountServiceTest(
                     accountRepository.save(AccountBuilder(emailAddress = EMAIL_ADDRESS).build())
 
                     shouldThrow<AuthException> {
-                        accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, RAW_VERIFICATION_CODE)
+                        accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, PROFILE, RAW_VERIFICATION_CODE)
                     }.errorType shouldBe ACCOUNT_DUPLICATE
                 }
 
                 test("인증 코드가 존재하지 않으면 실패한다.") {
                     shouldThrow<AuthException> {
-                        accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, RAW_VERIFICATION_CODE)
+                        accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, PROFILE, RAW_VERIFICATION_CODE)
                     }.errorType shouldBe VERIFICATION_CODE_NOT_FOUND
                 }
 
@@ -89,7 +90,12 @@ class AccountServiceTest(
                     val verificationCode = verificationCodeRepository.save(generateVerificationCode(EMAIL_ADDRESS))
 
                     shouldThrow<AuthException> {
-                        accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, generateRawVerificationCodeExcluding(verificationCode))
+                        accountService.register(
+                            EMAIL_ADDRESS,
+                            RAW_PASSWORD,
+                            PROFILE,
+                            generateRawVerificationCodeExcluding(verificationCode),
+                        )
                     }.errorType shouldBe VERIFICATION_CODE_MISMATCHED
                 }
 
@@ -100,6 +106,7 @@ class AccountServiceTest(
                         accountService.register(
                             EMAIL_ADDRESS,
                             RAW_PASSWORD,
+                            PROFILE,
                             verificationCode.code,
                             verificationCode.createdAt + 10.minutes,
                         )

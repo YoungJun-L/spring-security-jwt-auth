@@ -47,7 +47,7 @@ class JsonLoginAuthenticationFilterTest :
 
                 test("성공") {
                     request.contentType = MediaType.APPLICATION_JSON_VALUE
-                    request.setContent(objectMapper.writeValueAsBytes(mapOf("email" to EMAIL_ADDRESS, "password" to RAW_PASSWORD)))
+                    request.setContent(objectMapper.writeValueAsBytes(mapOf("username" to EMAIL_ADDRESS, "password" to RAW_PASSWORD)))
                     every { authenticationManager.authenticate(any()) } returns
                         UsernamePasswordAuthenticationToken.authenticated(
                             EMAIL_ADDRESS.value,

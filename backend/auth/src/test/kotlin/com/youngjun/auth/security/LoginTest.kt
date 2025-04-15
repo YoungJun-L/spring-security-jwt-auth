@@ -5,6 +5,7 @@ import com.youngjun.auth.domain.account.AccountRepository
 import com.youngjun.auth.domain.account.AccountStatus
 import com.youngjun.auth.domain.account.EMAIL_ADDRESS
 import com.youngjun.auth.domain.account.EmailAddress
+import com.youngjun.auth.domain.account.PROFILE
 import com.youngjun.auth.domain.account.Password
 import com.youngjun.auth.domain.account.RAW_PASSWORD
 import com.youngjun.auth.domain.account.RawPassword
@@ -49,7 +50,7 @@ class LoginTest(
                 document(
                     "login",
                     requestFields(
-                        "email" type STRING description "email",
+                        "username" type STRING description "username",
                         "password" type STRING description "password",
                     ),
                     responseFields(
@@ -88,7 +89,7 @@ class LoginTest(
     @Test
     fun `서비스 이용이 제한된 유저이면 실패한다`() {
         accountRepository.save(
-            AccountBuilder(EMAIL_ADDRESS, Password.encodedWith(RAW_PASSWORD, passwordEncoder), AccountStatus.DISABLED).build(),
+            AccountBuilder(EMAIL_ADDRESS, Password.encodedWith(RAW_PASSWORD, passwordEncoder), PROFILE, AccountStatus.DISABLED).build(),
         )
 
         val actual = login(EMAIL_ADDRESS, RAW_PASSWORD)
@@ -99,7 +100,7 @@ class LoginTest(
     @Test
     fun `로그아웃된 유저이면 성공한다`() {
         accountRepository.save(
-            AccountBuilder(EMAIL_ADDRESS, Password.encodedWith(RAW_PASSWORD, passwordEncoder), AccountStatus.LOGOUT).build(),
+            AccountBuilder(EMAIL_ADDRESS, Password.encodedWith(RAW_PASSWORD, passwordEncoder), PROFILE, AccountStatus.LOGOUT).build(),
         )
 
         given()

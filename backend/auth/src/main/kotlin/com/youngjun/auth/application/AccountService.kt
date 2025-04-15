@@ -5,6 +5,7 @@ import com.youngjun.auth.domain.account.AccountReader
 import com.youngjun.auth.domain.account.AccountWriter
 import com.youngjun.auth.domain.account.EmailAddress
 import com.youngjun.auth.domain.account.Password
+import com.youngjun.auth.domain.account.Profile
 import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.RefreshTokenStore
 import com.youngjun.auth.domain.verificationCode.RawVerificationCode
@@ -30,12 +31,19 @@ class AccountService(
     fun register(
         emailAddress: EmailAddress,
         rawPassword: RawPassword,
+        profile: Profile,
         rawVerificationCode: RawVerificationCode,
         now: LocalDateTime = LocalDateTime.now(),
     ): Account {
         accountReader.checkNotDuplicate(emailAddress)
         verificationCodeReader.readLatest(emailAddress).verifyWith(rawVerificationCode, now)
-        return accountWriter.write(Account(emailAddress, Password.encodedWith(rawPassword, passwordEncoder)))
+        return accountWriter.write(
+            Account(
+                emailAddress = emailAddress,
+                password = Password.encodedWith(rawPassword, passwordEncoder),
+                profile = profile,
+            ),
+        )
     }
 
     fun logout(account: Account): Account =

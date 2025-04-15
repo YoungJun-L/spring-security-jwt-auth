@@ -29,6 +29,9 @@ import org.springframework.security.web.authentication.AuthenticationEntryPointF
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @EnableWebSecurity
 @Configuration
@@ -49,6 +52,8 @@ private class SecurityConfig(
                     .permitAll()
                     .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/samples"))
                     .permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/admin/**"))
+                    .hasRole("ADMIN")
                     .anyRequest()
                     .authenticated()
             }.addFilterAt(
@@ -78,7 +83,7 @@ private class SecurityConfig(
             .formLogin { it.disable() }
             .requestCache { it.disable() }
             .logout { it.disable() }
-            .cors { it.disable() }
+            .cors { it.configurationSource(corsConfigurationSource()) }
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .build()
@@ -97,4 +102,18 @@ private class SecurityConfig(
 
     @Bean
     fun authenticationEntryPoint(): AuthenticationEntryPoint = ApiAuthenticationEntryPoint(jsonResponseWriter)
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource =
+        UrlBasedCorsConfigurationSource().apply {
+            registerCorsConfiguration(
+                "/**",
+                CorsConfiguration().apply {
+                    allowedOrigins = listOf("http://localhost:3000")
+                    allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    allowedHeaders = listOf("*")
+                    allowCredentials = true
+                },
+            )
+        }
 }

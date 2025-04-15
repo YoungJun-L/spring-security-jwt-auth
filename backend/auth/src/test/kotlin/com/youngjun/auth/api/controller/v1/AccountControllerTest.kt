@@ -2,11 +2,13 @@ package com.youngjun.auth.api.controller.v1
 
 import com.youngjun.auth.api.config.AccountArgumentResolver
 import com.youngjun.auth.api.controller.v1.request.ChangePasswordRequest
+import com.youngjun.auth.api.controller.v1.request.ProfileRequest
 import com.youngjun.auth.api.controller.v1.request.RegisterAccountRequest
 import com.youngjun.auth.application.AccountService
 import com.youngjun.auth.application.PasswordService
 import com.youngjun.auth.domain.account.AccountBuilder
 import com.youngjun.auth.domain.account.EMAIL_ADDRESS
+import com.youngjun.auth.domain.account.PROFILE
 import com.youngjun.auth.domain.account.RAW_PASSWORD
 import com.youngjun.auth.domain.account.RawPassword
 import com.youngjun.auth.domain.token.TokenPairBuilder
@@ -45,15 +47,34 @@ class AccountControllerTest : RestDocsTest() {
 
     @Test
     fun `회원가입 성공`() {
-        every { accountService.register(EMAIL_ADDRESS, RAW_PASSWORD, RAW_VERIFICATION_CODE, any()) } returns
+        every {
+            accountService.register(
+                emailAddress = EMAIL_ADDRESS,
+                rawPassword = RAW_PASSWORD,
+                profile = PROFILE,
+                rawVerificationCode = RAW_VERIFICATION_CODE,
+                any(),
+            )
+        } returns
             AccountBuilder(emailAddress = EMAIL_ADDRESS).build()
 
         given()
             .log()
             .all()
             .contentType(ContentType.JSON)
-            .body(RegisterAccountRequest(EMAIL_ADDRESS, RAW_PASSWORD, RAW_VERIFICATION_CODE))
-            .post("/auth/register")
+            .body(
+                RegisterAccountRequest(
+                    EMAIL_ADDRESS,
+                    RAW_PASSWORD,
+                    RAW_VERIFICATION_CODE,
+                    ProfileRequest(
+                        name = PROFILE.name,
+                        nickname = PROFILE.nickname,
+                        phoneNumber = PROFILE.phoneNumber,
+                        country = PROFILE.country,
+                    ),
+                ),
+            ).post("/auth/register")
             .then()
             .log()
             .all()
@@ -64,6 +85,11 @@ class AccountControllerTest : RestDocsTest() {
                         "email" type STRING description "email, 이메일 형식",
                         "password" type STRING description "password, 최소 8자 이상 최대 65자 미만",
                         "verificationCode" type STRING description "인증 코드 6자리 숫자",
+                        "profile" type OBJECT description "프로필 정보",
+                        "profile.name" type STRING description "이름",
+                        "profile.nickname" type STRING description "별명",
+                        "profile.phoneNumber" type STRING description "전화번호",
+                        "profile.country" type STRING description "국가 코드",
                     ),
                     responseFields(
                         "status" type STRING description "status",

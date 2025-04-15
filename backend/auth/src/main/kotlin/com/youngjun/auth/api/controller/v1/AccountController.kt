@@ -22,7 +22,13 @@ class AccountController(
     fun register(
         @RequestBody request: RegisterAccountRequest,
     ): AuthResponse<AccountResponse> {
-        val account = accountService.register(request.email, request.password, request.verificationCode)
+        val account =
+            accountService.register(
+                emailAddress = request.email,
+                rawPassword = request.password,
+                profile = request.toProfile(),
+                rawVerificationCode = request.verificationCode,
+            )
         return AuthResponse.success(AccountResponse.from(account))
     }
 
