@@ -2,7 +2,6 @@ rootProject.name = "spring-security-jwt-auth"
 
 include(
     "auth",
-    "admin",
     "admin-api",
     "core",
     "async",
