@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class AdminUserRestController(
+class AdminUserController(
     private val adminUserService: AdminUserService,
 ) {
     @GetMapping("/users")
