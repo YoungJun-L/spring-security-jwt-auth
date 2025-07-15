@@ -9,6 +9,7 @@ import com.youngjun.admin.infra.mail.AdminMailSender
 import jakarta.transaction.Transactional
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import java.util.concurrent.CompletableFuture
 
 @Service
 class AdminMailService(
@@ -28,15 +29,15 @@ class AdminMailService(
     fun send(
         task: MailTask,
         content: MailContent,
-    ) {
-        task.markAsProcessing()
+    ): CompletableFuture<MailTask> {
         try {
             adminMailSender.send(task.mailMessageInfo.recipient, content)
             task.markAsSent()
         } catch (ex: Exception) {
-            task.markAsFailed()
+            task.markAsFailed(ex.message ?: "Unknown error")
         }
         mailTaskRepository.save(task)
+        return CompletableFuture.completedFuture(task)
     }
 
     @Transactional

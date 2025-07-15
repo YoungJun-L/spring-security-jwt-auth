@@ -11,6 +11,6 @@ data class AdminProfile(
     val nickname: String,
     @Column(name = "phone_number")
     val phoneNumber: String,
-    @Column(name = "address")
+    @Column(name = "country")
     val country: String,
 )

@@ -59,13 +59,6 @@ spring:
 spring.config.activate.on-profile: dev
 
 spring:
-  jpa:
-    properties:
-      hibernate:
-        show_log: true
-        format_sql: true
-    show-sql: true
-
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: ${DB_USERNAME}

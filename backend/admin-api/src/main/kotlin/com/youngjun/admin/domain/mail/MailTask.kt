@@ -2,6 +2,7 @@ package com.youngjun.admin.domain.mail
 
 import com.youngjun.admin.domain.support.BaseEntity
 import com.youngjun.admin.domain.support.RetryInfo
+import jakarta.persistence.Column
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -12,6 +13,7 @@ class MailTask(
     mailMessageInfo: MailMessageInfo,
     status: MailTaskStatus = MailTaskStatus.PENDING,
     retryInfo: RetryInfo = RetryInfo(),
+    failureReason: String? = null,
 ) : BaseEntity() {
     @Embedded
     var mailMessageInfo = mailMessageInfo
@@ -25,11 +27,15 @@ class MailTask(
     var retryInfo = retryInfo
         protected set
 
+    @Column
+    var failureReason = failureReason
+        protected set
+
     fun markAsProcessing() {
         status = MailTaskStatus.PROCESSING
     }
 
-    fun markAsFailed() {
+    fun markAsFailed(failureReason: String) {
         retryInfo = retryInfo.onFailure()
         status =
             if (retryInfo.isUnrecoverable()) {
@@ -37,6 +43,7 @@ class MailTask(
             } else {
                 MailTaskStatus.FAILED
             }
+        this.failureReason = failureReason
     }
 
     fun markAsSent() {
